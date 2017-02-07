@@ -4,29 +4,33 @@
 #include <iomanip>
 #include <string>
 
-class Java
+static class Cpp2Java
 {
 public:
 
-	ifstream file;
-	string address;
+	ofstream file;
 	string javaCode;
+
+
+
+
+
+
+
+
+
 
 	void clearAll()
 	{
-		cin >> address;
-		file.open(address);
+		file.open("temp.txt");
 		file.clear();
 		
-		
+		file << javaCode;
 
 		file.close();
 	};
 
-	void drawLine()
-	{
 
-	};
 
 };
 
