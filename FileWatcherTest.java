@@ -1,18 +1,55 @@
-import java.util.*;
-import java.io.*;
 
-public class FileWatcherTest {
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import java.lang.Compiler;
+
+public class FileWatcherTest extends JFrame { //One-JFrame setup
+      private static Container contents;
+
+   public FileWatcherTest()
+   {
+      super("Weather");
+		  contents	= getContentPane();
+        setSize(720,540);
+		setVisible(true);
+
+   }
   public static void main(String args[]) {
     // monitor a single file
+    FileWatcherTest fwt = new FileWatcherTest();
+   fwt.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+      
     TimerTask task = new FileWatcher( new File("text.txt") ) {
+     JPanel test;
       protected void onChange( File file ) {
+      
         // here we code the action on a change
         System.out.println( "File "+ file.getName() +" have change !" );
+ 
+        //contents.removeAll();
+        contents.add(new JPanel());
+        contents.add(new JLabel("ASDF"));
+        fwt.revalidate();
+
+        /* Swap JPanel (one-JPanel setup)
+        
+        this.removeAll();
+        this.add(new userJPanel());
+        
+        this.revalidate(); ???
+        this.update(); ???
+        
+        
+        */
       }
     };
 
-    Timer timer = new Timer();
+    java.util.Timer timer = new java.util.Timer();
     // repeat the check every second
-    timer.schedule( task , new Date(), 1000 );
+    timer.schedule( task , new Date(), 1 );
   }
 }

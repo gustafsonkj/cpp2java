@@ -22,7 +22,7 @@ public:
 
 	void clearAll()
 	{
-		file.open("temp.txt");
+		file.open("code.Java");
 		file.clear();
 		
 		file << javaCode;
@@ -31,6 +31,7 @@ public:
 	};
 
 
-
+Cpp2Java.drawLine();
+Cpp2Java.removeAll();
 };
 
