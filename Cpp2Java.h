@@ -3,29 +3,27 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <vector>
 
 static class Cpp2Java
 {
 public:
 
 	ofstream file;
-	string javaCode;
+	string removeAll;
 
 
+	//methods go here
 
 
-
-
-
-
-
-
-	void clearAll()
+	void removeAll()
 	{
 		file.open("code.Java");
 		file.clear();
 		
-		file << javaCode;
+		removeAll = "removeAll \n";
+
+		file << removeAll;
 
 		file.close();
 	};
