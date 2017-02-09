@@ -1,35 +1,33 @@
-#pragma once
 #include <iostream>
 #include <fstream>
-#include <iomanip>
 #include <string>
 #include <vector>
+
+using namespace std;
 
 static class Cpp2Java
 {
 public:
 
+	//methods declared here
+	void removeAll();
+
+
+};
+
+// methods written down here
+
+void Cpp2Java::removeAll()
+{
 	ofstream file;
 	string removeAll;
+	file.open("text.txt");
+	file.clear();
 
+	removeAll = "removeAll \n";
 
-	//methods go here
+	file << removeAll;
 
-
-	void removeAll()
-	{
-		file.open("code.Java");
-		file.clear();
-		
-		removeAll = "removeAll \n";
-
-		file << removeAll;
-
-		file.close();
-	};
-
-
-Cpp2Java.drawLine();
-Cpp2Java.removeAll();
-};
+	file.close();
+}
 
