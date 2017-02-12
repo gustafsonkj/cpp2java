@@ -9,6 +9,7 @@ public class testPanel extends JPanel
    {
       add(new JLabel("123"));
       add(new JLabel("abc"));
+      add(new JButton("Test Button"));
       //...
       //...
       //

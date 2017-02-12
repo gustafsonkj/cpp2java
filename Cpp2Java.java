@@ -4,12 +4,11 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
-import java.lang.Compiler;
 
-public class FileWatcherTest extends JFrame { //One-JFrame setup
+public class Cpp2Java extends JFrame { //One-JFrame setup
       private static Container contents;
-
-   public FileWatcherTest()
+      //private ArrayList<JComponent>();
+   public Cpp2Java()
    {
       super("Cpp2Java");
 		  contents	= getContentPane();
@@ -19,10 +18,10 @@ public class FileWatcherTest extends JFrame { //One-JFrame setup
    }
   public static void main(String args[]) {
     // monitor a single file
-    FileWatcherTest fwt = new FileWatcherTest();
+    Cpp2Java fwt = new Cpp2Java();
    fwt.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    contents.add(new testPanel());
-   fwt.revalidate();
+   //fwt.revalidate();
       
     TimerTask task = new FileWatcher( new File("text.txt") ) {
      JPanel test;
@@ -30,11 +29,21 @@ public class FileWatcherTest extends JFrame { //One-JFrame setup
       
         // here we code the action on a change
         System.out.println( "File "+ file.getName() +" have change !" );
- 
+      /*for each line in textFile:
+         switch (line[0])
+            case "instantiate":
+               switch (line[1]
+                  case "JPanel": ArrayListOfJComponents.add(new JPanel());
+                  case "JLAbel:" ARrayListOf
+            case "removeall":
+               fwt.removeAll();
+            case "add":
+               ArrayLits[0].add(ArrayList[1]);
+               */
         //contents.removeAll();
         contents.add(new testPanel());
         fwt.revalidate();
-
+         fwt.repaint();
         /* Swap JPanel (one-JPanel setup)
         
         this.removeAll();
