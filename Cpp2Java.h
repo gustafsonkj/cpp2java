@@ -31,7 +31,15 @@ class JComponent
 	friend class Cpp2Java;
 public:
 	virtual void add(JComponent & jc);
-	virtual void drawRect(int x, int y, int width, int height);
+	virtual void drawRect(int x, int y, int width, int height, bool isPermanent);
+	virtual void drawLine(int xStart, int yStart, int xEnd, int yEnd, bool isPermanent);
+	virtual void fillRect(int x, int y, int width, int height, bool isPermanent);
+	virtual void clearRect(int x, int y, int width, int height, bool isPermanent);
+	virtual void drawOval(int x, int y, int width, int height, bool isPermanent);
+	virtual void fillOval(int x, int y, int width, int height, bool isPermanent);
+	virtual void drawPolygon(Polygon p);
+	virtual void fillPolgon(Polygon p);
+	virtual void drawString(string s, int x, int y, bool isPermanent);
 	virtual void repaint();
 	ofstream file;
 protected:
@@ -43,9 +51,41 @@ void JComponent::add(JComponent & jc)
 {
 	c.commands.push_back("add," + instanceName + "," + jc.instanceName);
 }
-void JComponent::drawRect(int x, int y, int width, int height)
+void JComponent::drawRect(int x, int y, int width, int height, bool isPermanent)
 {
-	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::drawLine(int xStart, int yStart, int xEnd, int yEnd, bool isPermanent)
+{
+	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::fillRect(int x, int y, int width, int height, bool isPermanent)
+{
+	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::clearRect(int x, int y, int width, int height, bool isPermanent)
+{
+	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::drawOval(int x, int y, int width, int height, bool isPermanent)
+{
+	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::fillOval(int x, int y, int width, int height, bool isPermanent)
+{
+	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::drawString(string s, int x, int y, bool isPermanent)
+{
+	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y) + "," + to_string(isPermanent) + "," + instanceName);
+}
+void JComponent::drawPolygon(Polygon p)
+{
+	//do stuff with draw polygon
+}
+void JComponent::fillPolgon(Polygon p)
+{
+	//do stuff with fill polygon
 }
 void JComponent::repaint()
 {
