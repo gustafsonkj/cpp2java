@@ -10,7 +10,7 @@ using namespace std;
 class Commands
 {
 public:
-	vector<string> gui;
+	vector<string> commands;
 	vector<string> paint;
 	int instanceCounter;
 };
@@ -41,7 +41,7 @@ public:
 	virtual void fillPolgon(Polygon p);
 	virtual void drawString(string s, int x, int y, bool isPermanent);
 	virtual void repaint();
-	ofstream file;
+	ofstream file1;
 protected:
 	void setInstanceName();
 	string instanceName;
@@ -49,7 +49,7 @@ protected:
 };
 void JComponent::add(JComponent & jc)
 {
-	c.gui.push_back("add," + instanceName + "," + jc.instanceName);
+	c.commands.push_back("add," + instanceName + "," + jc.instanceName);
 }
 void JComponent::drawRect(int x, int y, int width, int height, bool isPermanent)
 {
@@ -89,13 +89,12 @@ void JComponent::fillPolgon(Polygon p)
 }
 void JComponent::repaint()
 {
-	ofstream file1;
 	file1.open("test1.csv");
 	for (string s : c.paint)
 	{
 		file1 << s + "\n";
 	}
-	file1.close();
+	file1.close(); //might need to move this to finish()
 	c.paint.clear();
 }
 
@@ -113,7 +112,7 @@ public:
 JPanel::JPanel()
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JPanel," + instanceName);
+	c.commands.push_back("instantiate,JPanel," + instanceName);
 }
 
 class JLabel : public JComponent
@@ -125,11 +124,11 @@ public:
 JLabel::JLabel(string s)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JLabel," + s + "," + instanceName);
+	c.commands.push_back("instantiate,JLabel," + s + "," + instanceName);
 }
 void JLabel::setText(string s)
 {
-	c.gui.push_back("setText," + s + "," + instanceName);
+	c.commands.push_back("setText," + s + "," + instanceName);
 }
 
 class Cpp2Java
@@ -139,25 +138,32 @@ public:
 	void removeAll();
 	void finish();
 	void setLayout(string s);
+	void pause(double ld);
 	ofstream file;
+	ofstream file1;
+private:
+	JComponent * JC;
 };
 Cpp2Java::Cpp2Java()
 {
+	JC = new JComponent();
 }
 void Cpp2Java::removeAll()
 {
 	string removeAll;
 	file.open("text.csv");
+	file1.open("test1.csv");
 	file.clear();
+	file1.clear();
 
-	removeAll = "removeAll \n";
+	file << "removeAll \n";
 
-	file << removeAll;
-
+	//might need to move this to finish()
+	file1.close();
 }
 void Cpp2Java::finish()
 {
-	for (string s : c.gui)
+	for (string s : c.commands)
 	{
 		file << s + "\n";
 	}
@@ -166,6 +172,12 @@ void Cpp2Java::finish()
 }
 void Cpp2Java::setLayout(string  s)
 {
-	c.gui.push_back("setLayout," + s);
+	c.commands.push_back("setLayout," + s);
+}
+void Cpp2Java::pause(double ld)
+{
+	typedef std::chrono::duration<double> seconds_type;
+	seconds_type period(ld);
+	this_thread::sleep_for(period);
 }
 
