@@ -10,7 +10,7 @@ using namespace std;
 class Commands
 {
 public:
-	vector<string> commands;
+	vector<string> gui;
 	vector<string> paint;
 	int instanceCounter;
 };
@@ -49,7 +49,7 @@ protected:
 };
 void JComponent::add(JComponent & jc)
 {
-	c.commands.push_back("add," + instanceName + "," + jc.instanceName);
+	c.gui.push_back("add," + instanceName + "," + jc.instanceName);
 }
 void JComponent::drawRect(int x, int y, int width, int height, bool isPermanent)
 {
@@ -94,7 +94,8 @@ void JComponent::repaint()
 	{
 		file1 << s + "\n";
 	}
-	file1.close(); //might need to move this to finish()
+	file1.close();
+	//might need to add signal file in case of race condition
 	c.paint.clear();
 }
 
@@ -112,7 +113,7 @@ public:
 JPanel::JPanel()
 {
 	setInstanceName();
-	c.commands.push_back("instantiate,JPanel," + instanceName);
+	c.gui.push_back("instantiate,JPanel," + instanceName);
 }
 
 class JLabel : public JComponent
@@ -124,11 +125,11 @@ public:
 JLabel::JLabel(string s)
 {
 	setInstanceName();
-	c.commands.push_back("instantiate,JLabel," + s + "," + instanceName);
+	c.gui.push_back("instantiate,JLabel," + s + "," + instanceName);
 }
 void JLabel::setText(string s)
 {
-	c.commands.push_back("setText," + s + "," + instanceName);
+	c.gui.push_back("setText," + s + "," + instanceName);
 }
 
 class Cpp2Java
@@ -163,7 +164,7 @@ void Cpp2Java::removeAll()
 }
 void Cpp2Java::finish()
 {
-	for (string s : c.commands)
+	for (string s : c.gui)
 	{
 		file << s + "\n";
 	}
@@ -172,7 +173,7 @@ void Cpp2Java::finish()
 }
 void Cpp2Java::setLayout(string  s)
 {
-	c.commands.push_back("setLayout," + s);
+	c.gui.push_back("setLayout," + s);
 }
 void Cpp2Java::pause(double ld)
 {
@@ -180,4 +181,5 @@ void Cpp2Java::pause(double ld)
 	seconds_type period(ld);
 	this_thread::sleep_for(period);
 }
+
 
