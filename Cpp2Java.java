@@ -25,10 +25,25 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
       
     TimerTask task = new FileWatcher( new File("text.txt") ) {
      JPanel test;
+     FileReader fr;
+     BufferedReader br;
+     String line;
+     ArrayList<String> cmd;
       protected void onChange( File file ) {
       
         // here we code the action on a change
         System.out.println( "File "+ file.getName() +" have change !" );
+        fr = new FileReader(new File("text.txt"));
+        br = new BufferedReader(fr);
+        cmd = new ArrayList<String>();
+        while((line = br.readLine()) != null)
+        {
+        	cmd.add(line);
+        }
+        for(String l : cmd)
+        {
+        	
+        }
       /*for each line in textFile:
          switch (line[0])
             case "instantiate":
