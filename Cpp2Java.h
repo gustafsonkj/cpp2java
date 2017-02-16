@@ -4,6 +4,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <utility>
 
 using namespace std;
 
@@ -20,15 +21,19 @@ class Polygon
 {
 public:
 	void addPoint(int x, int y);
+	pair<int, int> point;
+	vector<pair<int, int>> coord;
 };
 void Polygon::addPoint(int x, int y)
 {
-
+	point = make_pair(x, y);
+	coord.push_back(point);
 }
 
 class JComponent
 {
 	friend class Cpp2Java;
+	friend class Polygon;
 public:
 	virtual void add(JComponent & jc);
 	virtual void drawRect(int x, int y, int width, int height, bool isPermanent);
@@ -81,11 +86,24 @@ void JComponent::drawString(string s, int x, int y, bool isPermanent)
 }
 void JComponent::drawPolygon(Polygon p)
 {
-	//do stuff with draw polygon
+	string line;
+	line = "drawPolygon";
+	for (pair<int, int> pr : p.coord)
+	{
+		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
+	}
+	c.paint.push_back(line);
+
 }
 void JComponent::fillPolgon(Polygon p)
 {
-	//do stuff with fill polygon
+	string line;
+	line = "fillPolygon";
+	for (pair<int, int> pr : p.coord)
+	{
+		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
+	}
+	c.paint.push_back(line);
 }
 void JComponent::repaint()
 {
@@ -142,12 +160,11 @@ public:
 	void pause(double ld);
 	ofstream file;
 	ofstream file1;
-private:
-	JComponent * JC;
+
 };
 Cpp2Java::Cpp2Java()
 {
-	JC = new JComponent();
+
 }
 void Cpp2Java::removeAll()
 {
