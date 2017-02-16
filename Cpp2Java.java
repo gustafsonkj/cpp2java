@@ -28,21 +28,39 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
      FileReader fr;
      BufferedReader br;
      String line;
-     ArrayList<String> cmd;
       protected void onChange( File file ) {
       
         // here we code the action on a change
         System.out.println( "File "+ file.getName() +" have change !" );
         fr = new FileReader(new File("text.txt"));
         br = new BufferedReader(fr);
-        cmd = new ArrayList<String>();
+        ArrayList<JComponent> comps = new ArrayList<JComponent>();
         while((line = br.readLine()) != null)
         {
-        	cmd.add(line);
-        }
-        for(String l : cmd)
-        {
-        	
+            String[] command = line.split(",");
+            switch(command[0])
+            {
+               case "removeAll":
+               {
+                  contents.removeAll();
+               }
+               case "instantiate":
+               {
+                  switch(command[1])
+                  {
+                     case "JPanel": comps[command[2]] = new JPanel();
+                     break;
+                     case "JLabel": comps[command[3]] = new JLabel(command[2]);
+                     break;
+                  }
+               }
+               case "add":
+               {
+                  // Command [1] is the JComponent you're adding TO
+                  // Command [2] is the JComponent that you're adding
+                  comps[command[1]].add(comps[command[2]]);
+               }
+            }
         }
       /*for each line in textFile:
          switch (line[0])
