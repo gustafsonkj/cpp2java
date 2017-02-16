@@ -52,6 +52,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                      break;
                      case "JLabel": comps[command[3]] = new JLabel(command[2]);
                      break;
+                     //JTextField
+                     //JButton
                   }
                }
                case "add":
