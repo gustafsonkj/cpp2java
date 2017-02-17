@@ -138,6 +138,8 @@ class JLabel : public JComponent
 {
 public:
 	JLabel(string s);
+	JLabel(string s, int alignment);
+	//JLabel(Icon image);
 	void setText(string s);
 };
 JLabel::JLabel(string s)
@@ -145,9 +147,74 @@ JLabel::JLabel(string s)
 	setInstanceName();
 	c.gui.push_back("instantiate,JLabel," + s + "," + instanceName);
 }
+JLabel::JLabel(string s, int alignment)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JLabel," + s + "," + to_string(alignment) + "," + instanceName);
+}
 void JLabel::setText(string s)
 {
 	c.gui.push_back("setText," + s + "," + instanceName);
+}
+
+class JTextField : public JComponent
+{
+public:
+	JTextField(string text, int numCol);
+	JTextField(int numCol);
+	void setEditable(bool mode);
+	void setText(string newText);
+};
+JTextField::JTextField(string text, int numCol)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JTextField," + text + "," + to_string(numCol) + "," + instanceName);
+}
+JTextField::JTextField(int numCol)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JTextField," + to_string(numCol) + "," + instanceName);
+}
+void JTextField::setEditable(bool mode)
+{
+	c.gui.push_back("setEditable," + to_string(mode) + "," + instanceName);
+}
+void JTextField::setText(string newText)
+{
+	c.gui.push_back("setText," + newText + "," + instanceName);
+}
+
+class JTextArea : public JComponent
+{
+public:
+	JTextArea(string text);
+	JTextArea(int numRows, int numCol);
+	JTextArea(string text, int numRows, int numCol);
+	void setEditable(bool mode);
+	void setText(string newText);
+};
+JTextArea::JTextArea(string text)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JTextArea," + text + "," + instanceName);
+}
+JTextArea::JTextArea(int numRows, int numCol)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JTextArea," + to_string(numRows) + "," + to_string(numCol) + "," + instanceName);
+}
+JTextArea::JTextArea(string text, int numRows, int numCol)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol) + "," + instanceName);
+}
+void JTextArea::setEditable(bool mode)
+{
+	c.gui.push_back("setEditable," + to_string(mode) + "," + instanceName);
+}
+void JTextArea::setText(string newText)
+{
+	c.gui.push_back("setText," + newText + "," + instanceName);
 }
 
 class Cpp2Java
@@ -157,6 +224,9 @@ public:
 	void removeAll();
 	void finish();
 	void setLayout(string s);
+	void setLayout(string gridLayout, int numRows, int numCol);
+	void setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap);
+	void setLayout(string borderLayout, int hGap, int wGap);
 	void pause(double ld);
 	ofstream file;
 	ofstream file1;
@@ -188,9 +258,23 @@ void Cpp2Java::finish()
 	file << "end" << endl;
 	file.close();
 }
-void Cpp2Java::setLayout(string  s)
+//temporary layout functions
+//may need to change layouts to objects
+void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 {
 	c.gui.push_back("setLayout," + s);
+}
+void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
+{
+	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
+}
+void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap) //for gridLayout
+{
+	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
+}
+void Cpp2Java::setLayout(string borderLayout, int hGap, int wGap) //for borderLayout with gaps
+{
+	c.gui.push_back("setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
 }
 void Cpp2Java::pause(double ld)
 {
