@@ -1,3 +1,5 @@
+// Test_Interface.cpp : Defines the entry point for the console application.
+//
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -182,6 +184,29 @@ void JTextField::setEditable(bool mode)
 void JTextField::setText(string newText)
 {
 	c.gui.push_back("setText," + newText + "," + instanceName);
+}
+
+class JButton : public JComponent
+{
+public:
+	JButton();
+	JButton(string text);
+	void addActionListener(); 
+};
+JButton::JButton()
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JButton,"+instanceName);
+}
+JButton::JButton(string text)
+{
+	setInstanceName();
+	c.gui.push_back("instantiate,JButton,"+ text+","+instanceName);
+}
+
+void JButton::addActionListener()
+{
+
 }
 
 class JTextArea : public JComponent
