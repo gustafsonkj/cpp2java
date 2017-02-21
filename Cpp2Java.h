@@ -38,15 +38,15 @@ class JComponent
 	friend class Polygon;
 public:
 	virtual void add(JComponent & jc);
-	virtual void drawRect(int x, int y, int width, int height, bool isPermanent);
-	virtual void drawLine(int xStart, int yStart, int xEnd, int yEnd, bool isPermanent);
-	virtual void fillRect(int x, int y, int width, int height, bool isPermanent);
-	virtual void clearRect(int x, int y, int width, int height, bool isPermanent);
-	virtual void drawOval(int x, int y, int width, int height, bool isPermanent);
-	virtual void fillOval(int x, int y, int width, int height, bool isPermanent);
+	virtual void drawRect(int x, int y, int width, int height);
+	virtual void drawLine(int xStart, int yStart, int xEnd, int yEnd);
+	virtual void fillRect(int x, int y, int width, int height);
+	virtual void clearRect(int x, int y, int width, int height);
+	virtual void drawOval(int x, int y, int width, int height);
+	virtual void fillOval(int x, int y, int width, int height);
 	virtual void drawPolygon(Polygon p);
 	virtual void fillPolgon(Polygon p);
-	virtual void drawString(string s, int x, int y, bool isPermanent);
+	virtual void drawString(string s, int x, int y);
 	virtual void repaint();
 	ofstream file1;
 protected:
@@ -58,33 +58,33 @@ void JComponent::add(JComponent & jc)
 {
 	c.gui.push_back("add," + instanceName + "," + jc.instanceName);
 }
-void JComponent::drawRect(int x, int y, int width, int height, bool isPermanent)
+void JComponent::drawRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
 }
-void JComponent::drawLine(int xStart, int yStart, int xEnd, int yEnd, bool isPermanent)
+void JComponent::drawLine(int xStart, int yStart, int xEnd, int yEnd)
 {
-	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd) + "," + instanceName);
 }
-void JComponent::fillRect(int x, int y, int width, int height, bool isPermanent)
+void JComponent::fillRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
 }
-void JComponent::clearRect(int x, int y, int width, int height, bool isPermanent)
+void JComponent::clearRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
 }
-void JComponent::drawOval(int x, int y, int width, int height, bool isPermanent)
+void JComponent::drawOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
 }
-void JComponent::fillOval(int x, int y, int width, int height, bool isPermanent)
+void JComponent::fillOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
 }
-void JComponent::drawString(string s, int x, int y, bool isPermanent)
+void JComponent::drawString(string s, int x, int y)
 {
-	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y) + "," + to_string(isPermanent) + "," + instanceName);
+	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y) + "," + instanceName);
 }
 void JComponent::drawPolygon(Polygon p)
 {
@@ -191,17 +191,17 @@ class JButton : public JComponent
 public:
 	JButton();
 	JButton(string text);
-	void addActionListener(); 
+	void addActionListener();
 };
 JButton::JButton()
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JButton,"+instanceName);
+	c.gui.push_back("instantiate,JButton," + instanceName);
 }
 JButton::JButton(string text)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JButton,"+ text+","+instanceName);
+	c.gui.push_back("instantiate,JButton," + text + "," + instanceName);
 }
 
 void JButton::addActionListener()
@@ -249,9 +249,9 @@ public:
 	void removeAll();
 	void finish();
 	void setLayout(string s);
-	void setLayout(string gridLayout, int numRows, int numCol);
+	/*void setLayout(string gridLayout, int numRows, int numCol);
 	void setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap);
-	void setLayout(string borderLayout, int hGap, int wGap);
+	void setLayout(string borderLayout, int hGap, int wGap);*/
 	void pause(double ld);
 	ofstream file;
 	ofstream file1;
@@ -289,23 +289,31 @@ void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 {
 	c.gui.push_back("setLayout," + s);
 }
-void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
-{
-	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
-}
-void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap) //for gridLayout
-{
-	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
-}
-void Cpp2Java::setLayout(string borderLayout, int hGap, int wGap) //for borderLayout with gaps
-{
-	c.gui.push_back("setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
-}
+//void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
+//{
+//	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
+//}
+//void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap) //for gridLayout
+//{
+//	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
+//}
+//void Cpp2Java::setLayout(string borderLayout, int hGap, int wGap) //for borderLayout with gaps
+//{
+//	c.gui.push_back("setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
+//}
 void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
-	seconds_type period(ld);
-	this_thread::sleep_for(period);
+	if (ld > .01)
+	{
+		seconds_type period(ld);
+		this_thread::sleep_for(period);
+	}
+	else
+	{
+		seconds_type period(.01);
+		this_thread::sleep_for(period);
+	}
 }
 
 
