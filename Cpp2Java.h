@@ -263,16 +263,12 @@ Cpp2Java::Cpp2Java()
 }
 void Cpp2Java::removeAll()
 {
-	string removeAll;
 	file.open("text.csv");
-	file1.open("test1.csv");
 	file.clear();
-	file1.clear();
-
+	c.gui.clear();
 	file << "removeAll \n";
 
 	//might need to move this to finish()
-	file1.close();
 }
 void Cpp2Java::finish()
 {
@@ -301,6 +297,7 @@ void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 //{
 //	c.gui.push_back("setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
 //}
+
 void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
@@ -315,5 +312,3 @@ void Cpp2Java::pause(double ld)
 		this_thread::sleep_for(period);
 	}
 }
-
-
