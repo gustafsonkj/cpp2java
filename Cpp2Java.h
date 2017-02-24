@@ -130,10 +130,10 @@ class JPanel : public JComponent
 public:
 	JPanel();
 };
-JPanel::JPanel()
+JPanel::JPanel() //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JPanel");
+	c.gui.push_back(instanceName + ",instantiate,0,JPanel");
 }
 
 class JLabel : public JComponent
@@ -144,15 +144,15 @@ public:
 	//JLabel(Icon image);
 	void setText(string s);
 };
-JLabel::JLabel(string s)
+JLabel::JLabel(string s) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JLabel," + s);
+	c.gui.push_back(instanceName+",instantiate,0,JLabel," + s);
 }
-JLabel::JLabel(string s, int alignment)
+JLabel::JLabel(string s, int alignment) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JLabel," + s + "," + to_string(alignment));
+	c.gui.push_back(instanceName+",instantiate,1,JLabel," + s + "," + to_string(alignment));
 }
 void JLabel::setText(string s)
 {
@@ -167,15 +167,15 @@ public:
 	void setEditable(bool mode);
 	void setText(string newText);
 };
-JTextField::JTextField(string text, int numCol)
+JTextField::JTextField(string text, int numCol) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JTextField," + text + "," + to_string(numCol));
+	c.gui.push_back(instanceName+",instantiate,0,JTextField," + text + "," + to_string(numCol));
 }
-JTextField::JTextField(int numCol)
+JTextField::JTextField(int numCol) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JTextField," + to_string(numCol));
+	c.gui.push_back(instanceName+",instantiate,1,JTextField," + to_string(numCol));
 }
 void JTextField::setEditable(bool mode)
 {
@@ -193,15 +193,15 @@ public:
 	JButton(string text);
 	void addActionListener();
 };
-JButton::JButton()
+JButton::JButton() //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JButton");
+	c.gui.push_back(instanceName+",instantiate,0,JButton");
 }
-JButton::JButton(string text)
+JButton::JButton(string text) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JButton," + text);
+	c.gui.push_back(instanceName+",instantiate,1,JButton," + text);
 }
 
 void JButton::addActionListener()
@@ -218,24 +218,24 @@ public:
 	void setEditable(bool mode);
 	void setText(string newText);
 };
-JTextArea::JTextArea(string text)
+JTextArea::JTextArea(string text) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JTextArea," + text);
+	c.gui.push_back(instanceName+",instantiate,0,JTextArea," + text);
 }
-JTextArea::JTextArea(int numRows, int numCol)
+JTextArea::JTextArea(int numRows, int numCol) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JTextArea," + to_string(numRows) + "," + to_string(numCol));
+	c.gui.push_back(instanceName+",instantiate,1,JTextArea," + to_string(numRows) + "," + to_string(numCol));
 }
-JTextArea::JTextArea(string text, int numRows, int numCol)
+JTextArea::JTextArea(string text, int numRows, int numCol) //2
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
+	c.gui.push_back(instanceName+",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
 }
 void JTextArea::setEditable(bool mode)
 {
-	c.gui.push_back(instanceName+",setEditable," + to_string(mode));
+	c.gui.push_back(instanceName + ",setEditable," + to_string(mode));
 }
 void JTextArea::setText(string newText)
 {
