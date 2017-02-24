@@ -56,7 +56,7 @@ protected:
 };
 void JComponent::add(JComponent & jc)
 {
-	c.gui.push_back(instanceName+",add," + jc.instanceName);
+	c.gui.push_back(instanceName + ",add," + jc.instanceName);
 }
 void JComponent::drawRect(int x, int y, int width, int height)
 {
@@ -147,16 +147,16 @@ public:
 JLabel::JLabel(string s) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,0,JLabel," + s);
+	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + s);
 }
 JLabel::JLabel(string s, int alignment) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,1,JLabel," + s + "," + to_string(alignment));
+	c.gui.push_back(instanceName + ",instantiate,1,JLabel," + s + "," + to_string(alignment));
 }
 void JLabel::setText(string s)
 {
-	c.gui.push_back(instanceName+",setText," + s);
+	c.gui.push_back(instanceName + ",setTextJL," + s);
 }
 
 class JTextField : public JComponent
@@ -170,20 +170,20 @@ public:
 JTextField::JTextField(string text, int numCol) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,0,JTextField," + text + "," + to_string(numCol));
+	c.gui.push_back(instanceName + ",instantiate,0,JTextField," + text + "," + to_string(numCol));
 }
 JTextField::JTextField(int numCol) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,1,JTextField," + to_string(numCol));
+	c.gui.push_back(instanceName + ",instantiate,1,JTextField," + to_string(numCol));
 }
 void JTextField::setEditable(bool mode)
 {
-	c.gui.push_back(instanceName+",setEditable," + to_string(mode));
+	c.gui.push_back(instanceName + ",setEditable," + to_string(mode));
 }
 void JTextField::setText(string newText)
 {
-	c.gui.push_back(instanceName+",setText," + newText);
+	c.gui.push_back(instanceName + ",setTextJTF," + newText);
 }
 
 class JButton : public JComponent
@@ -196,12 +196,12 @@ public:
 JButton::JButton() //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,0,JButton");
+	c.gui.push_back(instanceName + ",instantiate,0,JButton");
 }
 JButton::JButton(string text) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,1,JButton," + text);
+	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
 }
 
 void JButton::addActionListener()
@@ -221,17 +221,17 @@ public:
 JTextArea::JTextArea(string text) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,0,JTextArea," + text);
+	c.gui.push_back(instanceName + ",instantiate,0,JTextArea," + text);
 }
 JTextArea::JTextArea(int numRows, int numCol) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,1,JTextArea," + to_string(numRows) + "," + to_string(numCol));
+	c.gui.push_back(instanceName + ",instantiate,1,JTextArea," + to_string(numRows) + "," + to_string(numCol));
 }
 JTextArea::JTextArea(string text, int numRows, int numCol) //2
 {
 	setInstanceName();
-	c.gui.push_back(instanceName+",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
+	c.gui.push_back(instanceName + ",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
 }
 void JTextArea::setEditable(bool mode)
 {
@@ -239,7 +239,7 @@ void JTextArea::setEditable(bool mode)
 }
 void JTextArea::setText(string newText)
 {
-	c.gui.push_back(instanceName+",setText," + newText);
+	c.gui.push_back(instanceName + ",setTextJTA," + newText);
 }
 
 class Cpp2Java
@@ -266,7 +266,7 @@ void Cpp2Java::removeAll()
 	file.open("text.csv");
 	file.clear();
 	c.gui.clear();
-	file << "removeAll\n";
+	file << "-1,removeAll\n";
 
 	//might need to move this to finish()
 }
@@ -276,7 +276,7 @@ void Cpp2Java::finish()
 	{
 		file << s + "\n";
 	}
-	file << "end" << endl;
+	file << "-1,end" << endl;
 	file.close();
 }
 //temporary layout functions
@@ -284,7 +284,7 @@ void Cpp2Java::finish()
 /*
 void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 {
-	c.gui.push_back(instanceName+",setLayout," + s);
+c.gui.push_back(instanceName+",setLayout," + s);
 }
 */
 //void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
@@ -302,16 +302,16 @@ void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 /*
 void Cpp2Java::pause(double ld)
 {
-	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01)
-	{
-		seconds_type period(ld);
-		this_thread::sleep_for(period);
-	}
-	else
-	{
-		seconds_type period(.01);
-		this_thread::sleep_for(period);
-	}
+typedef std::chrono::duration<double> seconds_type;
+if (ld > .01)
+{
+seconds_type period(ld);
+this_thread::sleep_for(period);
+}
+else
+{
+seconds_type period(.01);
+this_thread::sleep_for(period);
+}
 }
 */
