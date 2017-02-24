@@ -21,6 +21,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
         //frame.revalidate();
 
         TimerTask task = new FileWatcher(new File("text.csv")) {
+            ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
             JPanel test;
             FileReader fr;
             BufferedReader br;
@@ -35,28 +36,24 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
                 }
                 br = new BufferedReader(fr);
-                ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
                 try {
                     while ((fileLine = br.readLine()) != null) {
                         String[] line = fileLine.split(",");
-                        switch (line[0]) {
+                        switch (line[1]) {
                             case "removeAll":
                                 {
-                                    contents.removeAll();
+                                   frame.contents.removeAll();
                                     frame.getContentPane().removeAll();
-
                                 }
                                 break;
                             case "instantiate":
                                 {
-                                    switch (line[1]) {
+                                    switch (line[2]) {
                                         case "JPanel":
                                             comps.add(Integer.parseInt(line[2]), new JPanel());
-                                            System.out.println("Addedpanel");
                                             break;
                                         case "JLabel":
                                             comps.add(Integer.parseInt(line[3]), new JLabel(line[2]));
-                                            System.out.println("Addedlbael");
                                             break;
                                         case "JTextArea": //comps[line[2]] = new JTextArea();
                                             break;
@@ -73,7 +70,10 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                 break;
                             case "setText":
                                 {
+                                    System.out.println(((JLabel) comps.get(Integer.parseInt(line[2]))).getText());
+
                                     ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                                    System.out.println(((JLabel) comps.get(Integer.parseInt(line[2]))).getText());
                                 }
                                 break;
                             case "add":
@@ -83,23 +83,17 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     comps.get(Integer.parseInt(line[1])).add(comps.get(Integer.parseInt(line[2])));
                                 }
                                 break;
+                            default:
+                                break;
                         }
                     }
                 } catch (IOException ioe) {}
                 for (JComponent jc: comps) {
-                    contents.add(jc);
+
+                    frame.contents.add(jc);
                 }
                 frame.revalidate();
-                /* Swap JPanel (one-JPanel setup)
-        
-                this.removeAll();
-                this.add(new userJPanel());
-        
-                this.revalidate(); ???
-                this.update(); ???
-        
-        
-                */
+                frame.repaint();
             }
         };
 

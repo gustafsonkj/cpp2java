@@ -56,35 +56,35 @@ protected:
 };
 void JComponent::add(JComponent & jc)
 {
-	c.gui.push_back("add," + instanceName + "," + jc.instanceName);
+	c.gui.push_back(instanceName+",add," + jc.instanceName);
 }
 void JComponent::drawRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawLine(int xStart, int yStart, int xEnd, int yEnd)
 {
-	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd) + "," + instanceName);
+	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd));
 }
 void JComponent::fillRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::clearRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::fillOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height) + "," + instanceName);
+	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawString(string s, int x, int y)
 {
-	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y) + "," + instanceName);
+	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y));
 }
 void JComponent::drawPolygon(Polygon p)
 {
@@ -133,7 +133,7 @@ public:
 JPanel::JPanel()
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JPanel," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JPanel");
 }
 
 class JLabel : public JComponent
@@ -147,16 +147,16 @@ public:
 JLabel::JLabel(string s)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JLabel," + s + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JLabel," + s);
 }
 JLabel::JLabel(string s, int alignment)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JLabel," + s + "," + to_string(alignment) + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JLabel," + s + "," + to_string(alignment));
 }
 void JLabel::setText(string s)
 {
-	c.gui.push_back("setText," + s + "," + instanceName);
+	c.gui.push_back(instanceName+",setText," + s);
 }
 
 class JTextField : public JComponent
@@ -170,20 +170,20 @@ public:
 JTextField::JTextField(string text, int numCol)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JTextField," + text + "," + to_string(numCol) + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JTextField," + text + "," + to_string(numCol));
 }
 JTextField::JTextField(int numCol)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JTextField," + to_string(numCol) + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JTextField," + to_string(numCol));
 }
 void JTextField::setEditable(bool mode)
 {
-	c.gui.push_back("setEditable," + to_string(mode) + "," + instanceName);
+	c.gui.push_back(instanceName+",setEditable," + to_string(mode));
 }
 void JTextField::setText(string newText)
 {
-	c.gui.push_back("setText," + newText + "," + instanceName);
+	c.gui.push_back(instanceName+",setText," + newText);
 }
 
 class JButton : public JComponent
@@ -196,12 +196,12 @@ public:
 JButton::JButton()
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JButton," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JButton");
 }
 JButton::JButton(string text)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JButton," + text + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JButton," + text);
 }
 
 void JButton::addActionListener()
@@ -221,25 +221,25 @@ public:
 JTextArea::JTextArea(string text)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JTextArea," + text + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JTextArea," + text);
 }
 JTextArea::JTextArea(int numRows, int numCol)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JTextArea," + to_string(numRows) + "," + to_string(numCol) + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JTextArea," + to_string(numRows) + "," + to_string(numCol));
 }
 JTextArea::JTextArea(string text, int numRows, int numCol)
 {
 	setInstanceName();
-	c.gui.push_back("instantiate,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol) + "," + instanceName);
+	c.gui.push_back(instanceName+",instantiate,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
 }
 void JTextArea::setEditable(bool mode)
 {
-	c.gui.push_back("setEditable," + to_string(mode) + "," + instanceName);
+	c.gui.push_back(instanceName+",setEditable," + to_string(mode));
 }
 void JTextArea::setText(string newText)
 {
-	c.gui.push_back("setText," + newText + "," + instanceName);
+	c.gui.push_back(instanceName+",setText," + newText);
 }
 
 class Cpp2Java
@@ -266,7 +266,7 @@ void Cpp2Java::removeAll()
 	file.open("text.csv");
 	file.clear();
 	c.gui.clear();
-	file << "removeAll \n";
+	file << "removeAll\n";
 
 	//might need to move this to finish()
 }
@@ -281,23 +281,25 @@ void Cpp2Java::finish()
 }
 //temporary layout functions
 //may need to change layouts to objects
+/*
 void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
 {
-	c.gui.push_back("setLayout," + s);
+	c.gui.push_back(instanceName+",setLayout," + s);
 }
+*/
 //void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
 //{
-//	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
+//	c.gui.push_back(instanceName+",setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
 //}
 //void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap) //for gridLayout
 //{
-//	c.gui.push_back("setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
+//	c.gui.push_back(instanceName+",setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
 //}
 //void Cpp2Java::setLayout(string borderLayout, int hGap, int wGap) //for borderLayout with gaps
 //{
-//	c.gui.push_back("setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
+//	c.gui.push_back(instanceName+",setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
 //}
-
+/*
 void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
@@ -312,3 +314,4 @@ void Cpp2Java::pause(double ld)
 		this_thread::sleep_for(period);
 	}
 }
+*/
