@@ -32,6 +32,54 @@ void Polygon::addPoint(int x, int y)
 	coord.push_back(point);
 }
 
+class LayoutManager
+{
+};
+
+class BorderLayout : public LayoutManager
+{
+public:
+	BorderLayout();
+	BorderLayout(int hGap, int vGap);
+	const string NORTH = "North";
+	const string SOUTH = "South";
+	const string EAST = "East";
+	const string WEST = "West";
+	const string CENTER = "Center";
+	int verticalGap;
+	int horizontalGap;
+};
+BorderLayout::BorderLayout() //0
+{}
+BorderLayout::BorderLayout(int hGap, int vGap) //1
+{
+	verticalGap = vGap;
+	horizontalGap = hGap;
+}
+
+class GridLayout : public LayoutManager
+{
+public:
+	GridLayout(int numberOfRows, int numberOfColumns);
+	GridLayout(int numberOfRows, int numberOfColumns, int hGap, int vGap);
+	int numRows;
+	int numCols;
+	int horzontalGap;
+	int verticalGap;
+};
+GridLayout::GridLayout(int numberOfRows, int numberOfColumns)
+{
+	numRows = numberOfRows;
+	numCols = numberOfColumns;
+}
+GridLayout::GridLayout(int numberOfRows, int numberOfColumns, int hGap, int vGap)
+{
+	numRows = numberOfRows;
+	numCols = numberOfColumns;
+	horzontalGap = hGap;
+	verticalGap = vGap;
+}
+
 class JComponent
 {
 	friend class Cpp2Java;
@@ -248,7 +296,7 @@ public:
 	Cpp2Java();
 	void removeAll();
 	void finish();
-	void setLayout(string s);
+	//void setLayout(string s);
 	/*void setLayout(string gridLayout, int numRows, int numCol);
 	void setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap);
 	void setLayout(string borderLayout, int hGap, int wGap);*/
@@ -299,19 +347,18 @@ c.gui.push_back(instanceName+",setLayout," + s);
 //{
 //	c.gui.push_back(instanceName+",setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
 //}
-/*
+
 void Cpp2Java::pause(double ld)
 {
-typedef std::chrono::duration<double> seconds_type;
-if (ld > .01)
-{
-seconds_type period(ld);
-this_thread::sleep_for(period);
+	typedef std::chrono::duration<double> seconds_type;
+	if (ld > .01)
+	{
+		seconds_type period(ld);
+		this_thread::sleep_for(period);
+	}
+	else
+	{
+		seconds_type period(.01);
+		this_thread::sleep_for(period);
+	}
 }
-else
-{
-seconds_type period(.01);
-this_thread::sleep_for(period);
-}
-}
-*/
