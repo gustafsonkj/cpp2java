@@ -34,7 +34,20 @@ void Polygon::addPoint(int x, int y)
 
 class LayoutManager
 {
+private:
+	string type;
+public:
+	void setLayoutType(string type_in);
+	string getLayoutType();
 };
+string LayoutManager::getLayoutType()
+{
+	return type;
+}
+void LayoutManager::setLayoutType(string type_in)
+{
+	type = type_in;
+}
 
 class BorderLayout : public LayoutManager
 {
@@ -50,9 +63,12 @@ public:
 	int horizontalGap;
 };
 BorderLayout::BorderLayout() //0
-{}
+{
+	setLayoutType("BorderLayout,0");
+}
 BorderLayout::BorderLayout(int hGap, int vGap) //1
 {
+	setLayoutType("BorderLayout,1");
 	verticalGap = vGap;
 	horizontalGap = hGap;
 }
@@ -69,11 +85,13 @@ public:
 };
 GridLayout::GridLayout(int numberOfRows, int numberOfColumns)
 {
+	setLayoutType("GridLayout,0");
 	numRows = numberOfRows;
 	numCols = numberOfColumns;
 }
 GridLayout::GridLayout(int numberOfRows, int numberOfColumns, int hGap, int vGap)
 {
+	setLayoutType("GridLayout,1");
 	numRows = numberOfRows;
 	numCols = numberOfColumns;
 	horzontalGap = hGap;
@@ -96,6 +114,7 @@ public:
 	virtual void fillPolgon(Polygon p);
 	virtual void drawString(string s, int x, int y);
 	virtual void repaint();
+	string getInstanceName();
 	ofstream file1;
 protected:
 	void setInstanceName();
@@ -172,16 +191,50 @@ void JComponent::setInstanceName()
 	instanceName = to_string(c.instanceCounter);
 	c.instanceCounter++;
 }
+string JComponent::getInstanceName()
+{
+	return instanceName;
+}
 
 class JPanel : public JComponent
 {
 public:
 	JPanel();
+	void setLayout(GridLayout & gl);
+	void setLayout(BorderLayout & bl);
+	void add(JComponent & jc);
+	void add(JComponent & jc, string layout);
+	
 };
 JPanel::JPanel() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JPanel");
+}
+void JPanel::setLayout(GridLayout & gl)
+{
+	if (gl.getLayoutType() == "GridLayout,0")
+		c.gui.push_back(instanceName + ",setLayout," + gl.getLayoutType() + "," +
+			to_string(gl.numRows) + "," + to_string(gl.numCols));
+	else
+		c.gui.push_back(instanceName + ",setLayout," + gl.getLayoutType() + "," +
+			to_string(gl.numRows) + "," + to_string(gl.numCols) + "," + to_string(gl.horzontalGap) + "," + to_string(gl.verticalGap));
+}
+void JPanel::setLayout(BorderLayout & bl)
+{
+	if (bl.getLayoutType() == "BorderLayout,0")
+		c.gui.push_back(instanceName + ",setLayout," + bl.getLayoutType());
+	else
+		c.gui.push_back(instanceName + ",setLayout," + bl.getLayoutType() + "," +
+			to_string(bl.horizontalGap) + "," + to_string(bl.verticalGap));
+}
+void JPanel::add(JComponent & jc)
+{
+	c.gui.push_back(instanceName + ",add," + jc.getInstanceName());
+}
+void JPanel::add(JComponent & jc, string layout)
+{
+	c.gui.push_back(instanceName + ",add," + jc.getInstanceName() + "," + layout);
 }
 
 class JLabel : public JComponent
@@ -296,10 +349,6 @@ public:
 	Cpp2Java();
 	void removeAll();
 	void finish();
-	//void setLayout(string s);
-	/*void setLayout(string gridLayout, int numRows, int numCol);
-	void setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap);
-	void setLayout(string borderLayout, int hGap, int wGap);*/
 	void pause(double ld);
 	ofstream file;
 	ofstream file1;
@@ -327,27 +376,6 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 }
-//temporary layout functions
-//may need to change layouts to objects
-/*
-void Cpp2Java::setLayout(string  s) //for flowLayout and default borderLayout
-{
-c.gui.push_back(instanceName+",setLayout," + s);
-}
-*/
-//void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol) //for gridLayout
-//{
-//	c.gui.push_back(instanceName+",setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol));
-//}
-//void Cpp2Java::setLayout(string gridLayout, int numRows, int numCol, int hGap, int wGap) //for gridLayout
-//{
-//	c.gui.push_back(instanceName+",setLayout," + gridLayout + "," + to_string(numRows) + "," + to_string(numCol) + "," + to_string(hGap) + "," + to_string(wGap));
-//}
-//void Cpp2Java::setLayout(string borderLayout, int hGap, int wGap) //for borderLayout with gaps
-//{
-//	c.gui.push_back(instanceName+",setLayout," + borderLayout + "," + to_string(hGap) + "," + to_string(wGap));
-//}
-
 void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
