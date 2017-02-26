@@ -18,15 +18,17 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
     public static void main(String args[]) {
         // monitor a single file
         Cpp2Java frame = new Cpp2Java();
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
         //frame.revalidate();
 
-        TimerTask task = new FileWatcher(new File("text.csv")) {
+        TimerTask gui = new FileWatcher(new File("text.csv")) {
             FileReader fr;
             BufferedReader br;
             String fileLine;
             protected void onChange(File file) {
-               ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
+               
                 // here we code the action on a change
                 System.out.println("File " + file.getName() + " have change !");
                 try {
@@ -61,7 +63,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                                 case 0:
                                                 
                                                    comps.add(ID, new JLabel(line[4]));
-                                                   id.add(temp);
+                                                   
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JLabel(line[4], Integer.parseInt(line[5])));
@@ -104,7 +106,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JButton(line[4]));
-                                                brea8k;
+                                                break;
                                              }
                                           }
                                             break;
@@ -128,14 +130,14 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                                                        // switch (
                                 }
                                 
-                                comps_add.add(
+                               // comps_add.add(
                                 break;
                             default:
                                 break;
                         }
                     }
                 } catch (IOException ioe) {}
-                for (JComponent jc: comps_add) {
+                for (JComponent jc: comps) {
                     if (jc instanceof DynamicJPanel)
                      frame.contents.add(jc);
                 }
@@ -143,9 +145,47 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                 frame.repaint();
             }
         };
+        
+        TimerTask painter = new FileWatcher(new File("paint.csv"))
+        {
+         FileReader fr;
+         BufferedReader br;
+         String fileLine;
+            protected void onChange(File file) {
+                        
+                System.out.println("Paint file: " + file.getName() + " have change !");
+                try {
+                    fr = new FileReader(new File("paint.csv"));
+                } catch (FileNotFoundException fnfe) {
 
+                }
+                br = new BufferedReader(fr);
+                try{
+                     while((fileLine = br.readLine()) != null) {
+                        String[] line = fileLine.split(",");
+                        String command = "";
+                        for(int i=1;i<line.length;i++){
+                        command+=line[i]+",";
+                        }
+                        
+                       /* Object comp = comp.get...
+                        if (comp instanceof DynamicJanel)
+                           (Dynamic)...*/
+                        
+                    ((DynamicJPanel)comps.get(Integer.parseInt(line[0]))).setCommand(command);
+                        
+                        //ID is the instanceName from Cpp2Java.h
+                        int ID = Integer.parseInt(line[0]);
+                        ((DynamicJPanel)comps.get(Integer.parseInt(line[0]))).repaint();
+                        }
+                        
+                  }catch(IOException ioe){}
+   
+            }
+};
         java.util.Timer timer = new java.util.Timer();
         // repeat the check every second
-        timer.schedule(task, new Date(), 1);
-    }
+        timer.schedule(gui, new Date(), 1);
+        timer.schedule(painter,new Date(),1);
+    }//Painter
 }
