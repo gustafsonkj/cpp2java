@@ -127,36 +127,36 @@ void JComponent::add(JComponent & jc)
 }
 void JComponent::drawRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
+	c.paint.push_back(instanceName + "drawRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawLine(int xStart, int yStart, int xEnd, int yEnd)
 {
-	c.paint.push_back("drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd));
+	c.paint.push_back(instanceName + "drawLine," + to_string(xStart) + "," + to_string(yStart) + "," + to_string(xEnd) + "," + to_string(yEnd));
 }
 void JComponent::fillRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
+	c.paint.push_back(instanceName + "fillRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::clearRect(int x, int y, int width, int height)
 {
-	c.paint.push_back("clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
+	c.paint.push_back(instanceName + "clearRect," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
+	c.paint.push_back(instanceName + "drawOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::fillOval(int x, int y, int width, int height)
 {
-	c.paint.push_back("fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
+	c.paint.push_back(instanceName + "fillOval," + to_string(x) + "," + to_string(y) + "," + to_string(width) + "," + to_string(height));
 }
 void JComponent::drawString(string s, int x, int y)
 {
-	c.paint.push_back("drawString," + s + "," + to_string(x) + "," + to_string(y));
+	c.paint.push_back(instanceName + "drawString," + s + "," + to_string(x) + "," + to_string(y));
 }
 void JComponent::drawPolygon(Polygon p)
 {
 	string line;
-	line = "drawPolygon";
+	line = instanceName + "drawPolygon";
 	for (pair<int, int> pr : p.coord)
 	{
 		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
@@ -167,7 +167,7 @@ void JComponent::drawPolygon(Polygon p)
 void JComponent::fillPolgon(Polygon p)
 {
 	string line;
-	line = "fillPolygon";
+	line = instanceName + "fillPolygon";
 	for (pair<int, int> pr : p.coord)
 	{
 		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
