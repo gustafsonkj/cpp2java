@@ -119,11 +119,22 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     }
                                 }
                                 break;
-                            case "setText":
+                            case "setTextJL":
                                 {
                                     ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
                                 }
                                 break;
+                                
+                            case "setTextJTA":
+                              {
+                                    ((JTextArea) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                              }
+                              break;
+                              
+                            case "setTextJTF":
+                              {
+                                    ((JTextField) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                              }        
                             
                             case "setLayout":
                             {
