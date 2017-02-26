@@ -180,7 +180,37 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 							{
 								// Command [1] is the JComponent you're adding TO
 								// Command [2] is the JComponent that you're adding
-								comps.get(ID).add(comps.get(Integer.parseInt(line[2])));
+                        String layout;
+                        String layoutID;
+                        try
+                           {
+                              layout = line[4];
+                              switch (layout)   {
+                                 case "BorderLayout.NORTH": 
+                                    layoutID = BorderLayout.NORTH;
+                                 break;
+                                 case "BorderLayout.EAST":
+                                    layoutID = BorderLayout.EAST;
+                                 break;
+                                 case "BorderLayout.SOUTH":
+                                    layoutID = BorderLayout.SOUTH;
+                                 break;
+                                 case "BorderLayout.WEST":
+                                    layoutID = BorderLayout.WEST;
+                                 break;
+                                 case "BorderLayout.CENTER":
+                                    layoutID = BorderLayout.CENTER;
+                                 break;
+                                 default:
+                                    layoutID = BorderLayout.CENTER;
+                                 break;
+                              }
+                              comps.get(ID).add(comps.get(Integer.parseInt(line[2])), layoutID);
+                           }
+                        catch (IndexOutOfBoundsException ie)
+                           {
+                              comps.get(ID).add(comps.get(Integer.parseInt(line[2])));
+                           }
 							}
 
 							// comps_add.add(
@@ -228,7 +258,38 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 							break;
 						case "addContainer":
 							{
-								frame.contents.add(comps.get(Integer.parseInt(line[2])));
+								String layout;
+                        String layoutID;
+                        try
+                           {
+                              layout = line[4];
+                              switch (layout)   {
+                                 case "BorderLayout.NORTH": 
+                                    layoutID = BorderLayout.NORTH;
+                                 break;
+                                 case "BorderLayout.EAST":
+                                    layoutID = BorderLayout.EAST;
+                                 break;
+                                 case "BorderLayout.SOUTH":
+                                    layoutID = BorderLayout.SOUTH;
+                                 break;
+                                 case "BorderLayout.WEST":
+                                    layoutID = BorderLayout.WEST;
+                                 break;
+                                 case "BorderLayout.CENTER":
+                                    layoutID = BorderLayout.CENTER;
+                                 break;
+                                 default:
+                                    layoutID = BorderLayout.CENTER;
+                                 break;
+                              }
+                              frame.contents.add(comps.get(Integer.parseInt(line[2])), layoutID);
+                           }
+                        catch (IndexOutOfBoundsException ie)
+                           {
+                              frame.contents.add(comps.get(Integer.parseInt(line[2])));
+                           }
+							}
 							}
 						default:
 							break;
