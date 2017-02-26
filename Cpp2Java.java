@@ -22,7 +22,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
         //frame.revalidate();
 
         TimerTask task = new FileWatcher(new File("text.csv")) {
-            JPanel test;
             FileReader fr;
             BufferedReader br;
             String fileLine;
@@ -54,13 +53,15 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                 {
                                     switch (line[3]) {   // Type of JComponent
                                         case "JPanel":
-                                            comps.add(ID, new JPanel());
+                                            comps.add(ID, new DynamicJPanel());
                                             break;
                                         case "JLabel":
                                           {
                                              switch(Integer.parseInt(line[2]))   {     // Type of Constructor Method
                                                 case 0:
+                                                
                                                    comps.add(ID, new JLabel(line[4]));
+                                                   id.add(temp);
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JLabel(line[4], Integer.parseInt(line[5])));
@@ -103,7 +104,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JButton(line[4]));
-                                                break;
+                                                brea8k;
                                              }
                                           }
                                             break;
@@ -124,15 +125,18 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     // Command [1] is the JComponent you're adding TO
                                     // Command [2] is the JComponent that you're adding
                                     comps.get(Integer.parseInt(line[0])).add(comps.get(Integer.parseInt(line[2])));
+                                                                       // switch (
                                 }
+                                
+                                comps_add.add(
                                 break;
                             default:
                                 break;
                         }
                     }
                 } catch (IOException ioe) {}
-                for (JComponent jc: comps) {
-                    if (jc instanceof JPanel)
+                for (JComponent jc: comps_add) {
+                    if (jc instanceof DynamicJPanel)
                      frame.contents.add(jc);
                 }
                 frame.revalidate();
