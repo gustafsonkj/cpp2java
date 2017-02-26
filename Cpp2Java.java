@@ -238,11 +238,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         }
                     }
                 } catch (IOException ioe) {}
-                for (JComponent jc: comps) {
-                    if (jc instanceof DynamicJPanel)
-                     frame.contents.add(jc);
-                }
-
                 frame.revalidate();
                 frame.repaint();
             }
