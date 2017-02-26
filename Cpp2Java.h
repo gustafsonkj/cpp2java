@@ -171,7 +171,7 @@ void JComponent::fillPolgon(Polygon p)
 }
 void JComponent::repaint()
 {
-	file1.open("test1.csv");
+	file1.open("paint.csv");
 	for (string s : c.paint)
 	{
 		file1 << s + "\n";
