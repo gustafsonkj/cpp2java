@@ -54,11 +54,6 @@ class BorderLayout : public LayoutManager
 public:
 	BorderLayout();
 	BorderLayout(int hGap, int vGap);
-	/*const string NORTH;
-	const string SOUTH = "South";
-	const string EAST = "East";
-	const string WEST = "West";
-	const string CENTER = "Center";*/
 	int verticalGap;
 	int horizontalGap;
 };
