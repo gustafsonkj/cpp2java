@@ -291,11 +291,11 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                            }
 							}
 							}
-						default:
-							break;
+						//default:
+							//break;
 						}
 					}
-				} catch(IOException ioe) {}
+				catch(IOException ioe) {}
 				frame.revalidate();
 				frame.repaint();
 			}
