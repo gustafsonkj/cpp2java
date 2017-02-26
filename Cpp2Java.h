@@ -54,11 +54,11 @@ class BorderLayout : public LayoutManager
 public:
 	BorderLayout();
 	BorderLayout(int hGap, int vGap);
-	const string NORTH = "North";
+	/*const string NORTH;
 	const string SOUTH = "South";
 	const string EAST = "East";
 	const string WEST = "West";
-	const string CENTER = "Center";
+	const string CENTER = "Center";*/
 	int verticalGap;
 	int horizontalGap;
 };
@@ -200,33 +200,33 @@ class JPanel : public JComponent
 {
 public:
 	JPanel();
-	void setLayout(GridLayout & gl);
-	void setLayout(BorderLayout & bl);
+	void setLayout(GridLayout * gl);
+	void setLayout(BorderLayout * bl);
 	void add(JComponent & jc);
 	void add(JComponent & jc, string layout);
-	
+
 };
 JPanel::JPanel() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JPanel");
 }
-void JPanel::setLayout(GridLayout & gl)
+void JPanel::setLayout(GridLayout * gl)
 {
-	if (gl.getLayoutType() == "GridLayout,0")
-		c.gui.push_back(instanceName + ",setLayout," + gl.getLayoutType() + "," +
-			to_string(gl.numRows) + "," + to_string(gl.numCols));
+	if (gl->getLayoutType() == "GridLayout,0")
+		c.gui.push_back(instanceName + ",setLayout," + gl->getLayoutType() + "," +
+			to_string(gl->numRows) + "," + to_string(gl->numCols));
 	else
-		c.gui.push_back(instanceName + ",setLayout," + gl.getLayoutType() + "," +
-			to_string(gl.numRows) + "," + to_string(gl.numCols) + "," + to_string(gl.horzontalGap) + "," + to_string(gl.verticalGap));
+		c.gui.push_back(instanceName + ",setLayout," + gl->getLayoutType() + "," +
+			to_string(gl->numRows) + "," + to_string(gl->numCols) + "," + to_string(gl->horzontalGap) + "," + to_string(gl->verticalGap));
 }
-void JPanel::setLayout(BorderLayout & bl)
+void JPanel::setLayout(BorderLayout * bl)
 {
-	if (bl.getLayoutType() == "BorderLayout,0")
-		c.gui.push_back(instanceName + ",setLayout," + bl.getLayoutType());
+	if (bl->getLayoutType() == "BorderLayout,0")
+		c.gui.push_back(instanceName + ",setLayout," + bl->getLayoutType());
 	else
-		c.gui.push_back(instanceName + ",setLayout," + bl.getLayoutType() + "," +
-			to_string(bl.horizontalGap) + "," + to_string(bl.verticalGap));
+		c.gui.push_back(instanceName + ",setLayout," + bl->getLayoutType() + "," +
+			to_string(bl->horizontalGap) + "," + to_string(bl->verticalGap));
 }
 void JPanel::add(JComponent & jc)
 {
@@ -350,6 +350,10 @@ public:
 	void removeAll();
 	void finish();
 	void pause(double ld);
+	void setLayout(GridLayout * gl);
+	void setLayout(BorderLayout * bl);
+	void add(JComponent & jc);
+	void add(JComponent & jc, string layout);
 	ofstream file;
 	ofstream file1;
 
@@ -390,3 +394,29 @@ void Cpp2Java::pause(double ld)
 		this_thread::sleep_for(period);
 	}
 }
+void Cpp2Java::setLayout(GridLayout * gl)
+{
+	if (gl->getLayoutType() == "GridLayout,0")
+		c.gui.push_back("-1,setContainerLayout," + gl->getLayoutType() + "," +
+			to_string(gl->numRows) + "," + to_string(gl->numCols));
+	else
+		c.gui.push_back("-1,setContainerLayout," + gl->getLayoutType() + "," +
+			to_string(gl->numRows) + "," + to_string(gl->numCols) + "," + to_string(gl->horzontalGap) + "," + to_string(gl->verticalGap));
+}
+void Cpp2Java::setLayout(BorderLayout * bl)
+{
+	if (bl->getLayoutType() == "BorderLayout,0")
+		c.gui.push_back("-1,setContainerLayout," + bl->getLayoutType());
+	else
+		c.gui.push_back("-1,setContainerLayout," + bl->getLayoutType() + "," +
+			to_string(bl->horizontalGap) + "," + to_string(bl->verticalGap));
+}
+void Cpp2Java::add(JComponent & jc)
+{
+	c.gui.push_back("-1,addContainer," + jc.getInstanceName());
+}
+void Cpp2Java::add(JComponent & jc, string layout)
+{
+	c.gui.push_back("-1,addContainer," + jc.getInstanceName() + "," + layout);
+}
+
