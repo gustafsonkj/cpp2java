@@ -3,10 +3,10 @@ import javax.swing. * ;
 import java.awt. * ;
 
 public class DynamicJPanel extends JPanel {
-	private Vector < String > commands = null;
+	private Vector < String > commands = new Vector<String>();
 
 	public void setCommand(String command) {
-		if (!command.equals(null)) commands.add(command);
+		commands.add(command);
 	}
 	public void paint(Graphics g) {
 		super.paint(g);

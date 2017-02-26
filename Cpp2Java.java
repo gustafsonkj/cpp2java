@@ -30,7 +30,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 			protected void onChange(File file) {
 
 				// here we code the action on a change
-				System.out.println("File " + file.getName() + " have change !");
+				//System.out.println("File " + file.getName() + " have change !");
 				try {
 					fr = new FileReader(new File("text.csv"));
 				} catch(FileNotFoundException fnfe) {
@@ -307,7 +307,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 			String fileLine;
 			protected void onChange(File file) {
 
-				System.out.println("Paint file: " + file.getName() + " have change !");
+				//System.out.println("Paint file: " + file.getName() + " have change !");
 				try {
 					fr = new FileReader(new File("paint.csv"));
 				} catch(FileNotFoundException fnfe) {
@@ -325,7 +325,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 						/* Object comp = comp.get...
                         if (comp instanceof DynamicJanel)
                            (Dynamic)...*/
-
 						((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).setCommand(command);
 
 						//ID is the instanceName from Cpp2Java.h
