@@ -43,10 +43,15 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         
                         //ID is the instanceName from Cpp2Java.h
                         int ID = Integer.parseInt(line[0]);
+                        int nRows;
+                        int nCols;
+                        int  hGap;
+                        int  vGap;
                         
                         switch (line[1]) {      //Type of Command
                             case "removeAll":
                                 {
+                                   comps.clear();
                                    frame.contents.removeAll();
                                     frame.getContentPane().removeAll();
                                 }
@@ -61,9 +66,11 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                           {
                                              switch(Integer.parseInt(line[2]))   {     // Type of Constructor Method
                                                 case 0:
-                                                
                                                    comps.add(ID, new JLabel(line[4]));
+<<<<<<< HEAD
                                                    
+=======
+>>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JLabel(line[4], Integer.parseInt(line[5])));
@@ -93,7 +100,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                                    comps.add(ID, new JTextArea(Integer.parseInt(line[4]),Integer.parseInt(line[5])));
                                                 break;
                                                 case 2:
-                                                   comps.add(ID, new JTextArea(Integer.parseInt(line[4]),Integer.parseInt(line[5],Integer.parseInt(line[6]) )));
+                                                   comps.add(ID, new JTextArea(
+                                                   Integer.parseInt(line[4]),Integer.parseInt(line[5],Integer.parseInt(line[6]) )));
                                                 break;
                                              }
                                            }
@@ -117,30 +125,135 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     }
                                 }
                                 break;
-                            case "setText":
+                            case "setTextJL":
                                 {
                                     ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
                                 }
                                 break;
+                                
+                            case "setTextJTA":
+                              {
+                                    ((JTextArea) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                              }
+                              break;
+                              
+                            case "setTextJTF":
+                              {
+                                    ((JTextField) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                              }        
+                            
+                            case "setLayout":
+                            {
+                               switch (line[2])   {
+                                       case "GridLayout":
+                                       {
+                                          switch(Integer.parseInt(line[3]))   {
+                                             case 0:
+                                                nRows = Integer.parseInt(line[4]);
+                                                nCols = Integer.parseInt(line[5]);
+                                                comps.get(ID).setLayout(new GridLayout(nRows, nCols));
+                                             break;
+                                             case 1:
+                                                nRows = Integer.parseInt(line[4]);
+                                                nCols = Integer.parseInt(line[5]);
+                                                hGap = Integer.parseInt(line[6]);
+                                                vGap = Integer.parseInt(line[7]);
+                                                comps.get(ID).setLayout(new GridLayout(nRows, nCols, hGap, vGap));
+                                             break;
+                                          }
+                                       }                                 
+                                       break;
+                                       case "BorderLayout":
+                                       {
+                                          switch(Integer.parseInt(line[3]))   {
+                                             case 0:
+                                                comps.get(ID).setLayout(new BorderLayout());
+                                             break;
+                                             case 1:
+                                                hGap = Integer.parseInt(line[4]);
+                                                vGap = Integer.parseInt(line[5]);
+                                                comps.get(ID).setLayout(new BorderLayout(hGap, vGap));
+                                             break;
+                                          }
+   
+                                       }
+                                       break;
+                                    }
+                            }
+                              break;
+                              
+                            // JComponent Methods
                             case "add":
                                 {
                                     // Command [1] is the JComponent you're adding TO
                                     // Command [2] is the JComponent that you're adding
-                                    comps.get(Integer.parseInt(line[0])).add(comps.get(Integer.parseInt(line[2])));
-                                                                       // switch (
+                                    comps.get(ID).add(comps.get(Integer.parseInt(line[2])));
                                 }
+<<<<<<< HEAD
                                 
                                // comps_add.add(
                                 break;
+=======
+                                 break;
+                                 
+                            // Container Methods
+                            case "setContainerLayout":
+                            {
+                                 switch (line[2])   {
+                                    case "GridLayout":
+                                    {
+                                       switch(Integer.parseInt(line[3]))   {
+                                          case 0:
+                                             nRows = Integer.parseInt(line[4]);
+                                             nCols = Integer.parseInt(line[5]);
+                                             frame.contents.setLayout(new GridLayout(nRows, nCols));
+                                          break;
+                                          case 1:
+                                             nRows = Integer.parseInt(line[4]);
+                                             nCols = Integer.parseInt(line[5]);
+                                             hGap = Integer.parseInt(line[6]);
+                                             vGap = Integer.parseInt(line[7]);
+                                             frame.contents.setLayout(new GridLayout(nRows, nCols, hGap, vGap));
+                                          break;
+                                       }
+                                    }                                 
+                                    break;
+                                    case "BorderLayout":
+                                    {
+                                       switch(Integer.parseInt(line[3]))   {
+                                          case 0:
+                                             frame.contents.setLayout(new BorderLayout());
+                                          break;
+                                          case 1:
+                                             hGap = Integer.parseInt(line[4]);
+                                             vGap = Integer.parseInt(line[5]);
+                                             frame.contents.setLayout(new BorderLayout(hGap, vGap));
+                                          break;
+                                       }
+
+                                    }
+                                    break;
+                                 }
+                            }
+                              break;
+                            case "addContainer":
+                            {
+                                 frame.contents.add(comps.get(Integer.parseInt(line[2])));
+                            }
+>>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                             default:
                                 break;
                         }
                     }
                 } catch (IOException ioe) {}
+<<<<<<< HEAD
                 for (JComponent jc: comps) {
                     if (jc instanceof DynamicJPanel)
                      frame.contents.add(jc);
                 }
+=======
+
+>>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                 frame.revalidate();
                 frame.repaint();
             }
@@ -186,6 +299,10 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
         java.util.Timer timer = new java.util.Timer();
         // repeat the check every second
         timer.schedule(gui, new Date(), 1);
+<<<<<<< HEAD
         timer.schedule(painter,new Date(),1);
     }//Painter
+=======
+    }
+>>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
 }
