@@ -67,10 +67,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                              switch(Integer.parseInt(line[2]))   {     // Type of Constructor Method
                                                 case 0:
                                                    comps.add(ID, new JLabel(line[4]));
-<<<<<<< HEAD
-                                                   
-=======
->>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                                                 break;
                                                 case 1:
                                                    comps.add(ID, new JLabel(line[4], Integer.parseInt(line[5])));
@@ -189,12 +185,9 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     // Command [2] is the JComponent that you're adding
                                     comps.get(ID).add(comps.get(Integer.parseInt(line[2])));
                                 }
-<<<<<<< HEAD
                                 
                                // comps_add.add(
                                 break;
-=======
-                                 break;
                                  
                             // Container Methods
                             case "setContainerLayout":
@@ -240,20 +233,16 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                             {
                                  frame.contents.add(comps.get(Integer.parseInt(line[2])));
                             }
->>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                             default:
                                 break;
                         }
                     }
                 } catch (IOException ioe) {}
-<<<<<<< HEAD
                 for (JComponent jc: comps) {
                     if (jc instanceof DynamicJPanel)
                      frame.contents.add(jc);
                 }
-=======
 
->>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
                 frame.revalidate();
                 frame.repaint();
             }
@@ -299,10 +288,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
         java.util.Timer timer = new java.util.Timer();
         // repeat the check every second
         timer.schedule(gui, new Date(), 1);
-<<<<<<< HEAD
         timer.schedule(painter,new Date(),1);
     }//Painter
-=======
     }
->>>>>>> 4eb619bb55bf1f62d1c347fb70db39acfd62191a
-}
