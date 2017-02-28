@@ -8,8 +8,8 @@ public class DynamicJPanel extends JPanel {
 	public void setCommand(String command) {
 		commands.add(command);
 	}
-	public void paint(Graphics g) {
-		super.paint(g);
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
 		try {
 			for (String C: commands) {

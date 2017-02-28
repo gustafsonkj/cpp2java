@@ -184,7 +184,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         String layoutID;
                         try
                            {
-                              layout = line[4];
+                              layout = line[3];
                               switch (layout)   {
                                  case "BorderLayout.NORTH": 
                                     layoutID = BorderLayout.NORTH;
