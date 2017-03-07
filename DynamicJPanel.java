@@ -1,6 +1,9 @@
 import java.util.Vector;
 import javax.swing. * ;
 import java.awt. * ;
+import javax.imageio.*;
+import java.awt.image.*;
+import java.io.*;
 
 public class DynamicJPanel extends JPanel {
 	private Vector < String > commands = new Vector<String>();
@@ -42,7 +45,20 @@ public class DynamicJPanel extends JPanel {
 				case "drawString":
 					g.drawString(command[1], Integer.parseInt(command[2]), Integer.parseInt(command[3]));
 					break;
-
+               
+            case "drawImage":
+               BufferedImage temp;
+               try
+               {
+                  // May cause performance issues
+                  temp = ImageIO.read(new File(command[1]));
+               }
+               catch (IOException ioe)
+               {
+                  temp = null;
+               }
+					g.drawImage(temp, Integer.parseInt(command[2]), Integer.parseInt(command[3]),null);
+					break;
 				}
 			}
 		}

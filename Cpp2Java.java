@@ -23,7 +23,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 		ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
 		//frame.revalidate();
 
-		TimerTask gui = new FileWatcher(new File("text.csv")) {
+		TimerTask gui = new FileWatcher(new File("Cpp2Java_gui.csv")) {
 			FileReader fr;
 			BufferedReader br;
 			String fileLine;
@@ -32,7 +32,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 				// here we code the action on a change
 				//System.out.println("File " + file.getName() + " have change !");
 				try {
-					fr = new FileReader(new File("text.csv"));
+					fr = new FileReader(new File("Cpp2Java_gui.csv"));
 				} catch(FileNotFoundException fnfe) {
 
 }
@@ -301,7 +301,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 			}
 		};
 
-		TimerTask painter = new FileWatcher(new File("paint.csv")) {
+		TimerTask painter = new FileWatcher(new File("Cpp2Java_paint.csv")) {
 			FileReader fr;
 			BufferedReader br;
 			String fileLine;
@@ -309,7 +309,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
 				//System.out.println("Paint file: " + file.getName() + " have change !");
 				try {
-					fr = new FileReader(new File("paint.csv"));
+					fr = new FileReader(new File("Cpp2Java_paint.csv"));
 				} catch(FileNotFoundException fnfe) {
 
 }
@@ -338,7 +338,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 		};
 		java.util.Timer timer = new java.util.Timer();
 		// repeat the check every second
-		timer.schedule(gui, new Date(), 1);
-		timer.schedule(painter, new Date(), 1);
+		timer.schedule(gui, new Date(), 100);
+		timer.schedule(painter, new Date(), 10);
 	} //Painter
 }

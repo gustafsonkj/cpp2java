@@ -30,6 +30,16 @@ void Polygon::addPoint(int x, int y)
 	coord.push_back(point);
 }
 
+class Image {
+public:
+	Image(string file);
+	string filename;
+};
+Image::Image(string file)
+{
+	filename = file;
+}
+
 class LayoutManager {
 private:
 	string type;
@@ -104,6 +114,8 @@ public:
 	virtual void drawPolygon(Polygon p);
 	virtual void fillPolgon(Polygon p);
 	virtual void drawString(string s, int x, int y);
+	virtual void drawImage(Image & i, int x, int y);
+	virtual void drawImage(Image * i, int x, int y);
 	virtual void repaint();
 	string getInstanceName();
 	ofstream file1;
@@ -162,9 +174,17 @@ void JComponent::fillPolgon(Polygon p)
 	}
 	c.paint.push_back(line);
 }
+void JComponent::drawImage(Image & i, int x, int y)
+{
+	c.paint.push_back(instanceName+",drawImage," + i.filename + "," + to_string(x) + "," + to_string(y));
+}
+void JComponent::drawImage(Image * i, int x, int y)
+{
+	c.paint.push_back(instanceName+",drawImage," + i->filename + "," + to_string(x) + "," + to_string(y));
+}
 void JComponent::repaint()
 {
-	file1.open("paint.csv");
+	file1.open("Cpp2Java_paint.csv");
 	for (string s : c.paint) {
 		file1 << s + "\n";
 	}
@@ -338,7 +358,7 @@ Cpp2Java::Cpp2Java()
 }
 void Cpp2Java::removeAll()
 {
-	file.open("text.csv");
+	file.open("Cpp2Java_gui.csv");
 	file.clear();
 	c.gui.clear();
 	file << "-1,removeAll\n";
@@ -355,15 +375,15 @@ void Cpp2Java::finish()
 }
 /*void Cpp2Java::pause(double ld)
 {
-	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01) {
-		seconds_type period(ld);
-		this_thread::sleep_for(period);
-	}
-	else {
-		seconds_type period(.01);
-		this_thread::sleep_for(period);
-	}
+typedef std::chrono::duration<double> seconds_type;
+if (ld > .01) {
+seconds_type period(ld);
+this_thread::sleep_for(period);
+}
+else {
+seconds_type period(.01);
+this_thread::sleep_for(period);
+}
 }*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
