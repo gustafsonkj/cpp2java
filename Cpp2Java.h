@@ -116,6 +116,9 @@ public:
 	virtual void drawString(string s, int x, int y);
 	virtual void drawImage(Image & i, int x, int y);
 	virtual void drawImage(Image * i, int x, int y);
+	virtual void setColor(string color);
+	virtual void setForeground(string color);
+	virtual void setBackground(string color);
 	virtual void repaint();
 	string getInstanceName();
 	ofstream file1;
@@ -181,6 +184,18 @@ void JComponent::drawImage(Image & i, int x, int y)
 void JComponent::drawImage(Image * i, int x, int y)
 {
 	c.paint.push_back(instanceName+",drawImage," + i->filename + "," + to_string(x) + "," + to_string(y));
+}
+void JComponent::setColor(string color)
+{
+	c.paint.push_back(instanceName + ",setColor," + color);
+}
+void JComponent::setForeground(string color)
+{
+	c.gui.push_back(instanceName + ",setForeground," + color);
+}
+void JComponent::setBackground(string color)
+{
+	c.gui.push_back(instanceName + ",setBackground," + color);
 }
 void JComponent::repaint()
 {
@@ -373,18 +388,20 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 }
-/*void Cpp2Java::pause(double ld)
+void Cpp2Java::pause(double ld)
 {
-typedef std::chrono::duration<double> seconds_type;
-if (ld > .01) {
-seconds_type period(ld);
-this_thread::sleep_for(period);
+	typedef std::chrono::duration<double> seconds_type;
+	if (ld > .01) 
+	{
+		seconds_type period(ld);
+		this_thread::sleep_for(period);
+	}
+	else 
+	{
+		seconds_type period(.01);
+		this_thread::sleep_for(period);
+	}
 }
-else {
-seconds_type period(.01);
-this_thread::sleep_for(period);
-}
-}*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
 	if (gl->getLayoutType() == "GridLayout,0")
