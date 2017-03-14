@@ -258,7 +258,7 @@ class JLabel : public JComponent {
 public:
 	JLabel(string s);
 	JLabel(string s, int alignment);
-	//JLabel(Icon image);
+	JLabel(Image image);
 	void setText(string s);
 };
 JLabel::JLabel(string s) //0
@@ -270,6 +270,11 @@ JLabel::JLabel(string s, int alignment) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JLabel," + s + "," + to_string(alignment));
+}
+JLabel::JLabel(Image image)
+{
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instance,2,JLabel," + image.filename);
 }
 void JLabel::setText(string s)
 {
