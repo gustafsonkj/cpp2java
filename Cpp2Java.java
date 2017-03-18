@@ -23,7 +23,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 		ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
 		//frame.revalidate();
 
-		TimerTask gui = new FileWatcher(new File("Cpp2Java_gui.csv")) {
+		TimerTask gui = new FileWatcher(new File("text.csv")) {
 			FileReader fr;
 			BufferedReader br;
 			String fileLine;
@@ -32,7 +32,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 				// here we code the action on a change
 				//System.out.println("File " + file.getName() + " have change !");
 				try {
-					fr = new FileReader(new File("Cpp2Java_gui.csv"));
+					fr = new FileReader(new File("text.csv"));
 				} catch(FileNotFoundException fnfe) {
 
 }
@@ -62,6 +62,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 								frame.getContentPane().removeAll();
 							}
 							break;
+                     
+                  
 						case "instantiate":
 							{
 								switch (line[3]) { // Type of JComponent
@@ -123,7 +125,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 								default:
 									break;
 								}
-							}
+							}//instantiate
 							break;
 						case "setTextJL":
 							{ ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
@@ -188,7 +190,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         String layoutID;
                         try
                            {
-                              layout = line[3];
+                              layout = line[4];
                               switch (layout)   {
                                  case "BorderLayout.NORTH": 
                                     layoutID = BorderLayout.NORTH;
@@ -219,11 +221,18 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
 							// comps_add.add(
 							break;
+                  case "setForeground":
+                     comps.get(ID).setForeground(Color.decode(line[2]));
+                     break;
+                     
+                  case "setBackground":
+                     comps.get(ID).setBackground(Color.decode(line[2]));
+                     break;
 
 							// Container Methods
 						case "setContainerLayout":
 							{
-								switch (line[2]) {
+							switch (line[2]) {
 								case "GridLayout":
 									{
 										switch (Integer.parseInt(line[3])) {
@@ -259,7 +268,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 									break;
 								}
 							}
-							break;
+							break;           
 						case "addContainer":
 							{
 								String layout;
@@ -305,7 +314,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 			}
 		};
 
-		TimerTask painter = new FileWatcher(new File("Cpp2Java_paint.csv")) {
+		TimerTask painter = new FileWatcher(new File("paint.csv")) {
 			FileReader fr;
 			BufferedReader br;
 			String fileLine;
@@ -313,7 +322,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
 				//System.out.println("Paint file: " + file.getName() + " have change !");
 				try {
-					fr = new FileReader(new File("Cpp2Java_paint.csv"));
+					fr = new FileReader(new File("paint.csv"));
 				} catch(FileNotFoundException fnfe) {
 
 }
@@ -342,7 +351,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 		};
 		java.util.Timer timer = new java.util.Timer();
 		// repeat the check every second
-		timer.schedule(gui, new Date(), 100);
-		timer.schedule(painter, new Date(), 10);
+		timer.schedule(gui, new Date(), 1);
+		timer.schedule(painter, new Date(), 1);
 	} //Painter
 }

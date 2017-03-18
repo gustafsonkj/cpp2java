@@ -1,6 +1,6 @@
 // Test_Interface.cpp : Defines the entry point for the console application.
 //
-#include "stdafx.h"
+//#include "stdafx.h"
 
 #include "Cpp2Java.h"
 int main()
@@ -8,29 +8,17 @@ int main()
 	Cpp2Java Cpp2Java;
 
 	Cpp2Java.removeAll();
+	Cpp2Java.setLayout(new BorderLayout());
 
 	JPanel myPanel;
-	JPanel myPanel2;
-	JPanel myPanel3;
-	JLabel myLabel("Hff");
-	JLabel myLabel2("fs");
-	JButton myButton0("MUTTON!");
-	JButton myButton1("MY BUTON!");
-	JButton myButton2("MY11!");
-	JLabel myLabel3("three");
-	JLabel myLabel4("fpour");
-
+	JPanel panel2;
+	JLabel myLabel("Hola!");
+	JLabel label2("Whats up?");
 	myPanel.add(myLabel);
-	myPanel.add(myLabel2);
-	myPanel2.add(myButton0);
-	myPanel2.add(myButton1);
-	myPanel2.add(myButton2);
-	myPanel3.add(myLabel3);
-	myPanel3.add(myLabel4);
-
-	Cpp2Java.add(myPanel);
-	Cpp2Java.add(myPanel2);
-	Cpp2Java.add(myPanel3);
+	panel2.add(label2);
+	Cpp2Java.add(myPanel, "BorderLayout.SOUTH");
+	Cpp2Java.add(panel2, "BorderLayout.SOUTH");
+	
 	Cpp2Java.finish();
 
 	this_thread::sleep_for(chrono::milliseconds(1000));
@@ -45,36 +33,11 @@ int main()
 	for (int i = 100; i > -1; i--)
 	{
 		myPanel.clearRect(0, 0, 600, 600);
+		//myPanel.drawString
 		myPanel.drawRect(i, i, 2 * i, 2 * i);
 		myPanel.repaint();
 		this_thread::sleep_for(chrono::milliseconds(50));
 	}
-
-
-
-	
-
-
-	/*
-	string test = "a";
-	for (int i = 0; i < 20; i++)
-	{
-		test += "a";
-		Cpp2Java.removeAll();
-		myLabel.setText(test);
-		Cpp2Java.finish();
-		this_thread::sleep_for(chrono::milliseconds(200));
-	}
-	test = "c";
-	for (int i = 0; i < 20; i++)
-	{
-		test += "c";
-		Cpp2Java.removeAll();
-		myLabel.setText(test);
-		Cpp2Java.finish();
-		this_thread::sleep_for(chrono::milliseconds(200));
-	}
-	*/
 	return 0;
 }
 
