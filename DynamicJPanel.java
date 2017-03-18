@@ -59,6 +59,11 @@ public class DynamicJPanel extends JPanel {
                }
 					g.drawImage(temp, Integer.parseInt(command[2]), Integer.parseInt(command[3]),null);
 					break;
+               
+               case "setColor":
+               g.setColor(Color.decode(command[1]));
+               break;
+
 				}
 			}
 		}

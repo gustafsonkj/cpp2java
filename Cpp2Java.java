@@ -221,6 +221,15 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
 							// comps_add.add(
 							break;
+                     
+                 case "setForeground":
+                     comps.get(ID).setForeground(Color.decode(line[2]));
+                     break;
+                     
+                 case "setBackground":
+                     comps.get(ID).setBackground(Color.decode(line[2]));
+                     break;
+
 
 							// Container Methods
 						case "setContainerLayout":
