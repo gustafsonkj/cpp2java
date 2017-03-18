@@ -287,6 +287,7 @@ public:
 	JTextField(int numCol);
 	void setEditable(bool mode);
 	void setText(string newText);
+	void addActionListener();
 };
 JTextField::JTextField(string text, int numCol) //0
 {
@@ -306,6 +307,10 @@ void JTextField::setText(string newText)
 {
 	c.gui.push_back(instanceName + ",setTextJTF," + newText);
 }
+void JTextField::addActionListener()
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+}
 
 class JButton : public JComponent {
 public:
@@ -323,9 +328,9 @@ JButton::JButton(string text) //1
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
 }
-
 void JButton::addActionListener()
 {
+	c.gui.push_back(instanceName + ",addActionListener");
 }
 
 class JTextArea : public JComponent {
