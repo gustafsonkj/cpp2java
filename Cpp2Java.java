@@ -1,4 +1,4 @@
-import java.awt. * ;
+ import java.awt. * ;
 import javax.swing. * ;
 import java.awt.event. * ;
 import java.io. * ;
@@ -116,8 +116,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 									break;
 								default:
 									break;
-									//JTextField
-									//JButton
 								}
 							}
 							break;
