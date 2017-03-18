@@ -49,6 +49,12 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 						int vGap;
 
 						switch (line[1]) { //Type of Command
+                  case "addActionListener":
+                  {
+                     //need to add actionlistener to the type and instance of jcomponent passed in
+                     //will use dynamic action listener class that zac created to do this
+                     //DynamicActionListener.addActionListener(comps[ID]);
+                  }
 						case "removeAll":
 							{
 								comps.clear();
