@@ -304,7 +304,11 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                            {
                               frame.contents.add(comps.get(Integer.parseInt(line[2])));
                            }
-							}
+							   }
+                     case "addKeyListener":
+                        contents.setFocusable(true);
+                        contents.addKeyListener(new DynamicKeyAdapter());
+                        break;
 							}
 						//default:
 							//break;

@@ -18,6 +18,26 @@ public:
 };
 Commands c;
 
+class KeyEvent {
+public:
+	KeyEvent(char keyPressed);
+	char getKeyChar();
+private:
+	char key;
+};
+KeyEvent::KeyEvent(char keyPressed)
+{
+	key = keyPressed;
+}
+char KeyEvent::getKeyChar()
+{
+	return key;
+}
+class KeyListener {
+public:
+	virtual void keyReleased(KeyEvent ke);
+};
+
 class Polygon {
 public:
 	void addPoint(int x, int y);
@@ -179,11 +199,11 @@ void JComponent::fillPolgon(Polygon p)
 }
 void JComponent::drawImage(Image & i, int x, int y)
 {
-	c.paint.push_back(instanceName+",drawImage," + i.filename + "," + to_string(x) + "," + to_string(y));
+	c.paint.push_back(instanceName + ",drawImage," + i.filename + "," + to_string(x) + "," + to_string(y));
 }
 void JComponent::drawImage(Image * i, int x, int y)
 {
-	c.paint.push_back(instanceName+",drawImage," + i->filename + "," + to_string(x) + "," + to_string(y));
+	c.paint.push_back(instanceName + ",drawImage," + i->filename + "," + to_string(x) + "," + to_string(y));
 }
 void JComponent::setColor(string color)
 {
@@ -373,6 +393,8 @@ public:
 	void pause(double ld);
 	void setLayout(GridLayout* gl);
 	void setLayout(BorderLayout* bl);
+	void addKeyListener(KeyListener * kL);
+	void addKeyListener(KeyListener & kL);
 	void add(JComponent& jc);
 	void add(JComponent& jc, string layout);
 	ofstream file;
@@ -401,12 +423,12 @@ void Cpp2Java::finish()
 void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01) 
+	if (ld > .01)
 	{
 		seconds_type period(ld);
 		this_thread::sleep_for(period);
 	}
-	else 
+	else
 	{
 		seconds_type period(.01);
 		this_thread::sleep_for(period);
@@ -425,6 +447,18 @@ void Cpp2Java::setLayout(BorderLayout* bl)
 		c.gui.push_back("-1,setContainerLayout," + bl->getLayoutType());
 	else
 		c.gui.push_back("-1,setContainerLayout," + bl->getLayoutType() + "," + to_string(bl->horizontalGap) + "," + to_string(bl->verticalGap));
+}
+void Cpp2Java::addKeyListener(KeyListener * kL)
+{
+	c.gui.push_back("-1,addKeyListener");
+
+	// WRITE CODE TO ADD THE KEY LISTENER TO A VECTOR FOR LATER REFERENCE
+}
+void Cpp2Java::addKeyListener(KeyListener & kL)
+{
+	c.gui.push_back("-1,addKeyListener");
+
+	// WRITE CODE TO ADD THE KEY LISTENER TO A VECTOR FOR LATER REFERENCE
 }
 void Cpp2Java::add(JComponent& jc)
 {
