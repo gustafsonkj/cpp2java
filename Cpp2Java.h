@@ -15,6 +15,7 @@ public:
 	vector<string> gui;
 	vector<string> paint;
 	int instanceCounter;
+	vector<JComponent> jComp;
 };
 Commands c;
 
@@ -385,6 +386,32 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + newText);
 }
 
+class ActionEvent
+{
+public:
+	ActionEvent(JComponent jc);
+	JComponent * getSource();
+	JComponent * jC;
+};
+
+ActionEvent::ActionEvent(JComponent jc)
+{
+	jc = c.jComp[c.instanceCounter];
+	jC = &jc;
+}
+JComponent * ActionEvent::getSource()
+{
+	return jC;
+}
+
+class ActionListener
+{
+public:
+	void actionPerformed(ActionEvent ae);
+};
+void ActionListener::actionPerformed(ActionEvent ae)
+{}
+
 class Cpp2Java {
 public:
 	Cpp2Java();
@@ -400,6 +427,7 @@ public:
 	ofstream file;
 	ofstream file1;
 };
+
 Cpp2Java::Cpp2Java()
 {
 }
