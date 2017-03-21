@@ -7,8 +7,13 @@
 #include <chrono>
 #include <thread>
 #include <utility>
+#include <QFileSystemWatcher>
 
 using namespace std;
+
+class FileWatcher {
+	//need to finish installing QT package in order to use the file watcher I found; will update this as soon as it's done
+};
 
 class Commands {
 public:
