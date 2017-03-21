@@ -7,12 +7,37 @@
 #include <chrono>
 #include <thread>
 #include <utility>
-#include <QFileSystemWatcher>
+#include "FileWatcher.h"
+#include <iostream>
 
 using namespace std;
 
-class FileWatcher {
-	//need to finish installing QT package in order to use the file watcher I found; will update this as soon as it's done
+class UpdateListener : public FW::FileWatcher {
+public: 
+	UpdateListener();
+	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
+	{
+		//put what occurs with actions here
+		switch (action)
+		{
+		case FW::Actions::Add:
+			//something is ADDED to the file
+		case FW::Actions::Delete:
+			//something is DELETED from the file
+		case FW::Actions::Modified:
+			//the file is CHANGED
+		default:
+			//this should never occur
+		}
+	}
+	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
+	//We will need to instantiate the following code in an area which will RUN: 
+	//FW::FileWatcher fileWatcher;
+	//FW::WatchID watchID = fileWatcher.addWatch("Cpp2Java_actionPerformed.csv", new UpdateListener());
+	//We then need a loop running with the following code: 
+	//fileWatcher.update()
+	//This code will monitor all of the WatchIDs associated with it, checking for file changes.
+	//Inside the interface folder is a file called "SimpleDemo", which is a demo of this file watcher's use. It includes the links to the source code online.
 };
 
 class Commands {
