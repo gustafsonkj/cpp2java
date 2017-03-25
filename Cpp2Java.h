@@ -159,7 +159,6 @@ public:
 	vector<string> gui;
 	vector<string> paint;
 	int instanceCounter;
-	vector<JComponent> jComp;
 };
 Commands c;
 
@@ -180,7 +179,7 @@ char KeyEvent::getKeyChar()
 }
 class KeyListener {
 public:
-	virtual void keyReleased(KeyEvent ke);
+	virtual void keyReleased(KeyEvent ke) {};
 };
 
 class Polygon {
@@ -530,11 +529,23 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + newText);
 }
 
+
+
+// This vector is used to reference action events.
+// It must be declared after JComponent is defined.
+
+vector<JComponent> jComp;
+
+
+//
+//
+
+
 class ActionEvent
 {
 public:
 	ActionEvent(int jc);
-	JComponent getSource();
+	JComponent & getSource();
 	int jC;
 };
 
@@ -542,9 +553,9 @@ ActionEvent::ActionEvent(int jc)
 {
 	jC = jc;
 }
-JComponent ActionEvent::getSource()
+JComponent & ActionEvent::getSource()
 {
-	return c.jComp[jC];
+	return (jComp[jC]);
 }
 
 class ActionListener
@@ -591,7 +602,7 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 }
-void Cpp2Java::pause(double ld)
+/*void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
 	if (ld > .01)
@@ -604,7 +615,7 @@ void Cpp2Java::pause(double ld)
 		seconds_type period(.01);
 		this_thread::sleep_for(period);
 	}
-}
+}*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
 	if (gl->getLayoutType() == "GridLayout,0")
