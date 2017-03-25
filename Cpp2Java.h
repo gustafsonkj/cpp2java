@@ -270,10 +270,10 @@ class JComponent {
 
 public:
 	JComponent() {};
-	JComponent( const JComponent & copy) {
+	JComponent(const JComponent & copy) {
 		instanceName = copy.instanceName;
 	};
-	bool operator==( JComponent& jC);
+	bool operator==(JComponent& jC);
 	void operator = (JComponent & jC)
 	{
 		instanceName = jC.instanceName;
@@ -307,8 +307,8 @@ protected:
 };
 /*ostream& operator<<(ostream& os, JComponent& jC)
 {
-	os << "InstanceName:" << jC.instanceName;
-	return os;
+os << "InstanceName:" << jC.instanceName;
+return os;
 }*/
 ostream& operator<<(ostream& os, JComponent* jC)
 {
@@ -320,9 +320,9 @@ ostream& operator<<(ostream& os, JComponent jC)
 	os << "InstanceName:" << jC.instanceName;
 	return os;
 }
-bool JComponent::operator==( JComponent & jC)
+bool JComponent::operator==(JComponent & jC)
 {
-	return instanceName.compare(jC.instanceName)==0;
+	return instanceName.compare(jC.instanceName) == 0;
 };
 void JComponent::add(JComponent& jc)
 {
@@ -521,6 +521,25 @@ void JLabel::setText(string s)
 
 class JTextField : public JComponent {
 public:
+	JTextField(JTextField & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JTextField & jtf)
+	{
+		return instanceName.compare(jtf.instanceName) == 0;
+	}
+	bool operator==(JComponent & jC)
+	{
+		return instanceName.compare(jC.getInstanceName()) == 0;
+	}
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
+	}
 	JTextField(string text, int numCol);
 	JTextField(int numCol);
 	void setEditable(bool mode);
@@ -532,11 +551,13 @@ JTextField::JTextField(string text, int numCol) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JTextField," + text + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 JTextField::JTextField(int numCol) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JTextField," + to_string(numCol));
+	jComps.push_back(*this);
 }
 void JTextField::setEditable(bool mode)
 {
@@ -550,31 +571,27 @@ void JTextField::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 
-	//add action listener to vector
-	jComps.push_back(*this);
 }
 void JTextField::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-	//add action listener to vector
-	jComps.push_back(*this);
 
 }
 
 class JButton : public JComponent {
 public:
-	JButton( JButton & copy) {
+	JButton(JButton & copy) {
 		instanceName = copy.instanceName;
 	};
-	bool operator==( JButton & jB)
+	bool operator==(JButton & jB)
 	{
-		return instanceName.compare(jB.instanceName)==0;
+		return instanceName.compare(jB.instanceName) == 0;
 	}
-	bool operator==( JComponent & jC)
+	bool operator==(JComponent & jC)
 	{
-		return instanceName.compare(jC.getInstanceName())==0;
+		return instanceName.compare(jC.getInstanceName()) == 0;
 	}
-	void operator = ( JComponent & jC)
+	void operator = (JComponent & jC)
 	{
 		instanceName = jC.getInstanceName();
 	}
@@ -607,14 +624,10 @@ JButton::JButton(string text) //1
 void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-	//Add action listener to vector
 }
 void JButton::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-	//Add action listener to vector
-
-
 }
 
 class JTextArea : public JComponent {
@@ -629,16 +642,19 @@ JTextArea::JTextArea(string text) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JTextArea," + text);
+	jComps.push_back(*this);
 }
 JTextArea::JTextArea(int numRows, int numCol) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JTextArea," + to_string(numRows) + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 JTextArea::JTextArea(string text, int numRows, int numCol) //2
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 void JTextArea::setEditable(bool mode)
 {
@@ -686,20 +702,20 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 }
-/*void Cpp2Java::pause(double ld)
+void Cpp2Java::pause(double ld)
 {
-typedef std::chrono::duration<double> seconds_type;
-if (ld > .01)
-{
-seconds_type period(ld);
-this_thread::sleep_for(period);
+	typedef std::chrono::duration<double> seconds_type;
+	if (ld > .01)
+	{
+		seconds_type period(ld);
+		this_thread::sleep_for(period);
+	}
+	else
+	{
+		seconds_type period(.01);
+		this_thread::sleep_for(period);
+	}
 }
-else
-{
-seconds_type period(.01);
-this_thread::sleep_for(period);
-}
-}*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
 	if (gl->getLayoutType() == "GridLayout,0")
