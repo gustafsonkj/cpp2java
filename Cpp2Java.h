@@ -512,11 +512,13 @@ void JTextField::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//add action listener to vector
+	jComp.push_back(*this);
 }
 void JTextField::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//add action listener to vector
+	jComp.push_back(*this);
 }
 
 class JButton : public JComponent {
@@ -540,12 +542,13 @@ void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//Add action listener to vector
-
+	jComp.push_back(*this);
 }
 void JButton::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//Add action listener to vector
+	jComp.push_back(*this);
 
 }
 
