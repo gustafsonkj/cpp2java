@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <deque>
 #include <chrono>
 #include <thread>
 #include <utility>
@@ -268,10 +269,18 @@ class JComponent {
 	friend class Polygon;
 
 public:
-
-	bool operator==(const JComponent& jC)
+	JComponent() {};
+	JComponent( const JComponent & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==( JComponent& jC);
+	void operator = (JComponent & jC)
 	{
-		return instanceName == jC.instanceName;
+		instanceName = jC.instanceName;
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->instanceName;
 	}
 	virtual void add(JComponent& jc);
 	virtual void drawRect(int x, int y, int width, int height);
@@ -291,10 +300,29 @@ public:
 	virtual void repaint();
 	string getInstanceName();
 	ofstream file1;
+	string instanceName;
 
 protected:
 	void setInstanceName();
-	string instanceName;
+};
+/*ostream& operator<<(ostream& os, JComponent& jC)
+{
+	os << "InstanceName:" << jC.instanceName;
+	return os;
+}*/
+ostream& operator<<(ostream& os, JComponent* jC)
+{
+	os << "InstanceName:" << jC->instanceName;
+	return os;
+}
+ostream& operator<<(ostream& os, JComponent jC)
+{
+	os << "InstanceName:" << jC.instanceName;
+	return os;
+}
+bool JComponent::operator==( JComponent & jC)
+{
+	return instanceName.compare(jC.instanceName)==0;
 };
 void JComponent::add(JComponent& jc)
 {
@@ -390,7 +418,7 @@ string JComponent::getInstanceName()
 // This vector is used to reference action events.
 // It must be declared after JComponent is defined.
 
-vector<JComponent> jComp;
+vector<JComponent> jComps;
 
 
 //
@@ -401,7 +429,7 @@ class ActionEvent
 {
 public:
 	ActionEvent(int jc);
-	JComponent & getSource();
+	JComponent getSource();
 	int jC;
 };
 
@@ -409,15 +437,18 @@ ActionEvent::ActionEvent(int jc)
 {
 	jC = jc;
 }
-JComponent & ActionEvent::getSource()
+JComponent ActionEvent::getSource()
 {
-	return (jComp[jC]);
+	return (jComps[jC]);
 }
 
 class ActionListener
 {
 public:
+	ActionListener() {};
+	ActionListener(const ActionListener & copy) {};
 	virtual void actionPerformed(ActionEvent ae);
+	virtual void actionPerformed(ActionEvent * ae) {};
 };
 void ActionListener::actionPerformed(ActionEvent ae)
 {}
@@ -434,6 +465,7 @@ JPanel::JPanel() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JPanel");
+	jComps.push_back(*this);
 }
 void JPanel::setLayout(GridLayout* gl)
 {
@@ -469,6 +501,8 @@ JLabel::JLabel(string s) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + s);
+	jComps.push_back(*this);
+
 }
 JLabel::JLabel(string s, int alignment) //1
 {
@@ -517,25 +551,36 @@ void JTextField::addActionListener(ActionListener * aL)
 	c.gui.push_back(instanceName + ",addActionListener");
 
 	//add action listener to vector
-	jComp.push_back(*this);
+	jComps.push_back(*this);
 }
 void JTextField::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//add action listener to vector
-	jComp.push_back(*this);
+	jComps.push_back(*this);
 
 }
 
 class JButton : public JComponent {
 public:
-	bool operator==( const JButton & jB)
+	JButton( JButton & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==( JButton & jB)
 	{
-		return instanceName == jB.instanceName;
+		return instanceName.compare(jB.instanceName)==0;
 	}
 	bool operator==( JComponent & jC)
 	{
-		return instanceName == jC.getInstanceName();
+		return instanceName.compare(jC.getInstanceName())==0;
+	}
+	void operator = ( JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
 	}
 	JButton();
 	JButton(string text);
@@ -546,23 +591,28 @@ JButton::JButton() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JButton");
+	cout << "ADDING" << instanceName << endl;
+	jComps.push_back(*this);
+
 }
 JButton::JButton(string text) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
+	cout << "ADDING" << instanceName << endl;
+
+	jComps.push_back(*this);
+
 }
 void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//Add action listener to vector
-	jComp.push_back(*this);
 }
 void JButton::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 	//Add action listener to vector
-	jComp.push_back(*this);
 
 
 }
@@ -638,17 +688,17 @@ void Cpp2Java::finish()
 }
 /*void Cpp2Java::pause(double ld)
 {
-	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01)
-	{
-		seconds_type period(ld);
-		this_thread::sleep_for(period);
-	}
-	else
-	{
-		seconds_type period(.01);
-		this_thread::sleep_for(period);
-	}
+typedef std::chrono::duration<double> seconds_type;
+if (ld > .01)
+{
+seconds_type period(ld);
+this_thread::sleep_for(period);
+}
+else
+{
+seconds_type period(.01);
+this_thread::sleep_for(period);
+}
 }*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
