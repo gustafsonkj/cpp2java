@@ -1,5 +1,9 @@
 // Test_Interface.cpp : Defines the entry point for the console application.
 //
+#ifndef CPP2JAVA_H
+#define CPP2JAVA_H
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,14 +11,120 @@
 #include <chrono>
 #include <thread>
 #include <utility>
-#include "FileWatcher.h"
+//#include "FileWatcher.h"
 #include <iostream>
+#include <stdexcept>
+
+namespace FW
+{
+	/// Type for a string
+	typedef std::string String;
+	/// Type for a watch id
+	typedef unsigned long WatchID;
+
+	// forward declarations
+	class FileWatcherImpl;
+	class FileWatchListener;
+
+	/// Base exception class
+	/// @class Exception
+	class Exception : public std::runtime_error
+	{
+	public:
+		Exception(const String& message)
+			: std::runtime_error(message)
+		{}
+	};
+
+	/// Exception thrown when a file is not found.
+	/// @class FileNotFoundException
+	class FileNotFoundException : public Exception
+	{
+	public:
+		FileNotFoundException()
+			: Exception("File not found")
+		{}
+
+		FileNotFoundException(const String& filename)
+			: Exception("File not found (" + filename + ")")
+		{}
+	};
+
+	/// Actions to listen for. Rename will send two events, one for
+	/// the deletion of the old file, and one for the creation of the
+	/// new file.
+	namespace Actions
+	{
+		enum Action
+		{
+			/// Sent when a file is created or renamed
+			Add = 1,
+			/// Sent when a file is deleted or renamed
+			Delete = 2,
+			/// Sent when a file is modified
+			Modified = 4
+		};
+	};
+	typedef Actions::Action Action;
+
+	/// Listens to files and directories and dispatches events
+	/// to notify the parent program of the changes.
+	/// @class FileWatcher
+	class FileWatcher
+	{
+	public:
+		///
+		///
+		FileWatcher();
+
+		///
+		///
+		virtual ~FileWatcher();
+
+		/// Add a directory watch
+		/// @exception FileNotFoundException Thrown when the requested directory does not exist
+		WatchID addWatch(const String& directory, FileWatchListener* watcher);
+
+		/// Remove a directory watch. This is a brute force search O(nlogn).
+		void removeWatch(const String& directory);
+
+		/// Remove a directory watch. This is a map lookup O(logn).
+		void removeWatch(WatchID watchid);
+
+		/// Updates the watcher. Must be called often.
+		void update();
+
+	private:
+		/// The implementation
+		FileWatcherImpl* mImpl;
+
+	};//end FileWatcher
+
+
+	  /// Basic interface for listening for file events.
+	  /// @class FileWatchListener
+	class FileWatchListener
+	{
+	public:
+		FileWatchListener() {}
+		virtual ~FileWatchListener() {}
+
+		/// Handles the action file action
+		/// @param watchid The watch id for the directory
+		/// @param dir The directory
+		/// @param filename The filename that was accessed (not full path)
+		/// @param action Action that was performed
+		virtual void handleFileAction(WatchID watchid, const String& dir, const String& filename, Action action) = 0;
+
+	};//class FileWatchListener
+
+};//namespace FW
 
 using namespace std;
 
 class UpdateListener : public FW::FileWatcher {
-public: 
-	UpdateListener();
+public:
+	UpdateListener() {};
 	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
 	{
 		//put what occurs with actions here
@@ -22,12 +132,16 @@ public:
 		{
 		case FW::Actions::Add:
 			//something is ADDED to the file
+			break;
 		case FW::Actions::Delete:
 			//something is DELETED from the file
+			break;
 		case FW::Actions::Modified:
 			//the file is CHANGED
+			break;
 		default:
 			//this should never occur
+			break;
 		}
 	}
 	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
@@ -419,19 +533,18 @@ void JTextArea::setText(string newText)
 class ActionEvent
 {
 public:
-	ActionEvent(JComponent jc);
-	JComponent * getSource();
-	JComponent * jC;
+	ActionEvent(int jc);
+	JComponent getSource();
+	int jC;
 };
 
-ActionEvent::ActionEvent(JComponent jc)
+ActionEvent::ActionEvent(int jc)
 {
-	jc = c.jComp[c.instanceCounter];
-	jC = &jc;
+	jC = jc;
 }
-JComponent * ActionEvent::getSource()
+JComponent ActionEvent::getSource()
 {
-	return jC;
+	return c.jComp[jC];
 }
 
 class ActionListener
@@ -526,3 +639,5 @@ void Cpp2Java::add(JComponent& jc, string layout)
 {
 	c.gui.push_back("-1,addContainer," + jc.getInstanceName() + "," + layout);
 }
+
+#endif // !CPP2JAVA_H
