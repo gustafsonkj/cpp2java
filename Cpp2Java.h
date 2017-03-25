@@ -387,6 +387,41 @@ string JComponent::getInstanceName()
 	return instanceName;
 }
 
+// This vector is used to reference action events.
+// It must be declared after JComponent is defined.
+
+vector<JComponent> jComp;
+
+
+//
+//
+
+
+class ActionEvent
+{
+public:
+	ActionEvent(int jc);
+	JComponent & getSource();
+	int jC;
+};
+
+ActionEvent::ActionEvent(int jc)
+{
+	jC = jc;
+}
+JComponent & ActionEvent::getSource()
+{
+	return (jComp[jC]);
+}
+
+class ActionListener
+{
+public:
+	virtual void actionPerformed(ActionEvent ae);
+};
+void ActionListener::actionPerformed(ActionEvent ae)
+{}
+
 class JPanel : public JComponent {
 public:
 	JPanel();
@@ -456,7 +491,8 @@ public:
 	JTextField(int numCol);
 	void setEditable(bool mode);
 	void setText(string newText);
-	void addActionListener();
+	void addActionListener(ActionListener * aL);
+	void addActionListener(ActionListener & aL);
 };
 JTextField::JTextField(string text, int numCol) //0
 {
@@ -476,10 +512,10 @@ void JTextField::setText(string newText)
 {
 	c.gui.push_back(instanceName + ",setTextJTF," + newText);
 }
-void JTextField::addActionListener()
+void JTextField::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-<<<<<<< HEAD
+
 	//add action listener to vector
 	jComp.push_back(*this);
 }
@@ -488,8 +524,7 @@ void JTextField::addActionListener(ActionListener & aL)
 	c.gui.push_back(instanceName + ",addActionListener");
 	//add action listener to vector
 	jComp.push_back(*this);
-=======
->>>>>>> ce7cd6ab5a32ba7a6c73eeac74ae8d44659ade2e
+
 }
 
 class JButton : public JComponent {
@@ -504,7 +539,8 @@ public:
 	}
 	JButton();
 	JButton(string text);
-	void addActionListener();
+	void addActionListener(ActionListener * aL);
+	void addActionListener(ActionListener & aL);
 };
 JButton::JButton() //0
 {
@@ -516,10 +552,9 @@ JButton::JButton(string text) //1
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
 }
-void JButton::addActionListener()
+void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-<<<<<<< HEAD
 	//Add action listener to vector
 	jComp.push_back(*this);
 }
@@ -529,8 +564,7 @@ void JButton::addActionListener(ActionListener & aL)
 	//Add action listener to vector
 	jComp.push_back(*this);
 
-=======
->>>>>>> ce7cd6ab5a32ba7a6c73eeac74ae8d44659ade2e
+
 }
 
 class JTextArea : public JComponent {
@@ -565,42 +599,6 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + newText);
 }
 
-
-
-// This vector is used to reference action events.
-// It must be declared after JComponent is defined.
-
-vector<JComponent> jComp;
-
-
-//
-//
-
-
-class ActionEvent
-{
-public:
-	ActionEvent(int jc);
-	JComponent & getSource();
-	int jC;
-};
-
-ActionEvent::ActionEvent(int jc)
-{
-	jC = jc;
-}
-JComponent & ActionEvent::getSource()
-{
-	return (jComp[jC]);
-}
-
-class ActionListener
-{
-public:
-	void actionPerformed(ActionEvent ae);
-};
-void ActionListener::actionPerformed(ActionEvent ae)
-{}
 
 class Cpp2Java {
 public:
