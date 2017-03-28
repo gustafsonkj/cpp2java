@@ -500,19 +500,33 @@ public:
 JLabel::JLabel(string s) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + s);
+	string n;
+	for (char i : s)
+		if (i == ',')
+			n += "@@--@@";
+		else
+			n += i;
+	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + n);
 	jComps.push_back(*this);
 
 }
 JLabel::JLabel(string s, int alignment) //1
 {
 	setInstanceName();
+	string n;
+	for (char i : s)
+		if (i == ',')
+			n += "@@--@@";
+		else
+			n += i;
 	c.gui.push_back(instanceName + ",instantiate,1,JLabel," + s + "," + to_string(alignment));
+	jComps.push_back(*this);
 }
 JLabel::JLabel(Image image)
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instance,2,JLabel," + image.filename);
+	jComps.push_back(*this);
 }
 void JLabel::setText(string s)
 {
