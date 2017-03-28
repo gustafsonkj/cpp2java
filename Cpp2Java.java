@@ -51,6 +51,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 						switch (line[1]) { //Type of Command
                   case "addActionListener":
                   {
+                     ((DynamicJButton)comps.get(ID)).addActionListener();
                      //need to add actionlistener to the type and instance of jcomponent passed in
                      //will use dynamic action listener class that zac created to do this
                      //DynamicActionListener.addActionListener(comps[ID]);
