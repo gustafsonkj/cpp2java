@@ -112,7 +112,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 									{
 										switch (Integer.parseInt(line[2])) {
 										case 0:
-											comps.add(ID, new JButton());
+											comps.add(ID, new DynamicJButton(ID));
 											break;
 										case 1:
 											comps.add(ID, new JButton(line[4]));
