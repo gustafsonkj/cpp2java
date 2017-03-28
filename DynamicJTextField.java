@@ -2,15 +2,19 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class DynamicJButton extends JButton implements ActionListener
+public class DynamicJTextField extends JTextField implements ActionListener
 {
   private int id;
    
-   public DynamicJButton(int ID){
+   public DynamicJTextField(String text, int other,int ID){
+     
+      super(text,other); //I think...
       id = ID;
-      //addActionListener(this);
    }
    
+   public DynamicJTextField(int other, int ID){
+   id = ID;
+   }
    public int getID(){
       return id;
    }
@@ -40,9 +44,3 @@ public class DynamicJButton extends JButton implements ActionListener
       
    }
  }
-/*class DynamicActionListener implements ActionListener
-{
-   public void actionPerformed(ActionEvent ae)
-   {   }
-   
-}*/
