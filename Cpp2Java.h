@@ -1,20 +1,131 @@
 // Test_Interface.cpp : Defines the entry point for the console application.
 //
+#ifndef CPP2JAVA_H
+#define CPP2JAVA_H
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <deque>
 #include <chrono>
 #include <thread>
 #include <utility>
-#include "FileWatcher.h"
+//#include "FileWatcher.h"
 #include <iostream>
+#include <stdexcept>
+
+namespace FW
+{
+	/// Type for a string
+	typedef std::string String;
+	/// Type for a watch id
+	typedef unsigned long WatchID;
+
+	// forward declarations
+	class FileWatcherImpl;
+	class FileWatchListener;
+
+	/// Base exception class
+	/// @class Exception
+	class Exception : public std::runtime_error
+	{
+	public:
+		Exception(const String& message)
+			: std::runtime_error(message)
+		{}
+	};
+
+	/// Exception thrown when a file is not found.
+	/// @class FileNotFoundException
+	class FileNotFoundException : public Exception
+	{
+	public:
+		FileNotFoundException()
+			: Exception("File not found")
+		{}
+
+		FileNotFoundException(const String& filename)
+			: Exception("File not found (" + filename + ")")
+		{}
+	};
+
+	/// Actions to listen for. Rename will send two events, one for
+	/// the deletion of the old file, and one for the creation of the
+	/// new file.
+	namespace Actions
+	{
+		enum Action
+		{
+			/// Sent when a file is created or renamed
+			Add = 1,
+			/// Sent when a file is deleted or renamed
+			Delete = 2,
+			/// Sent when a file is modified
+			Modified = 4
+		};
+	};
+	typedef Actions::Action Action;
+
+	/// Listens to files and directories and dispatches events
+	/// to notify the parent program of the changes.
+	/// @class FileWatcher
+	class FileWatcher
+	{
+	public:
+		///
+		///
+		FileWatcher();
+
+		///
+		///
+		virtual ~FileWatcher();
+
+		/// Add a directory watch
+		/// @exception FileNotFoundException Thrown when the requested directory does not exist
+		WatchID addWatch(const String& directory, FileWatchListener* watcher);
+
+		/// Remove a directory watch. This is a brute force search O(nlogn).
+		void removeWatch(const String& directory);
+
+		/// Remove a directory watch. This is a map lookup O(logn).
+		void removeWatch(WatchID watchid);
+
+		/// Updates the watcher. Must be called often.
+		void update();
+
+	private:
+		/// The implementation
+		FileWatcherImpl* mImpl;
+
+	};//end FileWatcher
+
+
+	  /// Basic interface for listening for file events.
+	  /// @class FileWatchListener
+	class FileWatchListener
+	{
+	public:
+		FileWatchListener() {}
+		virtual ~FileWatchListener() {}
+
+		/// Handles the action file action
+		/// @param watchid The watch id for the directory
+		/// @param dir The directory
+		/// @param filename The filename that was accessed (not full path)
+		/// @param action Action that was performed
+		virtual void handleFileAction(WatchID watchid, const String& dir, const String& filename, Action action) = 0;
+
+	};//class FileWatchListener
+
+};//namespace FW
 
 using namespace std;
 
 class UpdateListener : public FW::FileWatcher {
-public: 
-	UpdateListener();
+public:
+	UpdateListener() {};
 	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
 	{
 		//put what occurs with actions here
@@ -22,12 +133,16 @@ public:
 		{
 		case FW::Actions::Add:
 			//something is ADDED to the file
+			break;
 		case FW::Actions::Delete:
 			//something is DELETED from the file
+			break;
 		case FW::Actions::Modified:
 			//the file is CHANGED
+			break;
 		default:
 			//this should never occur
+			break;
 		}
 	}
 	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
@@ -45,7 +160,6 @@ public:
 	vector<string> gui;
 	vector<string> paint;
 	int instanceCounter;
-	vector<JComponent> jComp;
 };
 Commands c;
 
@@ -66,7 +180,7 @@ char KeyEvent::getKeyChar()
 }
 class KeyListener {
 public:
-	virtual void keyReleased(KeyEvent ke);
+	virtual void keyReleased(KeyEvent ke) {};
 };
 
 class Polygon {
@@ -155,6 +269,19 @@ class JComponent {
 	friend class Polygon;
 
 public:
+	JComponent() {};
+	JComponent(const JComponent & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JComponent& jC);
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.instanceName;
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->instanceName;
+	}
 	virtual void add(JComponent& jc);
 	virtual void drawRect(int x, int y, int width, int height);
 	virtual void drawLine(int xStart, int yStart, int xEnd, int yEnd);
@@ -173,10 +300,29 @@ public:
 	virtual void repaint();
 	string getInstanceName();
 	ofstream file1;
+	string instanceName;
 
 protected:
 	void setInstanceName();
-	string instanceName;
+};
+/*ostream& operator<<(ostream& os, JComponent& jC)
+{
+os << "InstanceName:" << jC.instanceName;
+return os;
+}*/
+ostream& operator<<(ostream& os, JComponent* jC)
+{
+	os << "InstanceName:" << jC->instanceName;
+	return os;
+}
+ostream& operator<<(ostream& os, JComponent jC)
+{
+	os << "InstanceName:" << jC.instanceName;
+	return os;
+}
+bool JComponent::operator==(JComponent & jC)
+{
+	return instanceName.compare(jC.instanceName) == 0;
 };
 void JComponent::add(JComponent& jc)
 {
@@ -269,6 +415,44 @@ string JComponent::getInstanceName()
 	return instanceName;
 }
 
+// This vector is used to reference action events.
+// It must be declared after JComponent is defined.
+
+vector<JComponent> jComps;
+
+
+//
+//
+
+
+class ActionEvent
+{
+public:
+	ActionEvent(int jc);
+	JComponent getSource();
+	int jC;
+};
+
+ActionEvent::ActionEvent(int jc)
+{
+	jC = jc;
+}
+JComponent ActionEvent::getSource()
+{
+	return (jComps[jC]);
+}
+
+class ActionListener
+{
+public:
+	ActionListener() {};
+	ActionListener(const ActionListener & copy) {};
+	virtual void actionPerformed(ActionEvent ae);
+	virtual void actionPerformed(ActionEvent * ae) {};
+};
+void ActionListener::actionPerformed(ActionEvent ae)
+{}
+
 class JPanel : public JComponent {
 public:
 	JPanel();
@@ -281,6 +465,7 @@ JPanel::JPanel() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JPanel");
+	jComps.push_back(*this);
 }
 void JPanel::setLayout(GridLayout* gl)
 {
@@ -316,6 +501,8 @@ JLabel::JLabel(string s) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + s);
+	jComps.push_back(*this);
+
 }
 JLabel::JLabel(string s, int alignment) //1
 {
@@ -334,21 +521,43 @@ void JLabel::setText(string s)
 
 class JTextField : public JComponent {
 public:
+	JTextField(JTextField & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JTextField & jtf)
+	{
+		return instanceName.compare(jtf.instanceName) == 0;
+	}
+	bool operator==(JComponent & jC)
+	{
+		return instanceName.compare(jC.getInstanceName()) == 0;
+	}
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
+	}
 	JTextField(string text, int numCol);
 	JTextField(int numCol);
 	void setEditable(bool mode);
 	void setText(string newText);
-	void addActionListener();
+	void addActionListener(ActionListener * aL);
+	void addActionListener(ActionListener & aL);
 };
 JTextField::JTextField(string text, int numCol) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JTextField," + text + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 JTextField::JTextField(int numCol) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JTextField," + to_string(numCol));
+	jComps.push_back(*this);
 }
 void JTextField::setEditable(bool mode)
 {
@@ -358,28 +567,65 @@ void JTextField::setText(string newText)
 {
 	c.gui.push_back(instanceName + ",setTextJTF," + newText);
 }
-void JTextField::addActionListener()
+void JTextField::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
+
+}
+void JTextField::addActionListener(ActionListener & aL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+
 }
 
 class JButton : public JComponent {
 public:
+	JButton(JButton & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JButton & jB)
+	{
+		return instanceName.compare(jB.instanceName) == 0;
+	}
+	bool operator==(JComponent & jC)
+	{
+		return instanceName.compare(jC.getInstanceName()) == 0;
+	}
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
+	}
 	JButton();
 	JButton(string text);
-	void addActionListener();
+	void addActionListener(ActionListener * aL);
+	void addActionListener(ActionListener & aL);
 };
 JButton::JButton() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JButton");
+	cout << "ADDING" << instanceName << endl;
+	jComps.push_back(*this);
+
 }
 JButton::JButton(string text) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
+	cout << "ADDING" << instanceName << endl;
+
+	jComps.push_back(*this);
+
 }
-void JButton::addActionListener()
+void JButton::addActionListener(ActionListener * aL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+}
+void JButton::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
 }
@@ -396,16 +642,19 @@ JTextArea::JTextArea(string text) //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JTextArea," + text);
+	jComps.push_back(*this);
 }
 JTextArea::JTextArea(int numRows, int numCol) //1
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,1,JTextArea," + to_string(numRows) + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 JTextArea::JTextArea(string text, int numRows, int numCol) //2
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
+	jComps.push_back(*this);
 }
 void JTextArea::setEditable(bool mode)
 {
@@ -416,31 +665,6 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + newText);
 }
 
-class ActionEvent
-{
-public:
-	ActionEvent(JComponent jc);
-	JComponent * getSource();
-	JComponent * jC;
-};
-
-ActionEvent::ActionEvent(JComponent jc)
-{
-	jc = c.jComp[c.instanceCounter];
-	jC = &jc;
-}
-JComponent * ActionEvent::getSource()
-{
-	return jC;
-}
-
-class ActionListener
-{
-public:
-	void actionPerformed(ActionEvent ae);
-};
-void ActionListener::actionPerformed(ActionEvent ae)
-{}
 
 class Cpp2Java {
 public:
@@ -526,3 +750,5 @@ void Cpp2Java::add(JComponent& jc, string layout)
 {
 	c.gui.push_back("-1,addContainer," + jc.getInstanceName() + "," + layout);
 }
+
+#endif // !CPP2JAVA_H
