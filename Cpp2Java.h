@@ -8,118 +8,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <deque>
 #include <chrono>
 #include <thread>
 #include <utility>
 //#include "FileWatcher.h"
-#include <iostream>
 #include <stdexcept>
-
-namespace FW
-{
-	/// Type for a string
-	typedef std::string String;
-	/// Type for a watch id
-	typedef unsigned long WatchID;
-
-	// forward declarations
-	class FileWatcherImpl;
-	class FileWatchListener;
-
-	/// Base exception class
-	/// @class Exception
-	class Exception : public std::runtime_error
-	{
-	public:
-		Exception(const String& message)
-			: std::runtime_error(message)
-		{}
-	};
-
-	/// Exception thrown when a file is not found.
-	/// @class FileNotFoundException
-	class FileNotFoundException : public Exception
-	{
-	public:
-		FileNotFoundException()
-			: Exception("File not found")
-		{}
-
-		FileNotFoundException(const String& filename)
-			: Exception("File not found (" + filename + ")")
-		{}
-	};
-
-	/// Actions to listen for. Rename will send two events, one for
-	/// the deletion of the old file, and one for the creation of the
-	/// new file.
-	namespace Actions
-	{
-		enum Action
-		{
-			/// Sent when a file is created or renamed
-			Add = 1,
-			/// Sent when a file is deleted or renamed
-			Delete = 2,
-			/// Sent when a file is modified
-			Modified = 4
-		};
-	};
-	typedef Actions::Action Action;
-
-	/// Listens to files and directories and dispatches events
-	/// to notify the parent program of the changes.
-	/// @class FileWatcher
-	class FileWatcher
-	{
-	public:
-		///
-		///
-		FileWatcher();
-
-		///
-		///
-		virtual ~FileWatcher();
-
-		/// Add a directory watch
-		/// @exception FileNotFoundException Thrown when the requested directory does not exist
-		WatchID addWatch(const String& directory, FileWatchListener* watcher);
-
-		/// Remove a directory watch. This is a brute force search O(nlogn).
-		void removeWatch(const String& directory);
-
-		/// Remove a directory watch. This is a map lookup O(logn).
-		void removeWatch(WatchID watchid);
-
-		/// Updates the watcher. Must be called often.
-		void update();
-
-	private:
-		/// The implementation
-		FileWatcherImpl* mImpl;
-
-	};//end FileWatcher
-
-
-	  /// Basic interface for listening for file events.
-	  /// @class FileWatchListener
-	class FileWatchListener
-	{
-	public:
-		FileWatchListener() {}
-		virtual ~FileWatchListener() {}
-
-		/// Handles the action file action
-		/// @param watchid The watch id for the directory
-		/// @param dir The directory
-		/// @param filename The filename that was accessed (not full path)
-		/// @param action Action that was performed
-		virtual void handleFileAction(WatchID watchid, const String& dir, const String& filename, Action action) = 0;
-
-	};//class FileWatchListener
-
-};//namespace FW
 
 using namespace std;
 
@@ -667,41 +560,6 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + n);
 }
 
-class UpdateListener : public FW::FileWatchListener {
-public:
-	UpdateListener() {};
-	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
-	{
-		//put what occurs with actions here
-		switch (action)
-		{
-		case FW::Actions::Add:
-			//something is ADDED to the file
-			break;
-		case FW::Actions::Delete:
-			//something is DELETED from the file
-			break;
-		case FW::Actions::Modified:
-			//the file is CHANGED
-
-			cout << "FILE CHANGED!" << endl;
-
-			break;
-		default:
-			//this should never occur
-			break;
-		}
-	}
-	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
-	//We will need to instantiate the following code in an area which will RUN: 
-	//FW::FileWatcher fileWatcher;
-	//FW::WatchID watchID = fileWatcher.addWatch("Cpp2Java_actionPerformed.csv", new UpdateListener());
-	//We then need a loop running with the following code: 
-	//fileWatcher.update()
-	//This code will monitor all of the WatchIDs associated with it, checking for file changes.
-	//Inside the interface folder is a file called "SimpleDemo", which is a demo of this file watcher's use. It includes the links to the source code online.
-};
-
 class Cpp2Java {
 public:
 	Cpp2Java();
@@ -738,14 +596,24 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 
-	UpdateListener * myUL = new UpdateListener();
-	FW::FileWatcher fileWatcher;
-	FW::WatchID watchID = fileWatcher.addWatch("test.txt", myUL);
-	//We then need a loop running with the following code: 
-	while (1)
-	{
-		fileWatcher.update();
+	struct stat st;
+	int ierr = stat("/test.txt", &st);
+	if (ierr != 0) {
+		cout << "error";
 	}
+	int date = st.st_mtime;
+	while (1) {
+		int newdate = st.st_mtime;
+		this_thread::sleep_for(chrono::milliseconds(1000));
+		if (newdate == date) {
+			cout << "same file.. no change" << endl;
+		}
+		else if (newdate != date) {
+			cout << "file changed" << endl;
+			break;
+		}
+	}
+
 }
 /*void Cpp2Java::pause(double ld)
 {
