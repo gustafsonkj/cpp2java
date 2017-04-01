@@ -123,38 +123,6 @@ namespace FW
 
 using namespace std;
 
-class UpdateListener : public FW::FileWatcher {
-public:
-	UpdateListener() {};
-	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
-	{
-		//put what occurs with actions here
-		switch (action)
-		{
-		case FW::Actions::Add:
-			//something is ADDED to the file
-			break;
-		case FW::Actions::Delete:
-			//something is DELETED from the file
-			break;
-		case FW::Actions::Modified:
-			//the file is CHANGED
-			break;
-		default:
-			//this should never occur
-			break;
-		}
-	}
-	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
-	//We will need to instantiate the following code in an area which will RUN: 
-	//FW::FileWatcher fileWatcher;
-	//FW::WatchID watchID = fileWatcher.addWatch("Cpp2Java_actionPerformed.csv", new UpdateListener());
-	//We then need a loop running with the following code: 
-	//fileWatcher.update()
-	//This code will monitor all of the WatchIDs associated with it, checking for file changes.
-	//Inside the interface folder is a file called "SimpleDemo", which is a demo of this file watcher's use. It includes the links to the source code online.
-};
-
 class Commands {
 public:
 	vector<string> gui;
@@ -502,9 +470,7 @@ JLabel::JLabel(string s) //0
 	setInstanceName();
 	string n;
 	for (char i : s)
-		if (i == ',')
-			n += "@@--@@";
-		else
+		if (i != ',')
 			n += i;
 	c.gui.push_back(instanceName + ",instantiate,0,JLabel," + n);
 	jComps.push_back(*this);
@@ -515,11 +481,9 @@ JLabel::JLabel(string s, int alignment) //1
 	setInstanceName();
 	string n;
 	for (char i : s)
-		if (i == ',')
-			n += "@@--@@";
-		else
+		if (i != ',')
 			n += i;
-	c.gui.push_back(instanceName + ",instantiate,1,JLabel," + s + "," + to_string(alignment));
+	c.gui.push_back(instanceName + ",instantiate,1,JLabel," + n + "," + to_string(alignment));
 	jComps.push_back(*this);
 }
 JLabel::JLabel(Image image)
@@ -530,7 +494,11 @@ JLabel::JLabel(Image image)
 }
 void JLabel::setText(string s)
 {
-	c.gui.push_back(instanceName + ",setTextJL," + s);
+	string n;
+	for (char i : s)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",setTextJL," + n);
 }
 
 class JTextField : public JComponent {
@@ -579,7 +547,11 @@ void JTextField::setEditable(bool mode)
 }
 void JTextField::setText(string newText)
 {
-	c.gui.push_back(instanceName + ",setTextJTF," + newText);
+	string n;
+	for (char i : newText)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",setTextJTF," + n);
 }
 void JTextField::addActionListener(ActionListener * aL)
 {
@@ -629,7 +601,11 @@ JButton::JButton() //0
 JButton::JButton(string text) //1
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,1,JButton," + text);
+	string n;
+	for (char i : text)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",instantiate,1,JButton," + n);
 	cout << "ADDING" << instanceName << endl;
 
 	jComps.push_back(*this);
@@ -655,7 +631,11 @@ public:
 JTextArea::JTextArea(string text) //0
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,0,JTextArea," + text);
+	string n;
+	for (char i : text)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",instantiate,0,JTextArea," + n);
 	jComps.push_back(*this);
 }
 JTextArea::JTextArea(int numRows, int numCol) //1
@@ -667,7 +647,11 @@ JTextArea::JTextArea(int numRows, int numCol) //1
 JTextArea::JTextArea(string text, int numRows, int numCol) //2
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,2,JTextArea," + text + "," + to_string(numRows) + "," + to_string(numCol));
+	string n;
+	for (char i : text)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",instantiate,2,JTextArea," + n + "," + to_string(numRows) + "," + to_string(numCol));
 	jComps.push_back(*this);
 }
 void JTextArea::setEditable(bool mode)
@@ -676,9 +660,47 @@ void JTextArea::setEditable(bool mode)
 }
 void JTextArea::setText(string newText)
 {
-	c.gui.push_back(instanceName + ",setTextJTA," + newText);
+	string n;
+	for (char i : newText)
+		if (i != ',')
+			n += i;
+	c.gui.push_back(instanceName + ",setTextJTA," + n);
 }
 
+class UpdateListener : public FW::FileWatchListener {
+public:
+	UpdateListener() {};
+	void handleFileAction(FW::WatchID watchID, const FW::String& dir, const FW::String& fileName, FW::Action action)
+	{
+		//put what occurs with actions here
+		switch (action)
+		{
+		case FW::Actions::Add:
+			//something is ADDED to the file
+			break;
+		case FW::Actions::Delete:
+			//something is DELETED from the file
+			break;
+		case FW::Actions::Modified:
+			//the file is CHANGED
+
+			cout << "FILE CHANGED!" << endl;
+
+			break;
+		default:
+			//this should never occur
+			break;
+		}
+	}
+	//This class is the basic file watching class. When an action is performed on the file specified, one of the specified action types is returned.
+	//We will need to instantiate the following code in an area which will RUN: 
+	//FW::FileWatcher fileWatcher;
+	//FW::WatchID watchID = fileWatcher.addWatch("Cpp2Java_actionPerformed.csv", new UpdateListener());
+	//We then need a loop running with the following code: 
+	//fileWatcher.update()
+	//This code will monitor all of the WatchIDs associated with it, checking for file changes.
+	//Inside the interface folder is a file called "SimpleDemo", which is a demo of this file watcher's use. It includes the links to the source code online.
+};
 
 class Cpp2Java {
 public:
@@ -715,8 +737,17 @@ void Cpp2Java::finish()
 	}
 	file << "-1,end" << endl;
 	file.close();
+
+	UpdateListener * myUL = new UpdateListener();
+	FW::FileWatcher fileWatcher;
+	FW::WatchID watchID = fileWatcher.addWatch("test.txt", myUL);
+	//We then need a loop running with the following code: 
+	while (1)
+	{
+		fileWatcher.update();
+	}
 }
-void Cpp2Java::pause(double ld)
+/*void Cpp2Java::pause(double ld)
 {
 	typedef std::chrono::duration<double> seconds_type;
 	if (ld > .01)
@@ -729,7 +760,7 @@ void Cpp2Java::pause(double ld)
 		seconds_type period(.01);
 		this_thread::sleep_for(period);
 	}
-}
+}*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
 	if (gl->getLayoutType() == "GridLayout,0")
