@@ -28,7 +28,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 			BufferedReader br;
 			String fileLine;
 			protected void onChange(File file) {
-
+            
+            System.out.println("ch1");
 				// here we code the action on a change
 				//System.out.println("File " + file.getName() + " have change !");
 				try {
@@ -36,6 +37,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 				} catch(FileNotFoundException fnfe) {
 
 }
+System.out.println("ch2");
 				br = new BufferedReader(fr);
 				try {
 					while ((fileLine = br.readLine()) != null) {
@@ -125,6 +127,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 											comps.add(ID, new DynamicJButton(ID));
 											break;
 										case 1:
+                              System.out.println("ch3");
 											comps.add(ID, new JButton(line[4]));
 											break;
 										}

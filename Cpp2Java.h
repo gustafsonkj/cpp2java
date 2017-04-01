@@ -487,7 +487,6 @@ JButton::JButton() //0
 {
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JButton");
-	cout << "ADDING" << instanceName << endl;
 	jComps.push_back(*this);
 
 }
@@ -498,9 +497,7 @@ JButton::JButton(string text) //1
 	for (char i : text)
 		if (i != ',')
 			n += i;
-	c.gui.push_back(instanceName + ",instantiate,1,JButton," + n);
-	cout << "ADDING" << instanceName << endl;
-
+	c.gui.push_back(instanceName + ",instantiate,1,JButton,"+n);
 	jComps.push_back(*this);
 
 }
@@ -576,7 +573,7 @@ public:
 	ofstream file1;
 
 private:
-	KeyListener & storedKL = *new KeyListener();
+	KeyListener * storedKL = new KeyListener();
 };
 Cpp2Java::Cpp2Java()
 {
@@ -585,7 +582,6 @@ void Cpp2Java::removeAll()
 {
 	file.open("Cpp2Java_gui.csv");
 	file.clear();
-	c.gui.clear();
 	file << "-1,removeAll\n";
 
 	//might need to move this to finish()
@@ -643,7 +639,7 @@ void Cpp2Java::finish()
 			//	cout << s << endl;
 
 			// Use Java Command vector to call commands here
-			storedKL.keyReleased(*new KeyEvent('G'));
+			storedKL->keyReleased(*new KeyEvent('G'));
 
 		}
 	}
@@ -681,13 +677,13 @@ void Cpp2Java::addKeyListener(KeyListener * kL)
 {
 	c.gui.push_back("-1,addKeyListener");
 
-	storedKL = *kL;
+	storedKL = kL;
 }
 void Cpp2Java::addKeyListener(KeyListener & kL)
 {
 	c.gui.push_back("-1,addKeyListener");
 
-	storedKL = kL;
+	storedKL = &kL;
 }
 void Cpp2Java::add(JComponent& jc)
 {
