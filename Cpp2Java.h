@@ -497,7 +497,7 @@ JButton::JButton(string text) //1
 	for (char i : text)
 		if (i != ',')
 			n += i;
-	c.gui.push_back(instanceName + ",instantiate,1,JButton,"+n);
+	c.gui.push_back(instanceName + ",instantiate,1,JButton," + n);
 	jComps.push_back(*this);
 
 }
@@ -596,13 +596,13 @@ void Cpp2Java::finish()
 
 	// LOOP PHASE
 	struct stat st;
-	int ierr = stat("test.txt", &st); // FILE TO BE WATCHED
+	int ierr = stat("Java2Cpp.csv", &st); // FILE TO BE WATCHED
 	if (ierr != 0) {
 		cout << "error";
 	}
 	int date = st.st_mtime;
 	while (1) {
-		ierr = stat("test.txt", &st); // FILE TO BE WATCHED
+		ierr = stat("Java2Cpp.csv", &st); // FILE TO BE WATCHED
 		int newdate = st.st_mtime;
 
 		this_thread::sleep_for(chrono::milliseconds(100));
@@ -619,7 +619,7 @@ void Cpp2Java::finish()
 			while (!infile.eof()) // To get you all the lines.
 			{
 				getline(infile, command); // Saves the line in STRING.
-				//cout << command; // Prints our STRING.
+										  //cout << command; // Prints our STRING.
 			}
 			infile.close();
 
@@ -633,14 +633,15 @@ void Cpp2Java::finish()
 				JavaCommand.push_back(token);
 				command.erase(0, pos + delimiter.length());
 			}
-			
+
+			cout << "press" << endl;
 			switch (stoi(JavaCommand.at(0)))
 			{
 			case -1:
 				if (JavaCommand.at(1).compare("KeyEvent")) //Key Listeners
 				{
 					// Use Java Command vector to call commands here
-					storedKL.keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
+					storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
 				}
 				else if (JavaCommand.at(1).compare("MouseEvent")) //Mouse Listeners
 				{
@@ -667,17 +668,17 @@ void Cpp2Java::finish()
 }
 /*void Cpp2Java::pause(double ld)
 {
-	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01)
-	{
-		seconds_type period(ld);
-		this_thread::sleep_for(period);
-	}
-	else
-	{
-		seconds_type period(.01);
-		this_thread::sleep_for(period);
-	}
+typedef std::chrono::duration<double> seconds_type;
+if (ld > .01)
+{
+seconds_type period(ld);
+this_thread::sleep_for(period);
+}
+else
+{
+seconds_type period(.01);
+this_thread::sleep_for(period);
+}
 }*/
 void Cpp2Java::setLayout(GridLayout* gl)
 {
