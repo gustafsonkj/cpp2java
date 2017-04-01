@@ -319,6 +319,9 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         contents.setFocusable(true);
                         contents.addKeyListener(new DynamicKeyAdapter());
                         break;
+                     case "addMouseListener":
+                        contents.addMouseListener(new DynamicMouseListener());
+                        break;
 							}
 						//default:
 							//break;
