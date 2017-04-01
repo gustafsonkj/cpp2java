@@ -634,12 +634,32 @@ void Cpp2Java::finish()
 				command.erase(0, pos + delimiter.length());
 			}
 			
-			// Test command
-			//for (string s : JavaCommand)
-			//	cout << s << endl;
+			switch (stoi(JavaCommand.at(0)))
+			{
+			case -1:
+				if (JavaCommand.at(1).compare("KeyEvent")) //Key Listeners
+				{
+					// Use Java Command vector to call commands here
+					storedKL.keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
+				}
+				else if (JavaCommand.at(1).compare("MouseEvent")) //Mouse Listeners
+				{
 
-			// Use Java Command vector to call commands here
-			storedKL->keyReleased(*new KeyEvent('G'));
+				}
+				else if (JavaCommand.at(1).compare("MouseMotionEvent")) //Mouse Motion Listeners
+				{
+
+				}
+				break;
+			case 0:
+				//Action Listeners
+				break;
+			case 1:
+				//Item Listeners
+				break;
+			default:
+				break;
+			}
 
 		}
 	}
