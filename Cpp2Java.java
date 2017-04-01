@@ -318,9 +318,13 @@ System.out.println("ch2");
                               frame.contents.add(comps.get(Integer.parseInt(line[2])));
                            }
 							   }
+                        break;
                      case "addKeyListener":
-                        contents.setFocusable(true);
+                     System.out.println("CH4");
                         contents.addKeyListener(new DynamicKeyAdapter());
+                        contents.setFocusable(true);
+                        contents.requestFocusInWindow();
+
                         break;
                      case "addMouseListener":
                         contents.addMouseListener(new DynamicMouseListener());
