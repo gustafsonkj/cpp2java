@@ -596,21 +596,27 @@ void Cpp2Java::finish()
 	file << "-1,end" << endl;
 	file.close();
 
+	// LOOP PHASE
 	struct stat st;
-	int ierr = stat("/test.txt", &st);
+	int ierr = stat("test.txt", &st); // FILE TO BE WATCHED
 	if (ierr != 0) {
 		cout << "error";
 	}
 	int date = st.st_mtime;
 	while (1) {
+		ierr = stat("test.txt", &st); // FILE TO BE WATCHED
 		int newdate = st.st_mtime;
-		this_thread::sleep_for(chrono::milliseconds(1000));
+
+		this_thread::sleep_for(chrono::milliseconds(100));
+
 		if (newdate == date) {
-			cout << "same file.. no change" << endl;
+			// DO NOTHING
 		}
 		else if (newdate != date) {
-			cout << "file changed" << endl;
-			break;
+			date = newdate; // IMPORTANT
+
+			// Call on update functions
+
 		}
 	}
 
