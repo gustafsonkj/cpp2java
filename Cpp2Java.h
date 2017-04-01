@@ -617,15 +617,34 @@ void Cpp2Java::finish()
 		else if (newdate != date) {
 			date = newdate; // IMPORTANT
 
-			string STRING;
+			string command;
 			ifstream infile;
 			infile.open("Java2Cpp.csv");
 			while (!infile.eof()) // To get you all the lines.
 			{
-				getline(infile, STRING); // Saves the line in STRING.
-				cout << STRING; // Prints our STRING.
+				getline(infile, command); // Saves the line in STRING.
+				//cout << command; // Prints our STRING.
 			}
 			infile.close();
+
+			string delimiter = ",";
+
+			size_t pos = 0;
+			string token;
+			vector<string> JavaCommand;
+			while ((pos = command.find(delimiter)) != string::npos) {
+				token = command.substr(0, pos);
+				JavaCommand.push_back(token);
+				command.erase(0, pos + delimiter.length());
+			}
+			
+			// Test command
+			//for (string s : JavaCommand)
+			//	cout << s << endl;
+
+			// Use Java Command vector to call commands here
+			storedKL.keyReleased(*new KeyEvent('G'));
+
 		}
 	}
 
