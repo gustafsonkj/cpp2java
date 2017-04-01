@@ -574,11 +574,13 @@ public:
 	void add(JComponent& jc, string layout);
 	ofstream file;
 	ofstream file1;
-};
 
+private:
+	KeyListener & storedKL = *new KeyListener();
+};
 Cpp2Java::Cpp2Java()
 {
-}
+};
 void Cpp2Java::removeAll()
 {
 	file.open("Cpp2Java_gui.csv");
@@ -615,8 +617,15 @@ void Cpp2Java::finish()
 		else if (newdate != date) {
 			date = newdate; // IMPORTANT
 
-			// Call on update functions
-
+			string STRING;
+			ifstream infile;
+			infile.open("Java2Cpp.csv");
+			while (!infile.eof()) // To get you all the lines.
+			{
+				getline(infile, STRING); // Saves the line in STRING.
+				cout << STRING; // Prints our STRING.
+			}
+			infile.close();
 		}
 	}
 
@@ -653,13 +662,13 @@ void Cpp2Java::addKeyListener(KeyListener * kL)
 {
 	c.gui.push_back("-1,addKeyListener");
 
-	// WRITE CODE TO ADD THE KEY LISTENER TO A VECTOR FOR LATER REFERENCE
+	storedKL = *kL;
 }
 void Cpp2Java::addKeyListener(KeyListener & kL)
 {
 	c.gui.push_back("-1,addKeyListener");
 
-	// WRITE CODE TO ADD THE KEY LISTENER TO A VECTOR FOR LATER REFERENCE
+	storedKL = kL;
 }
 void Cpp2Java::add(JComponent& jc)
 {
