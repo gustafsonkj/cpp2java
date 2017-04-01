@@ -51,11 +51,12 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 						switch (line[1]) { //Type of Command
                   case "addActionListener":
                   {
-                     if( comps.get(ID) instanceof DynamicJButton)
+                     if( comps.get(ID) instanceof DynamicJButton)//If component is a DynamicJButton
                         {
                            ((DynamicJButton)comps.get(ID)).addActionListener();
                         }
-                     else if(comps.get(ID) instanceof DynamicJTextField)
+                   
+                     else if(comps.get(ID) instanceof DynamicJTextField)//If component is a DynamicTextField
                         {
                            ((DynamicJTextField)comps.get(ID)).addActionListener();
                         }     
