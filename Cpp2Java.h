@@ -2,6 +2,7 @@
 //
 #ifndef CPP2JAVA_H
 #define CPP2JAVA_H
+
 #pragma once
 
 #include <iostream>
@@ -13,8 +14,83 @@
 #include <utility>
 //#include "FileWatcher.h"
 #include <stdexcept>
+#include <windows.h>
 
 using namespace std;
+
+void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
+{
+	//cout << "Creating an instance of a named pipe..." << endl;
+
+	// Create a pipe to send data
+	wstring pipeN = L"\\\\.\\pipe\\" + pipeName;
+	LPCWSTR pipeNN = pipeN.c_str();
+	//wcout << pipeName << endl;
+	HANDLE pipe = CreateNamedPipe(
+		pipeNN, // name of the pipe
+		PIPE_ACCESS_DUPLEX, // 1-way pipe -- send only
+		PIPE_TYPE_BYTE, // send data as a byte stream
+		1, // only allow 1 instance of this pipe
+		100, // no outbound buffer
+		100, // no inbound buffer
+		0, // use default wait time
+		PIPE_ACCEPT_REMOTE_CLIENTS // use default security attributes
+		);
+
+	if (pipe == NULL || pipe == INVALID_HANDLE_VALUE) {
+		//cout << "Failed to create outbound pipe instance.";
+		// look up error code here using GetLastError()
+		system("pause");
+	}
+
+	//cout << "Waiting... Have you made sure that Cpp2Java is open in the background?" << endl;
+
+	// This call blocks until a client process connects to the pipe
+	BOOL result = ConnectNamedPipe(pipe, NULL);
+	if (!result) {
+		//cout << "Failed to make connection on named pipe." << endl;
+		// look up error code here using GetLastError()
+		//cout << GetLastError() << endl;
+		CloseHandle(pipe); // close the pipe
+		//system("pause");
+	}
+
+	for (string cmnd : cmnds)
+	{
+		//cout << cmnd << endl;
+		Sleep(10);
+		//cout << "Sending data to pipe..." << endl;
+			// This call blocks until a client process reads all the data
+			//const wchar_t *data = L"1,add,2\n";
+		string wCmnd = cmnd + "\n";
+
+		const char *data = wCmnd.c_str();
+		//const wchar_t *data = L"1,1,1,1,1,1,1\r\n";
+		DWORD numBytesWritten = 0;
+		result = WriteFile(
+			pipe, // handle to our outbound pipe
+			data, // data to send
+			strlen(data) * sizeof(char), // length of data to send (bytes)
+			&numBytesWritten, // will store actual amount of data sent
+			NULL // not using overlapped IO
+			);
+
+
+		if (result) {
+			//cout << "Number of bytes sent: " << numBytesWritten << endl;
+		}
+		else {
+			//cout << "Failed to send data." << endl;
+			// look up error code here using GetLastError()
+		}
+	}
+	// Close the pipe (automatically disconnects client too)
+	CloseHandle(pipe);
+
+	//cout << "Done." << endl;
+
+	//system("pause");
+};
 
 class Commands {
 public:
@@ -44,8 +120,9 @@ public:
 	virtual void keyReleased(KeyEvent ke) {};
 };
 
-class Polygon {
+/*class Polygon {
 public:
+	Polygon() {};
 	void addPoint(int x, int y);
 	pair<int, int> point;
 	vector<pair<int, int> > coord;
@@ -54,7 +131,7 @@ void Polygon::addPoint(int x, int y)
 {
 	point = make_pair(x, y);
 	coord.push_back(point);
-}
+}*/
 
 class Image {
 public:
@@ -150,8 +227,8 @@ public:
 	virtual void clearRect(int x, int y, int width, int height);
 	virtual void drawOval(int x, int y, int width, int height);
 	virtual void fillOval(int x, int y, int width, int height);
-	virtual void drawPolygon(Polygon p);
-	virtual void fillPolgon(Polygon p);
+	//virtual void drawPolygon(Polygon p);
+	//virtual void fillPolgon(Polygon p);
 	virtual void drawString(string s, int x, int y);
 	virtual void drawImage(Image & i, int x, int y);
 	virtual void drawImage(Image * i, int x, int y);
@@ -217,7 +294,7 @@ void JComponent::drawString(string s, int x, int y)
 {
 	c.paint.push_back(instanceName + ",drawString," + s + "," + to_string(x) + "," + to_string(y));
 }
-void JComponent::drawPolygon(Polygon p)
+/*void JComponent::drawPolygon(Polygon p)
 {
 	string line;
 	line = instanceName + ",drawPolygon";
@@ -234,7 +311,7 @@ void JComponent::fillPolgon(Polygon p)
 		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
 	}
 	c.paint.push_back(line);
-}
+}*/
 void JComponent::drawImage(Image & i, int x, int y)
 {
 	c.paint.push_back(instanceName + ",drawImage," + i.filename + "," + to_string(x) + "," + to_string(y));
@@ -257,12 +334,8 @@ void JComponent::setBackground(string color)
 }
 void JComponent::repaint()
 {
-	file1.open("Cpp2Java_paint.csv");
-	for (string s : c.paint) {
-		file1 << s + "\n";
-	}
-	file1.close();
-	//might need to add signal file in case of race condition
+	sendCommandsThroughPipe(c.paint, L"Cpp2Java_paint");
+
 	c.paint.clear();
 }
 
@@ -580,92 +653,30 @@ Cpp2Java::Cpp2Java()
 };
 void Cpp2Java::removeAll()
 {
-	file.open("Cpp2Java_gui.csv");
-	file.clear();
-	file << "-1,removeAll\n";
+	//c.gui.push_back("-1,removeAll");
 
 	//might need to move this to finish()
 }
+
+
+
+
 void Cpp2Java::finish()
 {
-	for (string s : c.gui) {
-		file << s + "\n";
-	}
-	file << "-1,end" << endl;
-	file.close();
 
-	// LOOP PHASE
-	struct stat st;
-	int ierr = stat("Java2Cpp.csv", &st); // FILE TO BE WATCHED
-	if (ierr != 0) {
-		cout << "error";
-	}
-	int date = st.st_mtime;
-	while (1) {
-		ierr = stat("Java2Cpp.csv", &st); // FILE TO BE WATCHED
-		int newdate = st.st_mtime;
+	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
+	c.gui.clear();
 
-		this_thread::sleep_for(chrono::milliseconds(100));
+	// Loop phase
 
-		if (newdate == date) {
-			// DO NOTHING
-		}
-		else if (newdate != date) {
-			date = newdate; // IMPORTANT
 
-			string command;
-			ifstream infile;
-			infile.open("Java2Cpp.csv");
-			while (!infile.eof()) // To get you all the lines.
-			{
-				getline(infile, command); // Saves the line in STRING.
-										  //cout << command; // Prints our STRING.
-			}
-			infile.close();
-
-			string delimiter = ",";
-
-			size_t pos = 0;
-			string token;
-			vector<string> JavaCommand;
-			while ((pos = command.find(delimiter)) != string::npos) {
-				token = command.substr(0, pos);
-				JavaCommand.push_back(token);
-				command.erase(0, pos + delimiter.length());
-			}
-
-			cout << "press" << endl;
-			switch (stoi(JavaCommand.at(0)))
-			{
-			case -1:
-				if (JavaCommand.at(1).compare("KeyEvent")) //Key Listeners
-				{
-					// Use Java Command vector to call commands here
-					storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
-				}
-				else if (JavaCommand.at(1).compare("MouseEvent")) //Mouse Listeners
-				{
-
-				}
-				else if (JavaCommand.at(1).compare("MouseMotionEvent")) //Mouse Motion Listeners
-				{
-
-				}
-				break;
-			case 0:
-				//Action Listeners
-				break;
-			case 1:
-				//Item Listeners
-				break;
-			default:
-				break;
-			}
-
-		}
-	}
 
 }
+
+
+
+
+
 /*void Cpp2Java::pause(double ld)
 {
 typedef std::chrono::duration<double> seconds_type;
