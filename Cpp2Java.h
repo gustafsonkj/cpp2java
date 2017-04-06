@@ -14,9 +14,11 @@
 #include <utility>
 //#include "FileWatcher.h"
 #include <stdexcept>
+#if defined(_WIN32)|| defined(_WIN64)
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#endif
 
 #define BUFSIZE 512
 
@@ -391,7 +393,7 @@ DWORD WINAPI InstanceThread(LPVOID);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 #endif
 
-int startListeningToJava(VOID)
+int startListeningToJava()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	BOOL   fConnected = FALSE;
