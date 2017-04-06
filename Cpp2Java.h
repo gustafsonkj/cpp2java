@@ -15,10 +15,16 @@
 //#include "FileWatcher.h"
 #include <stdexcept>
 #include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
+
+#define BUFSIZE 512
 
 using namespace std;
 
-void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
+string pipedCommand;
+
+void sendCommandsThroughPipe_WINDOWS(vector<string> cmnds, wstring pipeName)
 {
 	//cout << "Creating an instance of a named pipe..." << endl;
 
@@ -91,6 +97,11 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 
 	//system("pause");
 };
+
+void sendCommandsThroughPipe_UNIX(vector<string> cmnds, wstring pipeName)
+{
+	//Erik
+}
 
 class Commands {
 public:
@@ -334,7 +345,13 @@ void JComponent::setBackground(string color)
 }
 void JComponent::repaint()
 {
-	sendCommandsThroughPipe(c.paint, L"Cpp2Java_paint");
+	#ifdef _WIN32
+		sendCommandsThroughPipe_WINDOWS(c.paint, L"Cpp2Java_paint");
+	#elif _WIN64
+		sendCommandsThroughPipe_WINDOWS(c.paint, L"Cpp2Java_paint");
+	#else
+		//sendCommandsThroughPipe_UNIX(c.paint, L"Cpp2Java_paint");
+	#endif	
 
 	c.paint.clear();
 }
@@ -353,10 +370,264 @@ string JComponent::getInstanceName()
 // It must be declared after JComponent is defined.
 
 vector<JComponent> jComps;
+KeyListener * storedKL = new KeyListener();
+
+DWORD WINAPI InstanceThread(LPVOID);
+VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
+
+int startListeningToJava_WINDOWS(VOID)
+{
+	BOOL   fConnected = FALSE;
+	DWORD  dwThreadId = 0;
+	HANDLE hPipe = INVALID_HANDLE_VALUE, hThread = NULL;
+	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\Java2Cpp");
+
+	// The main loop creates an instance of the named pipe and 
+	// then waits for a client to connect to it. When the client 
+	// connects, a thread is created to handle communications 
+	// with that client, and this loop is free to wait for the
+	// next client connect request. It is an infinite loop.
+
+	_tprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), lpszPipename);
+	hPipe = CreateNamedPipe(
+		lpszPipename,             // pipe name 
+		PIPE_ACCESS_DUPLEX,       // read/write access 
+		PIPE_TYPE_MESSAGE |       // message type pipe 
+		PIPE_READMODE_MESSAGE |   // message-read mode 
+		PIPE_WAIT,                // blocking mode 
+		PIPE_UNLIMITED_INSTANCES, // max. instances  
+		BUFSIZE,                  // output buffer size 
+		BUFSIZE,                  // input buffer size 
+		0,                        // client time-out 
+		NULL);                    // default security attribute 
+
+	if (hPipe == INVALID_HANDLE_VALUE)
+	{
+		_tprintf(TEXT("CreateNamedPipe failed, GLE=%d.\n"), GetLastError());
+		return -1;
+	}
+
+	// Wait for the client to connect; if it succeeds, 
+	// the function returns a nonzero value. If the function
+	// returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
+
+	fConnected = ConnectNamedPipe(hPipe, NULL) ?
+		TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+
+	if (fConnected)
+	{
+		printf("Client connected, creating a processing thread.\n");
+
+		// Create a thread for this client. 
+		hThread = CreateThread(
+			NULL,              // no security attribute 
+			0,                 // default stack size 
+			InstanceThread,    // thread proc
+			(LPVOID)hPipe,    // thread parameter 
+			0,                 // not suspended 
+			&dwThreadId);      // returns thread ID 
+
+		if (hThread == NULL)
+		{
+			_tprintf(TEXT("CreateThread failed, GLE=%d.\n"), GetLastError());
+			return -1;
+		}
+		else CloseHandle(hThread);
+	}
+	else
+		// The client could not connect, so close the pipe. 
+		CloseHandle(hPipe);
+
+	return 0;
+}
+
+DWORD WINAPI InstanceThread(LPVOID lpvParam)
+// This routine is a thread processing function to read from and reply to a client
+// via the open pipe connection passed from the main loop. Note this allows
+// the main loop to continue executing, potentially creating more threads of
+// of this procedure to run concurrently, depending on the number of incoming
+// client connections.
+{
+	HANDLE hHeap = GetProcessHeap();
+	//TCHAR* pchRequest = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE*sizeof(TCHAR));
+	char pchRequest[64];
+	TCHAR* pchReply = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE*sizeof(TCHAR));
+
+	DWORD cbBytesRead = 0, cbReplyBytes = 0, cbWritten = 0;
+	BOOL fSuccess = FALSE;
+	HANDLE hPipe = NULL;
+
+	// Do some extra error checking since the app will keep running even if this
+	// thread fails.
+
+	if (lpvParam == NULL)
+	{
+		printf("\nERROR - Pipe Server Failure:\n");
+		printf("   InstanceThread got an unexpected NULL value in lpvParam.\n");
+		printf("   InstanceThread exitting.\n");
+		if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
+		if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
+		return (DWORD)-1;
+	}
+
+	if (pchRequest == NULL)
+	{
+		printf("\nERROR - Pipe Server Failure:\n");
+		printf("   InstanceThread got an unexpected NULL heap allocation.\n");
+		printf("   InstanceThread exitting.\n");
+		if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
+		return (DWORD)-1;
+	}
+
+	if (pchReply == NULL)
+	{
+		printf("\nERROR - Pipe Server Failure:\n");
+		printf("   InstanceThread got an unexpected NULL heap allocation.\n");
+		printf("   InstanceThread exitting.\n");
+		if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
+		return (DWORD)-1;
+	}
+
+	// Print verbose messages. In production code, this should be for debugging only.
+	printf("InstanceThread created, receiving and processing messages.\n");
+
+	// The thread's parameter is a handle to a pipe object instance. 
+
+	hPipe = (HANDLE)lpvParam;
+
+	// Loop until done reading
+	while (1)
+	{
+		// Read client requests from the pipe. This simplistic code only allows messages
+		// up to BUFSIZE characters in length.
+		fSuccess = ReadFile(
+			hPipe,        // handle to pipe 
+			pchRequest,    // buffer to receive data 
+			64 * sizeof(char), // size of buffer 
+			&cbBytesRead, // number of bytes read 
+			NULL);        // not overlapped I/O 
+
+		if (!fSuccess || cbBytesRead == 0)
+		{
+			if (GetLastError() == ERROR_BROKEN_PIPE)
+			{
+				_tprintf(TEXT("InstanceThread: client disconnected.\n"), GetLastError());
+			}
+			else
+			{
+				_tprintf(TEXT("InstanceThread ReadFile failed, GLE=%d.\n"), GetLastError());
+			}
+			break;
+		}
+
+		cout << "printing:" << pchRequest << endl;
+
+		string command = "";
+		for (char c : pchRequest)
+		{
+			command += c;
+			if (c == '~')
+				break;
+		}
+		cout << "printing2:" << command << endl;
+		string * CC = new string(command);
+		size_t pos = 0;
+		string token;
+		vector<string> JavaCommand;
+		string delimiter = ",";
+		while ((pos = command.find(delimiter)) != string::npos) {
+			token = command.substr(0, pos);
+			JavaCommand.push_back(token);
+			command.erase(0, pos + delimiter.length());
+		}
+
+		cout << "press" << endl;
+		cout << CC->at(12) << endl;
+		storedKL->keyReleased(*new KeyEvent(CC->at(12)));
+		cout << "press2" << endl;
+		switch (stoi(JavaCommand.at(0)))
+		{
+		case -1:
+			if (JavaCommand.at(1).compare("KeyEvent")) //Key Listeners
+			{
+				// Use Java Command vector to call commands here
+				storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
+			}
+			else if (JavaCommand.at(1).compare("MouseEvent")) //Mouse Listeners
+			{
+
+			}
+			else if (JavaCommand.at(1).compare("MouseMotionEvent")) //Mouse Motion Listeners
+			{
+
+			}
+			break;
+		case 0:
+			//Action Listeners
+			break;
+		case 1:
+			//Item Listeners
+			break;
+		default:
+			break;
+		}
+
+		// Process the incoming message.
+		//GetAnswerToRequest(pchRequest, pchReply, &cbReplyBytes);
+
+		// Write the reply to the pipe. 
+		//fSuccess = WriteFile(
+		//	hPipe,        // handle to pipe 
+		//	pchReply,     // buffer to write from 
+		//	cbReplyBytes, // number of bytes to write 
+		//	&cbWritten,   // number of bytes written 
+		//	NULL);        // not overlapped I/O 
+
+		//if (!fSuccess || cbReplyBytes != cbWritten)
+		//{
+		//	_tprintf(TEXT("InstanceThread WriteFile failed, GLE=%d.\n"), GetLastError());
+		//	break;
+		//}
+		FlushFileBuffers(hPipe);
+
+	}
+
+	// Flush the pipe to allow the client to read the pipe's contents 
+	// before disconnecting. Then disconnect the pipe, and close the 
+	// handle to this pipe instance. 
 
 
-//
-//
+	DisconnectNamedPipe(hPipe);
+	CloseHandle(hPipe);
+
+	HeapFree(hHeap, 0, pchRequest);
+	HeapFree(hHeap, 0, pchReply);
+
+	printf("InstanceThread exitting.\n");
+	return 1;
+}
+
+VOID GetAnswerToRequest(LPTSTR pchRequest,
+	LPTSTR pchReply,
+	LPDWORD pchBytes)
+	// This routine is a simple function to print the client request to the console
+	// and populate the reply buffer with a default data string. This is where you
+	// would put the actual client request processing code that runs in the context
+	// of an instance thread. Keep in mind the main thread will continue to wait for
+	// and receive other client connections while the instance thread is working.
+{
+	_tprintf(TEXT("Client Request String:\"%s\"\n"), pchRequest);
+
+	// Check the outgoing message to make sure it's not too long for the buffer.
+	if (FAILED(StringCchCopy(pchReply, BUFSIZE, TEXT("default answer from server"))))
+	{
+		*pchBytes = 0;
+		pchReply[0] = 0;
+		printf("StringCchCopy failed, no outgoing message.\n");
+		return;
+	}
+	*pchBytes = (lstrlen(pchReply) + 1)*sizeof(TCHAR);
+}
 
 
 class ActionEvent
@@ -646,7 +917,7 @@ public:
 	ofstream file1;
 
 private:
-	KeyListener * storedKL = new KeyListener();
+	
 };
 Cpp2Java::Cpp2Java()
 {
@@ -657,25 +928,38 @@ void Cpp2Java::removeAll()
 
 	//might need to move this to finish()
 }
-
-
-
-
 void Cpp2Java::finish()
 {
 
-	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
+	#ifdef _WIN32
+	sendCommandsThroughPipe_WINDOWS(c.gui, L"Cpp2Java_gui");
+	#elif _WIN64
+	sendCommandsThroughPipe_WINDOWS(c.gui, L"Cpp2Java_gui");
+	#else
+	//sendCommandsThroughPipe_UNIX(c.gui, L"Cpp2Java_gui");
+	#endif	
+	
 	c.gui.clear();
 
 	// Loop phase
 
-
+	#ifdef _WIN32
+		startListeningToJava_WINDOWS();
+	#elif _WIN64
+		startListeningToJava_WINDOWS();
+	#elif __unix || __unix__
+		//startListeningToJava_UNIX();
+	#elif __APPLE__ || __MACH__
+		//startListeningToJava_UNIX();
+	#elif __linux__
+		//startListeningToJava_UNIX();
+	#elif __FreeBSD__
+		cout << "Error: unsupported operating system" << endl;
+	#else
+		cout << "Error: unsupported operating system" << endl;
+	#endif
 
 }
-
-
-
-
 
 /*void Cpp2Java::pause(double ld)
 {

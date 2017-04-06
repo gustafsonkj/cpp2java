@@ -23,22 +23,11 @@ public class DynamicJButton extends JButton implements ActionListener
    public void actionPerformed(ActionEvent ae)
    {
       
-      try
-      {
-         FileWriter output = new FileWriter("Java2Cpp.csv");
-         BufferedWriter writer = new BufferedWriter(output);
-        DynamicJButton temp = (DynamicJButton)ae.getSource();          
-         writer.write(temp.getID()+"actionPerformed,");
-         
-      }
-      
-      catch(IOException e)
-      {
-      
-      }
 
-      
-   }
+      DynamicJButton temp = (DynamicJButton)ae.getSource();   
+         Cpp2Java.sendCommandThroughPipe(temp.getID()+"actionPerformed,");
+         
+ }
  }
 /*class DynamicActionListener implements ActionListener
 {

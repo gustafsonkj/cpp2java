@@ -1,4 +1,4 @@
-import java.util.Vector;
+import java.util.*;
 import javax.swing. * ;
 import java.awt. * ;
 import javax.imageio.*;
@@ -15,7 +15,9 @@ public class DynamicJPanel extends JPanel {
 		super.paintComponent(g);
 
 		try {
-			for (String C: commands) {
+      Iterator<String> iter = commands.iterator();
+			while (iter.hasNext()) {
+            String C = iter.next();
 				String[] command = C.split(",");
 				switch (command[0]) {
 				case "drawRect":

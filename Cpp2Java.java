@@ -112,6 +112,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
             }
         }
     }
+
     //private ArrayList<JComponent>();
     public Cpp2Java() {
         super("Cpp2Java");
@@ -126,6 +127,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
         gui.start();
         pnt.start();
+        startPipe();
     }
 
     public static void main(String args[]) {
@@ -136,7 +138,44 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
 
 
         } //Main   
+    
+    public static RandomAccessFile pipe;
+    public static void startPipe()
+    {
+      boolean busyWait1 = true;
+                pipe = null;
+                while (busyWait1) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ie) {}
+                    try {
+                        pipe = new RandomAccessFile("\\\\.\\pipe\\Java2Cpp", "rw");
+                        busyWait1 = false;
+                    } catch (FileNotFoundException e1) {
+                        // e1.printStackTrace();
+                    }
+                }
+    }
+    public static void sendCommandThroughPipe(String command)  {
+               
+                               // Main loop
+                try {
+                    pipe.writeBytes(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Close the pipe at the end
+                // //System.out.println("here0");
 
+                /*try {
+                    pipe.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+               
+
+    }
+    
     public void performCommands(ArrayList < String > cmnds) {
         comps = new ArrayList < JComponent > (64);
         this.contents.removeAll();
