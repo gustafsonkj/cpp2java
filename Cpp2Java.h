@@ -273,6 +273,7 @@ public:
 	string getInstanceName();
 	ofstream file1;
 	string instanceName;
+	ActionListener* al1;
 
 protected:
 	void setInstanceName();
@@ -554,6 +555,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 		string token;
 		vector<string> JavaCommand;
 		string delimiter = ",";
+		command += ",";
 		while ((pos = command.find(delimiter)) != string::npos) {
 			token = command.substr(0, pos);
 			JavaCommand.push_back(token);
@@ -583,6 +585,15 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			break;
 		case 0:
 			//Action Listeners
+			cout << "called case 0 " << endl;
+			for (string s : JavaCommand)
+			{
+				cout << s << endl;
+			}
+			if (JavaCommand.at(2).compare("ActionPerformed"))
+			{
+				jComps.at(stoi(JavaCommand.at(1))).al1->actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+			}
 			break;
 		case 1:
 			//Item Listeners
@@ -843,7 +854,7 @@ void JTextField::setText(string newText)
 void JTextField::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-
+	al1 = aL;
 }
 void JTextField::addActionListener(ActionListener & aL)
 {
@@ -898,6 +909,7 @@ JButton::JButton(string text) //1
 void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
+	al1 = aL;
 }
 void JButton::addActionListener(ActionListener & aL)
 {

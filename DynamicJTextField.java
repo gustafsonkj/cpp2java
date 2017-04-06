@@ -29,10 +29,13 @@ public class DynamicJTextField extends JTextField implements ActionListener
       
       try
       {
-         FileWriter output = new FileWriter("Java2Cpp.csv");
+         /*FileWriter output = new FileWriter("Java2Cpp.csv");
          BufferedWriter writer = new BufferedWriter(output);
-        DynamicJButton temp = (DynamicJButton)ae.getSource();          
-         writer.write(temp.getID()+",ActionPerformed");
+        DynamicJButton temp = (DynamicJButton)ae.getSource();*/
+        
+        
+        DynamicJTextField temp = (DynamicJTextField)ae.getSource();             
+        Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed");
          
       }
       
