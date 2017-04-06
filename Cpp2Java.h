@@ -624,32 +624,8 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 	printf("InstanceThread exitting.\n");
 	return 1;
-}
 
-VOID GetAnswerToRequest(LPTSTR pchRequest,
-	LPTSTR pchReply,
-	LPDWORD pchBytes)
-	// This routine is a simple function to print the client request to the console
-	// and populate the reply buffer with a default data string. This is where you
-	// would put the actual client request processing code that runs in the context
-	// of an instance thread. Keep in mind the main thread will continue to wait for
-	// and receive other client connections while the instance thread is working.
-{
-	_tprintf(TEXT("Client Request String:\"%s\"\n"), pchRequest);
-
-	// Check the outgoing message to make sure it's not too long for the buffer.
-	if (FAILED(StringCchCopy(pchReply, BUFSIZE, TEXT("default answer from server"))))
-	{
-		*pchBytes = 0;
-		pchReply[0] = 0;
-		printf("StringCchCopy failed, no outgoing message.\n");
-		return;
-	}
-	*pchBytes = (lstrlen(pchReply) + 1)*sizeof(TCHAR);
-
-//END WINDOWS CODE
-
-
+	//END WINDOWS CODE 
 
 
 	//START UNIX CODE
@@ -675,6 +651,34 @@ VOID GetAnswerToRequest(LPTSTR pchRequest,
 
 }
 
+//Some more WINDOWS-ONLY code
+
+#if defined(_WIN32) || defined(_WIN64)
+
+VOID GetAnswerToRequest(LPTSTR pchRequest,
+	LPTSTR pchReply,
+	LPDWORD pchBytes)
+	// This routine is a simple function to print the client request to the console
+	// and populate the reply buffer with a default data string. This is where you
+	// would put the actual client request processing code that runs in the context
+	// of an instance thread. Keep in mind the main thread will continue to wait for
+	// and receive other client connections while the instance thread is working.
+{
+	_tprintf(TEXT("Client Request String:\"%s\"\n"), pchRequest);
+
+	// Check the outgoing message to make sure it's not too long for the buffer.
+	if (FAILED(StringCchCopy(pchReply, BUFSIZE, TEXT("default answer from server"))))
+	{
+		*pchBytes = 0;
+		pchReply[0] = 0;
+		printf("StringCchCopy failed, no outgoing message.\n");
+		return;
+	}
+	*pchBytes = (lstrlen(pchReply) + 1)*sizeof(TCHAR);
+
+}
+
+#endif
 
 class ActionEvent
 {
