@@ -24,8 +24,10 @@ using namespace std;
 
 string pipedCommand;
 
-void sendCommandsThroughPipe_WINDOWS(vector<string> cmnds, wstring pipeName)
+void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 {
+	//START WINDOWS CODE
+	#ifdef _WIN32 || _WIN64
 	//cout << "Creating an instance of a named pipe..." << endl;
 
 	// Create a pipe to send data
@@ -96,12 +98,30 @@ void sendCommandsThroughPipe_WINDOWS(vector<string> cmnds, wstring pipeName)
 	//cout << "Done." << endl;
 
 	//system("pause");
-};
 
-void sendCommandsThroughPipe_UNIX(vector<string> cmnds, wstring pipeName)
-{
-	//Erik
-}
+	//END WINDOWS CODE
+
+	//START UNIX CODE
+#elif __unix || __unix__ || __APPLE__ || __MACH__ || __linux__
+
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	
+#else
+#endif // END UNIX CODE
+};
 
 class Commands {
 public:
@@ -114,7 +134,7 @@ Commands c;
 class KeyEvent {
 public:
 	KeyEvent(char keyPressed);
-	char getKeyChar();
+	string getKeyChar();
 private:
 	char key;
 };
@@ -122,9 +142,10 @@ KeyEvent::KeyEvent(char keyPressed)
 {
 	key = keyPressed;
 }
-char KeyEvent::getKeyChar()
+string KeyEvent::getKeyChar()
 {
-	return key;
+	string s; s.push_back(key);
+	return s;
 }
 class KeyListener {
 public:
@@ -345,14 +366,7 @@ void JComponent::setBackground(string color)
 }
 void JComponent::repaint()
 {
-	#ifdef _WIN32
-		sendCommandsThroughPipe_WINDOWS(c.paint, L"Cpp2Java_paint");
-	#elif _WIN64
-		sendCommandsThroughPipe_WINDOWS(c.paint, L"Cpp2Java_paint");
-	#else
-		//sendCommandsThroughPipe_UNIX(c.paint, L"Cpp2Java_paint");
-	#endif	
-
+	sendCommandsThroughPipe(c.paint, L"Cpp2Java_paint");
 	c.paint.clear();
 }
 
@@ -372,11 +386,14 @@ string JComponent::getInstanceName()
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
 
+#ifdef _WIN32 || _WIN64
 DWORD WINAPI InstanceThread(LPVOID);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
+#endif
 
-int startListeningToJava_WINDOWS(VOID)
+int startListeningToJava(VOID)
 {
+#ifdef _WIN32 || _WIN64
 	BOOL   fConnected = FALSE;
 	DWORD  dwThreadId = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE, hThread = NULL;
@@ -388,7 +405,7 @@ int startListeningToJava_WINDOWS(VOID)
 	// with that client, and this loop is free to wait for the
 	// next client connect request. It is an infinite loop.
 
-	_tprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), lpszPipename);
+	//_tprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), lpszPipename);
 	hPipe = CreateNamedPipe(
 		lpszPipename,             // pipe name 
 		PIPE_ACCESS_DUPLEX,       // read/write access 
@@ -416,7 +433,7 @@ int startListeningToJava_WINDOWS(VOID)
 
 	if (fConnected)
 	{
-		printf("Client connected, creating a processing thread.\n");
+		//printf("Client connected, creating a processing thread.\n");
 
 		// Create a thread for this client. 
 		hThread = CreateThread(
@@ -489,7 +506,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 	}
 
 	// Print verbose messages. In production code, this should be for debugging only.
-	printf("InstanceThread created, receiving and processing messages.\n");
+	//printf("InstanceThread created, receiving and processing messages.\n");
 
 	// The thread's parameter is a handle to a pipe object instance. 
 
@@ -520,17 +537,17 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			break;
 		}
 
-		cout << "printing:" << pchRequest << endl;
+		//cout << "printing:" << pchRequest << endl;
 
 		string command = "";
 		for (char c : pchRequest)
 		{
-			command += c;
 			if (c == '~')
 				break;
+			command += c;
 		}
-		cout << "printing2:" << command << endl;
-		string * CC = new string(command);
+		//cout << "printing2:" << command << endl;
+		string CC(command);
 		size_t pos = 0;
 		string token;
 		vector<string> JavaCommand;
@@ -541,10 +558,10 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			command.erase(0, pos + delimiter.length());
 		}
 
-		cout << "press" << endl;
-		cout << CC->at(12) << endl;
-		storedKL->keyReleased(*new KeyEvent(CC->at(12)));
-		cout << "press2" << endl;
+		//cout << "press" << endl;
+		//cout << CC.at(12) << endl;
+		storedKL->keyReleased(*new KeyEvent(CC.at(12)));
+		//cout << "press2" << endl;
 		switch (stoi(JavaCommand.at(0)))
 		{
 		case -1:
@@ -571,7 +588,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 		default:
 			break;
 		}
-
+		//cout << "here!!!R" << endl;
 		// Process the incoming message.
 		//GetAnswerToRequest(pchRequest, pchReply, &cbReplyBytes);
 
@@ -627,6 +644,33 @@ VOID GetAnswerToRequest(LPTSTR pchRequest,
 		return;
 	}
 	*pchBytes = (lstrlen(pchReply) + 1)*sizeof(TCHAR);
+
+//END WINDOWS CODE
+
+
+
+
+	//START UNIX CODE
+#elif __unix || __unix__ || __APPLE__ || __MACH__ || __linux__
+
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+// UNIX CODE (Erik)
+
+#else
+#endif // END UNIX CODE
+
 }
 
 
@@ -931,34 +975,14 @@ void Cpp2Java::removeAll()
 void Cpp2Java::finish()
 {
 
-	#ifdef _WIN32
-	sendCommandsThroughPipe_WINDOWS(c.gui, L"Cpp2Java_gui");
-	#elif _WIN64
-	sendCommandsThroughPipe_WINDOWS(c.gui, L"Cpp2Java_gui");
-	#else
-	//sendCommandsThroughPipe_UNIX(c.gui, L"Cpp2Java_gui");
-	#endif	
+	
+	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
 	
 	c.gui.clear();
 
 	// Loop phase
 
-	#ifdef _WIN32
-		startListeningToJava_WINDOWS();
-	#elif _WIN64
-		startListeningToJava_WINDOWS();
-	#elif __unix || __unix__
-		//startListeningToJava_UNIX();
-	#elif __APPLE__ || __MACH__
-		//startListeningToJava_UNIX();
-	#elif __linux__
-		//startListeningToJava_UNIX();
-	#elif __FreeBSD__
-		cout << "Error: unsupported operating system" << endl;
-	#else
-		cout << "Error: unsupported operating system" << endl;
-	#endif
-
+	startListeningToJava();
 }
 
 /*void Cpp2Java::pause(double ld)

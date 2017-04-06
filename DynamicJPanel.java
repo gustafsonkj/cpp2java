@@ -69,7 +69,7 @@ public class DynamicJPanel extends JPanel {
 				}
 			}
 		}
-		catch(NullPointerException npe) {}
+		catch(NullPointerException | ConcurrentModificationException npe) {}
 
 	}
 }

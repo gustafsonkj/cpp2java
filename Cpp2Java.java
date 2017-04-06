@@ -75,31 +75,36 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         // e1.printStackTrace();
                     }
                 }
-                // Main loop
-                try {
-                    String fileLine = "";
-                    while ((fileLine = pipe.readLine()) != null) {
-                        String[] line = fileLine.split(",");
-                        String command = "";
-                        for (int i = 1; i < line.length; i++) {
-                            command += line[i] + ",";
-                        }
-
-                        /* Object comp = comp.get...
-                        if (comp instanceof DynamicJanel)
-                           (Dynamic)...*/
-                        ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).setCommand(command);
-
-                        //ID is the instanceName from Cpp2Java.h
-                        int ID = Integer.parseInt(line[0]);
-                        try {
-                            Thread.sleep(5);
-                        } catch (InterruptedException ie) {}
-
-                        ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).repaint();
-                    }
-
-                } catch (IOException ioe) {}
+                //while(true)   {
+                   try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ie) {}
+                   // Main loop
+                   try {
+                       String fileLine = "";
+                       while ((fileLine = pipe.readLine()) != null) {
+                           String[] line = fileLine.split(",");
+                           String command = "";
+                           for (int i = 1; i < line.length; i++) {
+                               command += line[i] + ",";
+                           }
+                           System.out.println(command);
+                           /* Object comp = comp.get...
+                           if (comp instanceof DynamicJanel)
+                              (Dynamic)...*/
+                           ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).setCommand(command);
+   
+                           //ID is the instanceName from Cpp2Java.h
+                           int ID = Integer.parseInt(line[0]);
+                           try {
+                               Thread.sleep(5);
+                           } catch (InterruptedException ie) {}
+   
+                           ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).repaint();
+                       }
+   
+                   } catch (IOException ioe) {}
+                //}
                 // Close the pipe at the end
                 // //System.out.println("here0");
 
