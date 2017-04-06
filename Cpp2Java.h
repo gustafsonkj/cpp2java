@@ -27,7 +27,7 @@ string pipedCommand;
 void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 {
 	//START WINDOWS CODE
-	#ifdef _WIN32 || _WIN64
+	#if defined(_WIN32) || defined(_WIN64)
 	//cout << "Creating an instance of a named pipe..." << endl;
 
 	// Create a pipe to send data
@@ -386,14 +386,14 @@ string JComponent::getInstanceName()
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
 
-#ifdef _WIN32 || _WIN64
+#if defined(_WIN32) || defined(_WIN64)
 DWORD WINAPI InstanceThread(LPVOID);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 #endif
 
 int startListeningToJava(VOID)
 {
-#ifdef _WIN32 || _WIN64
+#if defined(_WIN32) || defined(_WIN64)
 	BOOL   fConnected = FALSE;
 	DWORD  dwThreadId = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE, hThread = NULL;
