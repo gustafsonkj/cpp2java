@@ -39,7 +39,7 @@ public class DynamicJTextField extends JTextField implements ActionListener
          
       }
       
-      catch(IOException e)
+      catch(Exception e)
       {
       
       }
