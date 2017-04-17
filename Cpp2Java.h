@@ -29,7 +29,7 @@ string pipedCommand;
 void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 {
 	//START WINDOWS CODE
-	#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 	//cout << "Creating an instance of a named pipe..." << endl;
 
 	// Create a pipe to send data
@@ -45,7 +45,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		100, // no inbound buffer
 		0, // use default wait time
 		PIPE_ACCEPT_REMOTE_CLIENTS // use default security attributes
-		);
+	);
 
 	if (pipe == NULL || pipe == INVALID_HANDLE_VALUE) {
 		//cout << "Failed to create outbound pipe instance.";
@@ -62,7 +62,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		// look up error code here using GetLastError()
 		//cout << GetLastError() << endl;
 		CloseHandle(pipe); // close the pipe
-		//system("pause");
+						   //system("pause");
 	}
 
 	for (string cmnd : cmnds)
@@ -70,8 +70,8 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		//cout << cmnd << endl;
 		Sleep(10);
 		//cout << "Sending data to pipe..." << endl;
-			// This call blocks until a client process reads all the data
-			//const wchar_t *data = L"1,add,2\n";
+		// This call blocks until a client process reads all the data
+		//const wchar_t *data = L"1,add,2\n";
 		string wCmnd = cmnd + "\n";
 
 		const char *data = wCmnd.c_str();
@@ -83,7 +83,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 			strlen(data) * sizeof(char), // length of data to send (bytes)
 			&numBytesWritten, // will store actual amount of data sent
 			NULL // not using overlapped IO
-			);
+		);
 
 
 		if (result) {
@@ -120,7 +120,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 	// UNIX CODE (Erik)
 	// UNIX CODE (Erik)
 	// UNIX CODE (Erik)
-	
+
 #else
 #endif // END UNIX CODE
 };
@@ -156,15 +156,15 @@ public:
 
 /*class Polygon {
 public:
-	Polygon() {};
-	void addPoint(int x, int y);
-	pair<int, int> point;
-	vector<pair<int, int> > coord;
+Polygon() {};
+void addPoint(int x, int y);
+pair<int, int> point;
+vector<pair<int, int> > coord;
 };
 void Polygon::addPoint(int x, int y)
 {
-	point = make_pair(x, y);
-	coord.push_back(point);
+point = make_pair(x, y);
+coord.push_back(point);
 }*/
 
 class Image {
@@ -239,6 +239,7 @@ GridLayout::GridLayout(int numberOfRows, int numberOfColumns, int hGap, int vGap
 class JComponent {
 	friend class Cpp2Java;
 	friend class Polygon;
+	friend class ActionListener;
 
 public:
 	JComponent() {};
@@ -331,21 +332,21 @@ void JComponent::drawString(string s, int x, int y)
 }
 /*void JComponent::drawPolygon(Polygon p)
 {
-	string line;
-	line = instanceName + ",drawPolygon";
-	for (pair<int, int> pr : p.coord) {
-		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
-	}
-	c.paint.push_back(line);
+string line;
+line = instanceName + ",drawPolygon";
+for (pair<int, int> pr : p.coord) {
+line += "," + to_string(pr.first) + "*" + to_string(pr.second);
+}
+c.paint.push_back(line);
 }
 void JComponent::fillPolgon(Polygon p)
 {
-	string line;
-	line = instanceName + "fillPolygon";
-	for (pair<int, int> pr : p.coord) {
-		line += "," + to_string(pr.first) + "*" + to_string(pr.second);
-	}
-	c.paint.push_back(line);
+string line;
+line = instanceName + "fillPolygon";
+for (pair<int, int> pr : p.coord) {
+line += "," + to_string(pr.first) + "*" + to_string(pr.second);
+}
+c.paint.push_back(line);
 }*/
 void JComponent::drawImage(Image & i, int x, int y)
 {
@@ -388,6 +389,34 @@ string JComponent::getInstanceName()
 
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
+
+class ActionEvent
+{
+public:
+	ActionEvent(int jc);
+	JComponent getSource();
+	int jC;
+};
+
+ActionEvent::ActionEvent(int jc)
+{
+	jC = jc;
+}
+JComponent ActionEvent::getSource()
+{
+	return (jComps[jC]);
+}
+
+class ActionListener
+{
+public:
+	ActionListener() {};
+	ActionListener(const ActionListener & copy) {};
+	virtual void actionPerformed(ActionEvent ae);
+	virtual void actionPerformed(ActionEvent * ae) {};
+};
+void ActionListener::actionPerformed(ActionEvent ae)
+{}
 
 #if defined(_WIN32) || defined(_WIN64)
 DWORD WINAPI InstanceThread(LPVOID);
@@ -471,7 +500,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 	HANDLE hHeap = GetProcessHeap();
 	//TCHAR* pchRequest = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE*sizeof(TCHAR));
 	char pchRequest[64];
-	TCHAR* pchReply = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE*sizeof(TCHAR));
+	TCHAR* pchReply = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE * sizeof(TCHAR));
 
 	DWORD cbBytesRead = 0, cbReplyBytes = 0, cbWritten = 0;
 	BOOL fSuccess = FALSE;
@@ -482,9 +511,9 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 	if (lpvParam == NULL)
 	{
-		printf("\nERROR - Pipe Server Failure:\n");
+		/*printf("\nERROR - Pipe Server Failure:\n");
 		printf("   InstanceThread got an unexpected NULL value in lpvParam.\n");
-		printf("   InstanceThread exitting.\n");
+		printf("   InstanceThread exitting.\n");*/
 		if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
 		if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
 		return (DWORD)-1;
@@ -492,18 +521,18 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 	if (pchRequest == NULL)
 	{
-		printf("\nERROR - Pipe Server Failure:\n");
+		/*printf("\nERROR - Pipe Server Failure:\n");
 		printf("   InstanceThread got an unexpected NULL heap allocation.\n");
-		printf("   InstanceThread exitting.\n");
+		printf("   InstanceThread exitting.\n");*/
 		if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
 		return (DWORD)-1;
 	}
 
 	if (pchReply == NULL)
 	{
-		printf("\nERROR - Pipe Server Failure:\n");
+		/*printf("\nERROR - Pipe Server Failure:\n");
 		printf("   InstanceThread got an unexpected NULL heap allocation.\n");
-		printf("   InstanceThread exitting.\n");
+		printf("   InstanceThread exitting.\n");*/
 		if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
 		return (DWORD)-1;
 	}
@@ -562,23 +591,29 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			command.erase(0, pos + delimiter.length());
 		}
 
-		//cout << "press" << endl;
-		//cout << CC.at(12) << endl;
-		storedKL->keyReleased(*new KeyEvent(CC.at(12)));
+		for (string s : JavaCommand)
+		{
+			cout << s << " ";
+		}
+		cout << endl;
+
+		//storedKL->keyReleased(*new KeyEvent(CC.at(12)));
 		//cout << "press2" << endl;
 		switch (stoi(JavaCommand.at(0)))
 		{
 		case -1:
-			if (JavaCommand.at(1).compare("KeyEvent")) //Key Listeners
+			if (JavaCommand.at(1).compare("KeyEvent") == 0) //Key Listeners
 			{
 				// Use Java Command vector to call commands here
 				storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
+				std::cout << "press ";
+				std::cout << JavaCommand.at(2) << endl;
 			}
-			else if (JavaCommand.at(1).compare("MouseEvent")) //Mouse Listeners
+			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse Listeners
 			{
 
 			}
-			else if (JavaCommand.at(1).compare("MouseMotionEvent")) //Mouse Motion Listeners
+			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
 			{
 
 			}
@@ -586,11 +621,8 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 		case 0:
 			//Action Listeners
 			cout << "called case 0 " << endl;
-			for (string s : JavaCommand)
-			{
-				cout << s << endl;
-			}
-			if (JavaCommand.at(2).compare("ActionPerformed"))
+
+			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
 			{
 				jComps.at(stoi(JavaCommand.at(1))).al1->actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
 			}
@@ -633,7 +665,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 	HeapFree(hHeap, 0, pchRequest);
 	HeapFree(hHeap, 0, pchReply);
 
-	printf("InstanceThread exitting.\n");
+	//printf("InstanceThread exitting.\n");
 	return 1;
 
 	//END WINDOWS CODE 
@@ -642,20 +674,20 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 	//START UNIX CODE
 #elif __unix || __unix__ || __APPLE__ || __MACH__ || __linux__
 
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
-// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
+	// UNIX CODE (Erik)
 
 #else
 #endif // END UNIX CODE
@@ -682,42 +714,16 @@ VOID GetAnswerToRequest(LPTSTR pchRequest,
 	{
 		*pchBytes = 0;
 		pchReply[0] = 0;
-		printf("StringCchCopy failed, no outgoing message.\n");
+		//printf("StringCchCopy failed, no outgoing message.\n");
 		return;
 	}
-	*pchBytes = (lstrlen(pchReply) + 1)*sizeof(TCHAR);
+	*pchBytes = (lstrlen(pchReply) + 1) * sizeof(TCHAR);
 
 }
 
 #endif
 
-class ActionEvent
-{
-public:
-	ActionEvent(int jc);
-	JComponent getSource();
-	int jC;
-};
 
-ActionEvent::ActionEvent(int jc)
-{
-	jC = jc;
-}
-JComponent ActionEvent::getSource()
-{
-	return (jComps[jC]);
-}
-
-class ActionListener
-{
-public:
-	ActionListener() {};
-	ActionListener(const ActionListener & copy) {};
-	virtual void actionPerformed(ActionEvent ae);
-	virtual void actionPerformed(ActionEvent * ae) {};
-};
-void ActionListener::actionPerformed(ActionEvent ae)
-{}
 
 class JPanel : public JComponent {
 public:
@@ -968,7 +974,7 @@ public:
 	Cpp2Java();
 	void removeAll();
 	void finish();
-	void pause(double ld);
+	//void pause(double ld);
 	void setLayout(GridLayout* gl);
 	void setLayout(BorderLayout* bl);
 	void addKeyListener(KeyListener * kL);
@@ -979,7 +985,7 @@ public:
 	ofstream file1;
 
 private:
-	
+
 };
 Cpp2Java::Cpp2Java()
 {
@@ -993,9 +999,9 @@ void Cpp2Java::removeAll()
 void Cpp2Java::finish()
 {
 
-	
+
 	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
-	
+
 	c.gui.clear();
 
 	// Loop phase
