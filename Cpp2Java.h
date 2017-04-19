@@ -969,6 +969,55 @@ void JTextArea::setText(string newText)
 	c.gui.push_back(instanceName + ",setTextJTA," + n);
 }
 
+class JComboBox : public JComponent
+{
+public:
+	JComboBox(string items []);
+};
+JComboBox::JComboBox(string items[])
+{
+	cout << "here" << endl;
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instantiate,0,JComboBox");
+	for (int i = 0; i < sizeof(items); i++)
+	{
+		cout << items[i] << endl;
+		c.gui.push_back(instanceName + ",addItemToComboBox," + items[i]);
+	}
+	jComps.push_back(*this);
+}
+
+class JRadioButton : public JComponent
+{
+public:
+	JRadioButton();
+};
+JRadioButton::JRadioButton()
+{
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton");
+	jComps.push_back(*this);
+}
+
+class ButtonGroup
+{
+public:
+	ButtonGroup();
+	void add(JRadioButton	jrb);
+	void add(JRadioButton * jrb);
+	void add(JRadioButton & jrb);
+};
+ButtonGroup::ButtonGroup()
+{
+	//setInstanceName();
+	c.gui.push_back(-1 + ",instantiate,0,ButtonGroup");
+	//jComps.push_back(*this);
+}
+void ButtonGroup::add(JRadioButton jrb)
+{
+
+};
+
 class Cpp2Java {
 public:
 	Cpp2Java();

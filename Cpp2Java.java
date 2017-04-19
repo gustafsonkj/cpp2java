@@ -219,6 +219,9 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                             case "JPanel":
                                 comps.add(ID, new DynamicJPanel());
                                 break;
+                            case "JComboBox":
+                                comps.add(ID, new JComboBox());
+                                break;
                             case "JLabel":
                                 {
                                     switch (Integer.parseInt(line[2])) { // Type of Constructor Method
@@ -279,6 +282,12 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         }
                     }
                     break;
+                case "addItemToComboBox":
+                  {
+                     System.out.println(line[2]);
+                      ( (JComboBox)comps.get(ID) ).addItem( (line[2]) );
+                  }
+                  break;
                 case "setTextJL":
                     {
                         ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
