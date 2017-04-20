@@ -8,4 +8,8 @@ class DynamicMouseListener extends MouseAdapter
    {
       Cpp2Java.sendCommandThroughPipe("-1,MouseEvent,"+me.getX()+","+me.getY());
    }
+   public void mousePressed(MouseEvent me)
+   {
+      Cpp2Java.sendCommandThroughPipe("-1,MouseEvent,"+me.getX()+","+me.getY());
+   }
 }
