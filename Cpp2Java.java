@@ -277,7 +277,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                             break;
                                         case 1:
                                             //System.out.println("ch3");
-                                            comps.add(ID, new DynamicJButton(line[4]));
+                                            comps.add(ID, new DynamicJButton(ID, line[4]));
                                             break;
                                     }
                                 }

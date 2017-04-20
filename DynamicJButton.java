@@ -11,8 +11,9 @@ public class DynamicJButton extends JButton implements ActionListener
       
    }
    
-   public DynamicJButton(String name){
+   public DynamicJButton(int ID, String name){
       super(name);
+      id = ID;
    }
    
    public int getID(){

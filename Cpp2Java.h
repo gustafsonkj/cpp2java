@@ -410,13 +410,14 @@ JComponent ActionEvent::getSource()
 class ActionListener
 {
 public:
-	ActionListener() {};
-	ActionListener(const ActionListener & copy) {};
-	virtual void actionPerformed(ActionEvent ae);
+	//ActionListener() {};
+	//ActionListener(const ActionListener & copy) {};
+	virtual void actionPerformed(ActionEvent ae) { cout << "calling original!" << endl; }
 	virtual void actionPerformed(ActionEvent * ae) {};
 };
-void ActionListener::actionPerformed(ActionEvent ae)
-{}
+
+
+vector<ActionListener *> storedALs(64);
 
 #if defined(_WIN32) || defined(_WIN64)
 DWORD WINAPI InstanceThread(LPVOID);
@@ -624,7 +625,25 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
 			{
-				jComps.at(stoi(JavaCommand.at(1))).al1->actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				cout << "inner" << endl;
+				cout << JavaCommand.at(1) << endl;
+				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;
+				/*for (ActionListener storedAL : storedALs)
+				{
+					cout << "looped" << endl;
+					storedAL.actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				}*/
+				storedALs[stoi(JavaCommand.at(1))]
+					->
+					actionPerformed(
+						new ActionEvent(
+							stoi(
+									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
+								)
+							)
+						);
+
+					//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
 			}
 			break;
 		case 1:
@@ -915,11 +934,12 @@ JButton::JButton(string text) //1
 void JButton::addActionListener(ActionListener * aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-	al1 = aL;
+	storedALs[stoi(instanceName)] = aL;
 }
 void JButton::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
+	storedALs[stoi(instanceName)] = &aL;
 }
 
 class JTextArea : public JComponent {

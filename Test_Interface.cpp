@@ -1,11 +1,9 @@
-<<<<<<< HEAD
-=======
+
 // Test_Interface.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
 
->>>>>>> 1856ccb90568100452e3236010aa51642da95359
 #include "Cpp2Java.h"
 
 
@@ -61,7 +59,6 @@ int main() {
 			myPanel1.clearRect(0, 0, 600, 600);
 			myPanel1.drawString(ke.getKeyChar(), 20, 20);
 			myPanel1.repaint();
-<<<<<<< HEAD
 			//DRAW RECTANGLE
 			/*for (int i = 0; i < 100; i++)
 			{
@@ -71,19 +68,13 @@ int main() {
 			myPanel1.repaint();
 			this_thread::sleep_for(chrono::milliseconds(30));
 			}*/
-=======
-			
->>>>>>> 1856ccb90568100452e3236010aa51642da95359
 		}
 	};
 
 	KeyHandler myKH;
 	Cpp2Java.addKeyListener(myKH);
-<<<<<<< HEAD
 	//Cpp2Java.finish();
 	this_thread::sleep_for(chrono::milliseconds(50));
-=======
-	Cpp2Java.finish();
 
 	//WAIT TWO SECONDS
 	//this_thread::sleep_for(chrono::milliseconds(50));
@@ -97,33 +88,57 @@ int main() {
 		myPanel1.repaint();
 		this_thread::sleep_for(chrono::milliseconds(30));
 	}
->>>>>>> 1856ccb90568100452e3236010aa51642da95359
 
-
+	*/
 	class ActionHandler : public ActionListener
 	{
 	public:
-		void actionPerformed(ActionEvent ae)
+		void actionPerformed(ActionEvent *ae)
 		{
-			cout << "Test" << endl;
-			cout << "FIRST:" << ae.getSource().getInstanceName() << endl;
+			cout << "#@$#$%#@$^#$%^#$%^#$%^#$%^#$%^#$%^#$%^#$%^#$%^" << endl;
+			cout << "FIRST:" << ae->getSource().getInstanceName() << endl;
 			cout << "SECOND:" << myBtn1.getInstanceName() << endl;
-			if (ae.getSource() == myBtn1)
-				cout << "stuff";
+			
+			if (ae->getSource() == myBtn1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					myPanel1.clearRect(0, 0, 600, 600);
+					myPanel1.drawRect(20, 20, i, i);
+					myPanel1.drawString(to_string(i), i, i);
+					myPanel1.repaint();
+					this_thread::sleep_for(chrono::milliseconds(30));
+				}
+			}
+			else if (ae->getSource() == myBtn2)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					myPanel1.clearRect(0, 0, 600, 600);
+					myPanel1.drawOval(20, 20, i, i);
+					myPanel1.drawString(to_string(i), i, i);
+					myPanel1.repaint();
+					this_thread::sleep_for(chrono::milliseconds(30));
+				}
+			}
 		};
 
 	};
 	//cout << "test1" << endl;
 
-	////ActionHandler* myAH = new ActionHandler;
+	//ActionHandler* myAH = new ActionHandler;
 	ActionHandler myAH;
 	//cout << "test2" << endl;
 
+	cout << "CALL" << endl;
 	myBtn1.addActionListener(myAH);
-	Cpp2Java.finish();
+	myBtn2.addActionListener(myAH);
+
+	cout << "CALL2" << endl;
 	this_thread::sleep_for(chrono::milliseconds(50));
 
 	cout << "test3" << endl;
+	Cpp2Java.finish();
 
 	while (1);
 
