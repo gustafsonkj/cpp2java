@@ -7,12 +7,6 @@ class DynamicMouseListener extends MouseAdapter
 
    public void mouseClicked(MouseEvent me)
    {
-      try{
-          FileWriter output = new FileWriter("Java2Cpp.csv");
-          BufferedWriter writer = new BufferedWriter(output);
-          writer.write("-1,MouseEvent,"+me.getX()+","+me.getY());
-          writer.close();
-      }
-        catch(IOException e) {} 
+      Cpp2Java.sendCommandThroughPipe("-1,MouseEvent,"+me.getX()+","+me.getY());
    }
 }

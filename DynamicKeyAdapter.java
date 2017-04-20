@@ -7,10 +7,7 @@ public class DynamicKeyAdapter extends KeyAdapter
 {
    public void keyReleased (KeyEvent ke)
    {
-    
-    
     Cpp2Java.sendCommandThroughPipe("-1,KeyEvent,"+(ke.getKeyChar())+"~" );
-
    }
 }
 
