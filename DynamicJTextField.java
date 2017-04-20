@@ -35,7 +35,7 @@ public class DynamicJTextField extends JTextField implements ActionListener
         
         
         DynamicJTextField temp = (DynamicJTextField)ae.getSource();             
-        Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed");
+        Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed" + "~");
          
       }
       
