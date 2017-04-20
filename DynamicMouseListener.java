@@ -4,7 +4,6 @@ import java.io.*;
 
 class DynamicMouseListener extends MouseAdapter
 {
-
    public void mouseClicked(MouseEvent me)
    {
       Cpp2Java.sendCommandThroughPipe("-1,MouseEvent,"+me.getX()+","+me.getY());
