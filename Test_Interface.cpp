@@ -1,9 +1,5 @@
-// Test_Interface.cpp : Defines the entry point for the console application.
-//
-
-//#include "stdafx.h"
-
 #include "Cpp2Java.h"
+
 
 JPanel myPanel1;
 JPanel myPanel2;
@@ -17,11 +13,21 @@ JButton myBtn4("H,ellasdflo4");
 
 int main() {
 	Cpp2Java Cpp2Java;
-	
+
 	//Cpp2Java.removeAll();
 
 	// SET J FRAME LAYOUT
 	Cpp2Java.setLayout(new GridLayout(2, 2));
+
+
+
+	/*for (int i = 0; i < jComps.size(); i++)
+	cout << jComps[i] << endl;*/
+	// INSTANTIATE "COMPONENTS"
+
+
+	//myAH->actionPerformed(new ActionEvent(stoi(myButton1.getInstanceName())));
+
 	myPanel1.add(myBtn1);
 	myPanel2.add(myBtn2);
 	//myPanel2.add(myBtn11);
@@ -43,47 +49,48 @@ int main() {
 			myPanel1.drawString(ke.getKeyChar(), 20, 20);
 			myPanel1.repaint();
 			//DRAW RECTANGLE
-			for (int i = 0; i < 100; i++)
+			/*for (int i = 0; i < 100; i++)
 			{
-				myPanel1.clearRect(0, 0, 600, 600);
-				myPanel1.drawRect(20, 20, i, i);
-				myPanel1.drawString(to_string(i), i, i);
-				myPanel1.repaint();
-				this_thread::sleep_for(chrono::milliseconds(30));
-			}
+			myPanel1.clearRect(0, 0, 600, 600);
+			myPanel1.drawRect(20, 20, i, i);
+			myPanel1.drawString(to_string(i), i, i);
+			myPanel1.repaint();
+			this_thread::sleep_for(chrono::milliseconds(30));
+			}*/
 		}
 	};
 
 	KeyHandler myKH;
 	Cpp2Java.addKeyListener(myKH);
-	Cpp2Java.finish();
-
-	//WAIT TWO SECONDS
+	//Cpp2Java.finish();
 	this_thread::sleep_for(chrono::milliseconds(50));
-	/*
-	//DRAW RECTANGLE
-	for (int i = 0; i < 100; i++)
-	{
-		myPanel1.clearRect(0, 0, 600, 600);
-		myPanel1.drawRect(20, 20, i, i);
-		myPanel1.drawString(to_string(i), i, i);
-		myPanel1.repaint();
-		this_thread::sleep_for(chrono::milliseconds(30));
-	}
 
-	this_thread::sleep_for(chrono::milliseconds(2000));
 
-	//CIRCLE DOWN
-	for (int i = 100; i > -1; i--)
+	class ActionHandler : public ActionListener
 	{
-		myPanel1.clearRect(0, 0, 600, 600);
-		myPanel1.drawOval(i, i, 2 * i, 2 * i);
-		myPanel1.drawString(to_string(i), i, i);
-		myPanel1.repaint();
-		this_thread::sleep_for(chrono::milliseconds(30));
-	}
-	*/
+	public:
+		void actionPerformed(ActionEvent ae)
+		{
+			cout << "Test" << endl;
+			cout << "FIRST:" << ae.getSource().getInstanceName() << endl;
+			cout << "SECOND:" << myBtn1.getInstanceName() << endl;
+			if (ae.getSource() == myBtn1)
+				cout << "stuff";
+		};
+
+	};
+	//cout << "test1" << endl;
+
+	////ActionHandler* myAH = new ActionHandler;
+	ActionHandler myAH;
+	//cout << "test2" << endl;
+
+	myBtn1.addActionListener(myAH);
+	Cpp2Java.finish();
+	this_thread::sleep_for(chrono::milliseconds(50));
+
+	cout << "test3" << endl;
+
 	while (1);
-	
-}
 
+}

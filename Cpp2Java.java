@@ -194,18 +194,25 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
             int nCols;
             int hGap;
             int vGap;
-
+         
             switch (line[1]) { //Type of Command
                 case "addActionListener":
                     {
-                        if (comps.get(ID) instanceof DynamicJButton) //If component is a DynamicJButton
+                        
+                        //System.out.println(comps.get(ID).getClass().getName());
+                        comps.get(ID).setFocusable(false); //Wasnt working so needed this
+                       
+                       if ( comps.get(ID) instanceof JButton) //If component is a DynamicJButton
                         {
-                            ((DynamicJButton) comps.get(ID)).addActionListener();
-                        } else if (comps.get(ID) instanceof DynamicJTextField) //If component is a DynamicTextField
+                           System.out.println("Its a button!");
+                             ((DynamicJButton)comps.get(ID)).addActionListener();
+                            
+                        } else if (comps.get(ID) instanceof JTextField) //If component is a DynamicTextField
                         {
                             ((DynamicJTextField) comps.get(ID)).addActionListener();
                         }
                     }
+                    break;
                 case "removeAll":
                     {
                         comps.clear();
@@ -267,7 +274,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                             break;
                                         case 1:
                                             //System.out.println("ch3");
-                                            comps.add(ID, new JButton(line[4]));
+                                            comps.add(ID, new DynamicJButton(line[4]));
                                             break;
                                     }
                                 }
@@ -466,6 +473,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                     contents.addMouseListener(new DynamicMouseListener());
                     break;
             }
+            System.out.println(comps.size());
+
         }
     }
 }

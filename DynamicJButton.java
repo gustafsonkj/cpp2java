@@ -8,7 +8,11 @@ public class DynamicJButton extends JButton implements ActionListener
    
    public DynamicJButton(int ID){
       id = ID;
-      //addActionListener(this);
+      
+   }
+   
+   public DynamicJButton(String name){
+      super(name);
    }
    
    public int getID(){
@@ -22,16 +26,10 @@ public class DynamicJButton extends JButton implements ActionListener
    
    public void actionPerformed(ActionEvent ae)
    {
-      
+      System.out.println("Clicked");
 
          DynamicJButton temp = (DynamicJButton)ae.getSource();   
          Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed");
          
  }
  }
-/*class DynamicActionListener implements ActionListener
-{
-   public void actionPerformed(ActionEvent ae)
-   {   }
-   
-}*/
