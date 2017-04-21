@@ -7,6 +7,7 @@ import java.util.*;
 public class Cpp2Java extends JFrame { //One-JFrame setup
     private static Container contents;
     private ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
+    private ArrayList < ButtonGroup> butts = new ArrayList < ButtonGroup > (64);
 
     private class GuiThread extends Thread {
         public void run() {
@@ -281,6 +282,9 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     }
                                 }
                                 break;
+                            case "JRadioButton":
+                              comps.add(ID, new JRadioButton(line[4]));
+                              break;
                             default:
                                 break;
                                 //JTextField
@@ -292,6 +296,15 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   {
                      System.out.println(line[2]);
                       ( (JComboBox)comps.get(ID) ).addItem( (line[2]) );
+                  }
+                  break;
+                 case "addToButtonGroup":
+                  {
+                     System.out.println(line[2]);
+                      ( (ButtonGroup)butts.get(ID) ).add
+                        ( 
+                           (JRadioButton) ( comps.get(Integer.parseInt(line[2])) )
+                        );
                   }
                   break;
                 case "setTextJL":
