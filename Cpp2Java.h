@@ -404,7 +404,17 @@ JRadioButton::JRadioButton(string s)
 	jComps.push_back(*this);
 }
 
-
+class JCheckBox : public JComponent
+{
+public:
+	JCheckBox(string s);
+};
+JCheckBox::JCheckBox(string s)
+{
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton," + s);
+	jComps.push_back(*this);
+}
 
 class ButtonGroup
 {
@@ -413,6 +423,8 @@ public:
 	//void add(JRadioButton	jrb);
 	void add(JRadioButton * jrb);
 	void add(JRadioButton & jrb);
+	void add(JCheckBox * jcb);
+	void add(JCheckBox & jcb);
 	void setInstanceName();
 	string instanceName;
 };
@@ -437,6 +449,16 @@ void ButtonGroup::add(JRadioButton * jrb)
 void ButtonGroup::add(JRadioButton & jrb)
 {
 	c.gui.push_back(instanceName + ",addToButtonGroup," + jrb.getInstanceName());
+
+}
+void ButtonGroup::add(JCheckBox * jcb)
+{
+	c.gui.push_back(instanceName + ",addToButtonGroup," + jcb->getInstanceName());
+
+}
+void ButtonGroup::add(JCheckBox & jcb)
+{
+	c.gui.push_back(instanceName + ",addToButtonGroup," + jcb.getInstanceName());
 
 }
 void ButtonGroup::setInstanceName()
