@@ -282,9 +282,18 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     }
                                 }
                                 break;
+                            case "ButtonGroup":
+                              butts.add(ID, new ButtonGroup());
+                            break;
+                            
                             case "JRadioButton":
                               comps.add(ID, new JRadioButton(line[4]));
-                              break;
+                            break;
+                            
+                            case "JCheckBox":
+                              comps.add(ID, new JCheckBox(line[4]));
+                            break;
+                            
                             default:
                                 break;
                                 //JTextField
@@ -300,11 +309,23 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   break;
                  case "addToButtonGroup":
                   {
+                  
                      System.out.println(line[2]);
+                     
+                    if ( comps.get(Integer.parseInt(line[2])) instanceof JRadioButton)
+                    {
                       ( (ButtonGroup)butts.get(ID) ).add
                         ( 
                            (JRadioButton) ( comps.get(Integer.parseInt(line[2])) )
                         );
+                    }
+                    else if ( comps.get(Integer.parseInt(line[2])) instanceof JCheckBox)
+                    {
+                      ( (ButtonGroup)butts.get(ID) ).add
+                        ( 
+                           (JCheckBox) ( comps.get(Integer.parseInt(line[2])) )
+                        );
+                    }
                   }
                   break;
                 case "setTextJL":
