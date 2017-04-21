@@ -130,6 +130,7 @@ public:
 	vector<string> gui;
 	vector<string> paint;
 	int instanceCounter;
+	int instanceCounter2;
 };
 Commands c;
 
@@ -384,11 +385,67 @@ string JComponent::getInstanceName()
 	return instanceName;
 }
 
+
 // This vector is used to reference action events.
 // It must be declared after JComponent is defined.
 
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
+
+class JRadioButton : public JComponent
+{
+public:
+	JRadioButton();
+};
+JRadioButton::JRadioButton()
+{
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton");
+	jComps.push_back(*this);
+}
+
+
+
+class ButtonGroup
+{
+public:
+	ButtonGroup();
+	//void add(JRadioButton	jrb);
+	void add(JRadioButton * jrb);
+	void add(JRadioButton & jrb);
+	void setInstanceName();
+	string instanceName;
+};
+vector<ButtonGroup> Bgroups;
+
+ButtonGroup::ButtonGroup()
+{
+	setInstanceName();
+	c.gui.push_back(instanceName + ",instantiate,0,ButtonGroup");
+	Bgroups.push_back(*this);
+	//jComps.push_back(*this);
+}
+//void ButtonGroup::add(JRadioButton jrb)
+//{
+//	c.gui.push_back(instanceName + ",addToButtonGroup," + jrb.getInstanceName);
+//}
+void ButtonGroup::add(JRadioButton * jrb)
+{
+	c.gui.push_back(instanceName + ",addToButtonGroup," + jrb->getInstanceName());
+
+}
+void ButtonGroup::add(JRadioButton & jrb)
+{
+	c.gui.push_back(instanceName + ",addToButtonGroup," + jrb.getInstanceName());
+
+}
+void ButtonGroup::setInstanceName()
+{
+	instanceName = to_string(c.instanceCounter2);
+	c.instanceCounter2++;
+}
+
+
 
 class ActionEvent
 {
@@ -631,20 +688,20 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;
 				/*for (ActionListener storedAL : storedALs)
 				{
-					cout << "looped" << endl;
-					storedAL.actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				cout << "looped" << endl;
+				storedAL.actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
 				}*/
 				storedALs[stoi(JavaCommand.at(1))]
 					->
 					actionPerformed(
 						*new ActionEvent(
 							stoi(
-									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
-								)
+								jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
 							)
-						);
+						)
+					);
 
-					//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
 			}
 			break;
 		case 1:
@@ -991,7 +1048,7 @@ void JTextArea::setText(string newText)
 class JComboBox : public JComponent
 {
 public:
-	JComboBox(string items []);
+	JComboBox(string items[]);
 };
 JComboBox::JComboBox(string items[])
 {
@@ -1006,36 +1063,10 @@ JComboBox::JComboBox(string items[])
 	jComps.push_back(*this);
 }
 
-class JRadioButton : public JComponent
-{
-public:
-	JRadioButton();
-};
-JRadioButton::JRadioButton()
-{
-	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton");
-	jComps.push_back(*this);
-}
 
-class ButtonGroup
-{
-public:
-	ButtonGroup();
-	void add(JRadioButton	jrb);
-	void add(JRadioButton * jrb);
-	void add(JRadioButton & jrb);
-};
-ButtonGroup::ButtonGroup()
-{
-	//setInstanceName();
-	c.gui.push_back(-1 + ",instantiate,0,ButtonGroup");
-	//jComps.push_back(*this);
-}
-void ButtonGroup::add(JRadioButton jrb)
-{
 
-};
+
+
 
 class Cpp2Java {
 public:
@@ -1073,7 +1104,7 @@ void Cpp2Java::finish()
 	// Loop phase
 	startListeningToJava();
 	while (1); // Continue listening.
-	// Without this inf. loop, program would end.
+			   // Without this inf. loop, program would end.
 }
 
 /*void Cpp2Java::pause(double ld)
