@@ -416,7 +416,6 @@ public:
 	virtual void actionPerformed(ActionEvent * ae) {};
 };
 
-
 vector<ActionListener *> storedALs(64);
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -468,6 +467,7 @@ int startListeningToJava()
 	{
 		//printf("Client connected, creating a processing thread.\n");
 
+		//cout << "Successfully connected to Java." << endl;
 		// Create a thread for this client. 
 		hThread = CreateThread(
 			NULL,              // no security attribute 
@@ -545,6 +545,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 	hPipe = (HANDLE)lpvParam;
 
+	std::cout << "Successfully connected to Java." << endl;
 	// Loop until done reading
 	while (1)
 	{
@@ -741,8 +742,6 @@ VOID GetAnswerToRequest(LPTSTR pchRequest,
 }
 
 #endif
-
-
 
 class JPanel : public JComponent {
 public:
@@ -1040,8 +1039,9 @@ void ButtonGroup::add(JRadioButton jrb)
 
 class Cpp2Java {
 public:
-	Cpp2Java();
+	Cpp2Java() {};
 	void removeAll();
+	void update();
 	void finish();
 	//void pause(double ld);
 	void setLayout(GridLayout* gl);
@@ -1052,30 +1052,28 @@ public:
 	void add(JComponent& jc, string layout);
 	ofstream file;
 	ofstream file1;
-
-private:
-
 };
-Cpp2Java::Cpp2Java()
-{
-};
+
 void Cpp2Java::removeAll()
 {
 	//c.gui.push_back("-1,removeAll");
 
 	//might need to move this to finish()
 }
+void Cpp2Java::update()
+{
+	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
+	c.gui.clear();
+}
 void Cpp2Java::finish()
 {
-
-
 	sendCommandsThroughPipe(c.gui, L"Cpp2Java_gui");
-
 	c.gui.clear();
 
 	// Loop phase
-
 	startListeningToJava();
+	while (1); // Continue listening.
+	// Without this inf. loop, program would end.
 }
 
 /*void Cpp2Java::pause(double ld)
@@ -1125,6 +1123,16 @@ void Cpp2Java::add(JComponent& jc)
 void Cpp2Java::add(JComponent& jc, string layout)
 {
 	c.gui.push_back("-1,addContainer," + jc.getInstanceName() + "," + layout);
+}
+ostream& operator<<(ostream& os, Cpp2Java* jC)
+{
+	os << "Cpp2Java";
+	return os;
+}
+ostream& operator<<(ostream& os, Cpp2Java jC)
+{
+	os << "Cpp2Java";
+	return os;
 }
 
 #endif // !CPP2JAVA_H

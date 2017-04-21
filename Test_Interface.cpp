@@ -6,6 +6,7 @@
 
 #include "Cpp2Java.h"
 
+Cpp2Java Cpp2Java;
 
 JPanel myPanel1;
 JPanel myPanel2;
@@ -20,7 +21,7 @@ string myItems [4] = { "op1","op2","op3","op4" };
 JComboBox myBox(myItems);
 
 int main() {
-	Cpp2Java Cpp2Java;
+	
 
 	//Cpp2Java.removeAll();
 
@@ -139,7 +140,6 @@ int main() {
 
 	cout << "test3" << endl;
 	Cpp2Java.finish();
-
 	while (1);
 
 }
