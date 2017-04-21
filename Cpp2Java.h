@@ -637,7 +637,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				storedALs[stoi(JavaCommand.at(1))]
 					->
 					actionPerformed(
-						new ActionEvent(
+						*new ActionEvent(
 							stoi(
 									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
 								)

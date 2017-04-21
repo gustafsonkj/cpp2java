@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Cpp2Java extends JFrame { //One-JFrame setup
     private static Container contents;
-    private ArrayList < JComponent > comps;
+    private ArrayList < JComponent > comps = new ArrayList < JComponent > (64);
 
     private class GuiThread extends Thread {
         public void run() {
@@ -182,9 +182,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
     }
     
     public void performCommands(ArrayList < String > cmnds) {
-        comps = new ArrayList < JComponent > (64);
-        this.contents.removeAll();
-        this.getContentPane().removeAll();
+        //this.contents.removeAll();
+        //this.getContentPane().removeAll();
         for (String l: cmnds) {
             ////System.out.println(l);
 
@@ -297,7 +296,8 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   break;
                 case "setTextJL":
                     {
-                        ((JLabel) comps.get(Integer.parseInt(line[2]))).setText(line[1]);
+                        System.out.println(line[2]);
+                        ((JLabel) comps.get(Integer.parseInt(line[0]))).setText(line[2]);
                     }
                     break;
 
