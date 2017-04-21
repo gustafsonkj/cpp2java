@@ -423,8 +423,8 @@ class ItemListener
 public:
 	//ItemListener() {};
 	//ItemListener(const ActionListener & copy) {};
-	virtual void actionPerformed(ItemEvent ae) { cout << "calling original!" << endl; }
-	virtual void actionPerformed(ItemEvent * ae) {};
+	virtual void itemStateChanged(ItemEvent ae) { cout << "calling original!" << endl; }
+	virtual void itemStateChanged(ItemEvent * ae) {};
 };
 
 vector<ItemListener *> storedILs(64);
@@ -465,12 +465,12 @@ JRadioButton::JRadioButton(string s)
 }
 void JRadioButton::addItemListener(ItemListener * iL)
 {
-	c.gui.push_back(instanceName + ",addActionListener");
+	c.gui.push_back(instanceName + ",addItemListener");
 	storedILs[stoi(instanceName)] = iL;
 }
 void JRadioButton::addItemListener(ItemListener & iL)
 {
-	c.gui.push_back(instanceName + ",addActionListener");
+	c.gui.push_back(instanceName + ",addItemListener");
 	storedILs[stoi(instanceName)] = &iL;
 }
 
@@ -508,12 +508,12 @@ JCheckBox::JCheckBox(string s)
 }
 void JCheckBox::addItemListener(ItemListener * iL)
 {
-	c.gui.push_back(instanceName + ",addActionListener");
+	c.gui.push_back(instanceName + ",addItemListener");
 	storedILs[stoi(instanceName)] = iL;
 }
 void JCheckBox::addItemListener(ItemListener & iL)
 {
-	c.gui.push_back(instanceName + ",addActionListener");
+	c.gui.push_back(instanceName + ",addItemListener");
 	storedILs[stoi(instanceName)] = &iL;
 }
 
@@ -847,7 +847,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				{
 					storedILs[stoi(JavaCommand.at(1))]
 						->
-						actionPerformed(
+						itemStateChanged(
 							*new ItemEvent(
 								stoi(
 									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
@@ -860,7 +860,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				{
 					storedILs[stoi(JavaCommand.at(1))]
 						->
-						actionPerformed(
+						itemStateChanged(
 							*new ItemEvent(
 								stoi(
 									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()

@@ -20,6 +20,10 @@ JButton myBtn4("H,ellasdflo4");
 string myItems [4] = { "op1","op2","op3","op4" };
 JComboBox myBox(myItems);
 
+JCheckBox jrb1("first option");
+JCheckBox jrb2("second option");
+JCheckBox jrb3("third option");
+ButtonGroup b1;
 int main() {
 	
 
@@ -38,10 +42,18 @@ int main() {
 
 	//myAH->actionPerformed(new ActionEvent(stoi(myButton1.getInstanceName())));
 
+	b1.add(jrb1);
+	b1.add(jrb2);
+	b1.add(jrb3);
 	myPanel1.add(myBtn1);
 	myPanel2.add(myBtn2);
 	//myPanel2.add(myBtn11);
+
 	myPanel3.add(myBtn3);
+	myPanel3.add(jrb1);
+	myPanel3.add(jrb2);
+	myPanel3.add(jrb3);
+
 	myPanel4.add(myBtn4);
 	myPanel4.add(myBox);
 	Cpp2Java.add(myPanel1);
@@ -94,13 +106,13 @@ int main() {
 	class ActionHandler : public ActionListener
 	{
 	public:
-		void actionPerformed(ActionEvent *ae)
+		void actionPerformed(ActionEvent ae)
 		{
 			cout << "#@$#$%#@$^#$%^#$%^#$%^#$%^#$%^#$%^#$%^#$%^#$%^" << endl;
-			cout << "FIRST:" << ae->getSource().getInstanceName() << endl;
+			cout << "FIRST:" << ae.getSource().getInstanceName() << endl;
 			cout << "SECOND:" << myBtn1.getInstanceName() << endl;
 			
-			if (ae->getSource() == myBtn1)
+			if (ae.getSource() == myBtn1)
 			{
 				for (int i = 0; i < 100; i++)
 				{
@@ -111,7 +123,7 @@ int main() {
 					this_thread::sleep_for(chrono::milliseconds(30));
 				}
 			}
-			else if (ae->getSource() == myBtn2)
+			else if (ae.getSource() == myBtn2)
 			{
 				for (int i = 0; i < 100; i++)
 				{
@@ -127,7 +139,31 @@ int main() {
 	};
 	//cout << "test1" << endl;
 
+	class ItemHandler : public ItemListener
+	{
+		void itemStateChanged(ItemEvent ie)
+		{
+			if (ie.getSource() == jrb1)
+			{
+				cout << "jrb1 state change!" << endl;
+				if (ie.getStateChange() == ie.isSelected)
+				{
+					cout << "jrb1 state change!" << endl;
+				}
+			}
+			else if (ie.getSource() == jrb2)
+			{
+				cout << "jrb1 state change!" << endl;
+				if (ie.getStateChange() == ie.isSelected)
+				{
+					cout << "jrb2 state change!" << endl;
+				}
+			}
+		}
+	};
 	//ActionHandler* myAH = new ActionHandler;
+
+	ItemHandler myIH;
 	ActionHandler myAH;
 	//cout << "test2" << endl;
 
@@ -135,11 +171,14 @@ int main() {
 	myBtn1.addActionListener(myAH);
 	myBtn2.addActionListener(myAH);
 
+	jrb1.addItemListener(myIH);
+	jrb2.addItemListener(myIH);
+	jrb3.addItemListener(myIH);
+
 	cout << "CALL2" << endl;
 	this_thread::sleep_for(chrono::milliseconds(50));
 
 	cout << "test3" << endl;
 	Cpp2Java.finish();
-	while (1);
 
 }

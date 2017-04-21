@@ -213,6 +213,16 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                         }
                     }
                     break;
+                case "addItemListener":
+                {
+                  Object temp = comps.get(ID);
+                  if (temp instanceof DynamicJCheckBox)
+                     ((DynamicJCheckBox)temp).addItemListener(new DynamicItemListener());
+                  else if (temp instanceof DynamicJRadioButton)
+                     ((DynamicJRadioButton)temp).addItemListener(new DynamicItemListener());
+                }
+                break;
+               
                 case "removeAll":
                     {
                         comps.clear();
