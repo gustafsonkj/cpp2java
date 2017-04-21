@@ -395,12 +395,12 @@ KeyListener * storedKL = new KeyListener();
 class JRadioButton : public JComponent
 {
 public:
-	JRadioButton();
+	JRadioButton(string s);
 };
-JRadioButton::JRadioButton()
+JRadioButton::JRadioButton(string s)
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton");
+	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton," + s);
 	jComps.push_back(*this);
 }
 
