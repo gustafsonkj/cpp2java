@@ -241,6 +241,7 @@ class JComponent {
 	friend class Cpp2Java;
 	friend class Polygon;
 	friend class ActionListener;
+	friend class ItemListener;
 
 public:
 	JComponent() {};
@@ -276,6 +277,7 @@ public:
 	ofstream file1;
 	string instanceName;
 	ActionListener* al1;
+	ItemListener* il1;
 
 protected:
 	void setInstanceName();
@@ -388,14 +390,72 @@ string JComponent::getInstanceName()
 
 // This vector is used to reference action events.
 // It must be declared after JComponent is defined.
-
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
+
+
+class ItemEvent
+{
+public:
+	ItemEvent(int jc, bool IsSelected);
+	JComponent getSource();
+	bool getStateChange();
+	int jC;
+	bool isSelected;
+};
+
+ItemEvent::ItemEvent(int jc, bool IsSelected)
+{
+	jC = jc;
+	isSelected = IsSelected;
+}
+JComponent ItemEvent::getSource()
+{
+	return (jComps[jC]);
+}
+bool ItemEvent::getStateChange()
+{
+	return isSelected;
+}
+
+class ItemListener
+{
+public:
+	//ItemListener() {};
+	//ItemListener(const ActionListener & copy) {};
+	virtual void actionPerformed(ItemEvent ae) { cout << "calling original!" << endl; }
+	virtual void actionPerformed(ItemEvent * ae) {};
+};
+
+vector<ItemListener *> storedILs(64);
+
 
 class JRadioButton : public JComponent
 {
 public:
 	JRadioButton(string s);
+	JRadioButton(JRadioButton & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JRadioButton & jRB)
+	{
+		return instanceName.compare(jRB.instanceName) == 0;
+	}
+	bool operator==(JComponent & jC)
+	{
+		return instanceName.compare(jC.getInstanceName()) == 0;
+	}
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
+	}
+	void addItemListener(ItemListener * iL);
+	void addItemListener(ItemListener & iL);
+
 };
 JRadioButton::JRadioButton(string s)
 {
@@ -403,17 +463,58 @@ JRadioButton::JRadioButton(string s)
 	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton," + s);
 	jComps.push_back(*this);
 }
+void JRadioButton::addItemListener(ItemListener * iL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+	storedILs[stoi(instanceName)] = iL;
+}
+void JRadioButton::addItemListener(ItemListener & iL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+	storedILs[stoi(instanceName)] = &iL;
+}
 
 class JCheckBox : public JComponent
 {
 public:
 	JCheckBox(string s);
+	JCheckBox(JCheckBox & copy) {
+		instanceName = copy.instanceName;
+	};
+	bool operator==(JCheckBox & jCB)
+	{
+		return instanceName.compare(jCB.instanceName) == 0;
+	}
+	bool operator==(JComponent & jC)
+	{
+		return instanceName.compare(jC.getInstanceName()) == 0;
+	}
+	void operator = (JComponent & jC)
+	{
+		instanceName = jC.getInstanceName();
+	}
+	void operator = (JComponent * jC)
+	{
+		instanceName = jC->getInstanceName();
+	}
+	void addItemListener(ItemListener * iL);
+	void addItemListener(ItemListener & iL);
 };
 JCheckBox::JCheckBox(string s)
 {
 	setInstanceName();
-	c.gui.push_back(instanceName + ",instantiate,0,JRadioButton," + s);
+	c.gui.push_back(instanceName + ",instantiate,0,JCheckBox," + s);
 	jComps.push_back(*this);
+}
+void JCheckBox::addItemListener(ItemListener * iL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+	storedILs[stoi(instanceName)] = iL;
+}
+void JCheckBox::addItemListener(ItemListener & iL)
+{
+	c.gui.push_back(instanceName + ",addActionListener");
+	storedILs[stoi(instanceName)] = &iL;
 }
 
 class ButtonGroup
@@ -496,6 +597,8 @@ public:
 };
 
 vector<ActionListener *> storedALs(64);
+
+
 
 #if defined(_WIN32) || defined(_WIN64)
 DWORD WINAPI InstanceThread(LPVOID);
@@ -701,13 +804,13 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			break;
 		case 0:
 			//Action Listeners
-			cout << "called case 0 " << endl;
+			//cout << "called case 0 " << endl;
 
 			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
 			{
-				cout << "inner" << endl;
+				/*cout << "inner" << endl;
 				cout << JavaCommand.at(1) << endl;
-				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;
+				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;*/
 				/*for (ActionListener storedAL : storedALs)
 				{
 				cout << "looped" << endl;
@@ -728,6 +831,48 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			break;
 		case 1:
 			//Item Listeners
+			//cout << "called case 1 " << endl;
+
+			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
+			{
+				/*cout << "inner" << endl;
+				cout << JavaCommand.at(1) << endl;
+				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;*/
+				/*for (ItemListener storedIL : storedILs)
+				{
+				cout << "looped" << endl;
+				storedIL.actionPerformed(*new ItemEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				}*/
+				if (JavaCommand.at(3).compare("1") == 0)
+				{
+					storedILs[stoi(JavaCommand.at(1))]
+						->
+						actionPerformed(
+							*new ItemEvent(
+								stoi(
+									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
+								), true
+							)
+						);
+				}
+
+				if (JavaCommand.at(3).compare("2") == 0)
+				{
+					storedILs[stoi(JavaCommand.at(1))]
+						->
+						actionPerformed(
+							*new ItemEvent(
+								stoi(
+									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
+								), false
+							)
+						);
+				}
+
+
+
+				//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+			}
 			break;
 		default:
 			break;
