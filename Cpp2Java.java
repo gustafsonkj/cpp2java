@@ -291,7 +291,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                             break;
                             
                             case "JCheckBox":
-                              comps.add(ID, new JCheckBox(line[4]));
+                              comps.add(ID, new DynamicJCheckBox(line[4],ID));
                             break;
                             
                             default:
@@ -312,18 +312,20 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   
                      System.out.println(line[2]);
                      
-                    if ( comps.get(Integer.parseInt(line[2])) instanceof JRadioButton)
+                    if ( comps.get(Integer.parseInt(line[2])) instanceof DynamicJRadioButton)
                     {
+                    System.out.println("radio");
                       ( (ButtonGroup)butts.get(ID) ).add
                         ( 
-                           (JRadioButton) ( comps.get(Integer.parseInt(line[2])) )
+                           (DynamicJRadioButton) ( comps.get(Integer.parseInt(line[2])) )
                         );
                     }
-                    else if ( comps.get(Integer.parseInt(line[2])) instanceof JCheckBox)
+                    else if ( comps.get(Integer.parseInt(line[2])) instanceof DynamicJCheckBox)
                     {
+                     System.out.println("checkity");
                       ( (ButtonGroup)butts.get(ID) ).add
                         ( 
-                           (JCheckBox) ( comps.get(Integer.parseInt(line[2])) )
+                           (DynamicJCheckBox) ( comps.get(Integer.parseInt(line[2])) )
                         );
                     }
                   }
