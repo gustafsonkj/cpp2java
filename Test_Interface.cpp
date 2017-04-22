@@ -145,16 +145,14 @@ int main() {
 		{
 			if (ie.getSource() == jrb1)
 			{
-				cout << "jrb1 state change!" << endl;
-				if (ie.getStateChange() == ie.isSelected)
+				if (ie.getStateChange() == ie.SELECTED)
 				{
 					cout << "jrb1 state change!" << endl;
 				}
 			}
 			else if (ie.getSource() == jrb2)
 			{
-				cout << "jrb1 state change!" << endl;
-				if (ie.getStateChange() == ie.isSelected)
+				if (ie.getStateChange() == ie.SELECTED)
 				{
 					cout << "jrb2 state change!" << endl;
 				}

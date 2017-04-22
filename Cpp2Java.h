@@ -45,7 +45,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		100, // no inbound buffer
 		0, // use default wait time
 		PIPE_ACCEPT_REMOTE_CLIENTS // use default security attributes
-	);
+		);
 
 	if (pipe == NULL || pipe == INVALID_HANDLE_VALUE) {
 		//cout << "Failed to create outbound pipe instance.";
@@ -68,7 +68,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 	for (string cmnd : cmnds)
 	{
 		//cout << cmnd << endl;
-		Sleep(10);
+		//Sleep(10);
 		//cout << "Sending data to pipe..." << endl;
 		// This call blocks until a client process reads all the data
 		//const wchar_t *data = L"1,add,2\n";
@@ -83,7 +83,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 			strlen(data) * sizeof(char), // length of data to send (bytes)
 			&numBytesWritten, // will store actual amount of data sent
 			NULL // not using overlapped IO
-		);
+			);
 
 
 		if (result) {
@@ -397,25 +397,27 @@ KeyListener * storedKL = new KeyListener();
 class ItemEvent
 {
 public:
-	ItemEvent(int jc, bool IsSelected);
+	ItemEvent(int jc, int newTypeStateChanged);
 	JComponent getSource();
-	bool getStateChange();
+	int getStateChange();
 	int jC;
-	bool isSelected;
+	const int SELECTED = 1;
+	const int DESELECTED = 2;
+	int typeStateChanged;
 };
 
-ItemEvent::ItemEvent(int jc, bool IsSelected)
+ItemEvent::ItemEvent(int jc, int newTypeStateChanged)
 {
 	jC = jc;
-	isSelected = IsSelected;
+	typeStateChanged = newTypeStateChanged;
 }
 JComponent ItemEvent::getSource()
 {
 	return (jComps[jC]);
 }
-bool ItemEvent::getStateChange()
+int ItemEvent::getStateChange()
 {
-	return isSelected;
+	return typeStateChanged;
 }
 
 class ItemListener
@@ -808,14 +810,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
 			{
-				/*cout << "inner" << endl;
-				cout << JavaCommand.at(1) << endl;
-				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;*/
-				/*for (ActionListener storedAL : storedALs)
-				{
-				cout << "looped" << endl;
-				storedAL.actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
-				}*/
 				storedALs[stoi(JavaCommand.at(1))]
 					->
 					actionPerformed(
@@ -825,53 +819,22 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 							)
 						)
 					);
-
-				//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
 			}
 			break;
 		case 1:
 			//Item Listeners
-			//cout << "called case 1 " << endl;
 
-			if (JavaCommand.at(2).compare("ActionPerformed") == 0)
+			if (JavaCommand.at(2).compare("itemStateChanged") == 0)
 			{
-				/*cout << "inner" << endl;
-				cout << JavaCommand.at(1) << endl;
-				cout << jComps.at(stoi(JavaCommand.at(1))) << endl;*/
-				/*for (ItemListener storedIL : storedILs)
-				{
-				cout << "looped" << endl;
-				storedIL.actionPerformed(*new ItemEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
-				}*/
-				if (JavaCommand.at(3).compare("1") == 0)
-				{
-					storedILs[stoi(JavaCommand.at(1))]
-						->
-						itemStateChanged(
-							*new ItemEvent(
-								stoi(
-									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
-								), true
-							)
-						);
-				}
-
-				if (JavaCommand.at(3).compare("2") == 0)
-				{
-					storedILs[stoi(JavaCommand.at(1))]
-						->
-						itemStateChanged(
-							*new ItemEvent(
-								stoi(
-									jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
-								), false
-							)
-						);
-				}
-
-
-
-				//storedALs.at(stoi(JavaCommand.at(1))).actionPerformed(*new ActionEvent(stoi(jComps.at(stoi(JavaCommand.at(1))).getInstanceName())));
+				storedILs[stoi(JavaCommand.at(1))]
+					->
+					itemStateChanged(
+						*new ItemEvent(
+							stoi(
+								jComps.at(stoi(JavaCommand.at(1))).getInstanceName()
+							), stoi(JavaCommand.at(3))
+						)
+					);
 			}
 			break;
 		default:
@@ -1237,7 +1200,8 @@ JComboBox::JComboBox(string items[])
 
 class Cpp2Java {
 public:
-	Cpp2Java() {};
+	Cpp2Java() {
+	};
 	void removeAll();
 	void update();
 	void finish();

@@ -27,10 +27,8 @@ public class DynamicJButton extends JButton implements ActionListener
    
    public void actionPerformed(ActionEvent ae)
    {
-      System.out.println("Clicked");
 
          DynamicJButton temp = (DynamicJButton)ae.getSource();   
-         Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed" + "~");
-         
- }
+         Cpp2Java.sendCommandThroughPipe("0,"+temp.getID()+",ActionPerformed" + "~"); 
+     }
  }

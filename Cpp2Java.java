@@ -14,16 +14,16 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
             while (true) {
                 ArrayList < String > cmnds = new ArrayList < String > (64);
 
-                boolean busyWait1 = true;
+                boolean waitForCPP = true;
                 RandomAccessFile pipe = null;
-                while (busyWait1) {
+                while (waitForCPP) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ie) {}
                     try {
                         pipe = new RandomAccessFile("\\\\.\\pipe\\Cpp2Java_gui", "r");
-                        busyWait1 = false;
-                    } catch (FileNotFoundException e1) {
+                        waitForCPP = false;
+                    } catch (FileNotFoundException CPPNotOpened) {
                         // e1.printStackTrace();
                     }
                 }
@@ -31,29 +31,12 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                 try {
                     String inData = "";
                     while ((inData = pipe.readLine()) != null) {
-
-                        // Read from the pipe one line at a time
-                        //inData = pipe.readLine();
-                        if (inData != null) {
                             cmnds.add(inData);
-                            ////System.out.println("Read from pipe :" + inData); //**Here it prints with spaces**
-
-                            //parseData(inData);
-                        }
-
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // Close the pipe at the end
-                // //System.out.println("here0");
 
-                try {
-                    pipe.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                ////System.out.println("here");
                 performCommands(cmnds);
                 revalidate();
                 repaint();
@@ -63,52 +46,41 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
     private class PaintThread extends Thread {
         public void run() {
             while (true) {
-                boolean busyWait1 = true;
+                boolean waitForCPP = true;
                 RandomAccessFile pipe = null;
-                while (busyWait1) {
+                while (waitForCPP) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ie) {}
                     try {
                         pipe = new RandomAccessFile("\\\\.\\pipe\\Cpp2Java_paint", "r");
-                        busyWait1 = false;
+                        waitForCPP = false;
                     } catch (FileNotFoundException e1) {
                         // e1.printStackTrace();
                     }
                 }
-                //while(true)   {
-                   try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ie) {}
-                   // Main loop
+
                    try {
                        String fileLine = "";
+                       int repaintID = -1;
                        while ((fileLine = pipe.readLine()) != null) {
                            String[] line = fileLine.split(",");
                            String command = "";
                            for (int i = 1; i < line.length; i++) {
                                command += line[i] + ",";
                            }
-                           System.out.println(command);
-                           /* Object comp = comp.get...
-                           if (comp instanceof DynamicJanel)
-                              (Dynamic)...*/
-                           ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).setCommand(command);
-   
+                           ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).addCommand(command);
+                           
                            //ID is the instanceName from Cpp2Java.h
                            int ID = Integer.parseInt(line[0]);
-                           try {
-                               Thread.sleep(5);
-                           } catch (InterruptedException ie) {}
-   
-                           ((DynamicJPanel) comps.get(Integer.parseInt(line[0]))).repaint();
+                           repaintID = ID;
                        }
-   
+                       if (repaintID != -1)
+                        ((DynamicJPanel) comps.get(repaintID)).tryPaint();
+                       else
+                        System.out.println("no more commands");
+                       
                    } catch (IOException ioe) {}
-                //}
-                // Close the pipe at the end
-                // //System.out.println("here0");
-
                 try {
                     pipe.close();
                 } catch (IOException e) {
@@ -198,13 +170,10 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
             switch (line[1]) { //Type of Command
                 case "addActionListener":
                     {
-                        
-                        //System.out.println(comps.get(ID).getClass().getName());
-                        comps.get(ID).setFocusable(false); //Wasnt working so needed this
+                       comps.get(ID).setFocusable(false); //Wasnt working so needed this
                        
                        if ( comps.get(ID) instanceof JButton) //If component is a DynamicJButton
                         {
-                           System.out.println("Its a button!");
                              ((DynamicJButton)comps.get(ID)).addActionListener();
                             
                         } else if (comps.get(ID) instanceof JTextField) //If component is a DynamicTextField
@@ -286,7 +255,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                             comps.add(ID, new DynamicJButton(ID));
                                             break;
                                         case 1:
-                                            //System.out.println("ch3");
                                             comps.add(ID, new DynamicJButton(ID, line[4]));
                                             break;
                                     }
@@ -313,18 +281,13 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                     break;
                 case "addItemToComboBox":
                   {
-                     System.out.println(line[2]);
                       ( (JComboBox)comps.get(ID) ).addItem( (line[2]) );
                   }
                   break;
                  case "addToButtonGroup":
                   {
-                  
-                     System.out.println(line[2]);
-                     
                     if ( comps.get(Integer.parseInt(line[2])) instanceof DynamicJRadioButton)
                     {
-                    System.out.println("radio");
                       ( (ButtonGroup)butts.get(ID) ).add
                         ( 
                            (DynamicJRadioButton) ( comps.get(Integer.parseInt(line[2])) )
@@ -332,7 +295,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                     }
                     else if ( comps.get(Integer.parseInt(line[2])) instanceof DynamicJCheckBox)
                     {
-                     System.out.println("checkity");
                       ( (ButtonGroup)butts.get(ID) ).add
                         ( 
                            (DynamicJCheckBox) ( comps.get(Integer.parseInt(line[2])) )
@@ -342,7 +304,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   break;
                 case "setTextJL":
                     {
-                        System.out.println(line[2]);
                         ((JLabel) comps.get(Integer.parseInt(line[0]))).setText(line[2]);
                     }
                     break;
@@ -518,7 +479,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                     }
                     break;
                 case "addKeyListener":
-                    //System.out.println("CH4");
                     contents.addKeyListener(new DynamicKeyAdapter());
                     contents.setFocusable(true);
                     contents.requestFocusInWindow();
@@ -528,8 +488,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                     contents.addMouseListener(new DynamicMouseListener());
                     break;
             }
-            System.out.println(comps.size());
-
         }
     }
 }

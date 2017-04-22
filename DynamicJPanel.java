@@ -8,12 +8,28 @@ import java.io.*;
 public class DynamicJPanel extends JPanel {
 	private Vector < String > commands = new Vector<String>();
 
-	public void setCommand(String command) {
+   private class PaintCommandThread implements Runnable   {
+      public void run()
+      {
+         repaint();
+      }
+   }
+   
+   Thread pct = new Thread(new PaintCommandThread(), "PaintCommands");
+   public void tryPaint()
+   {
+         while(pct.isAlive())
+         {
+         };
+         pct = new Thread(new PaintCommandThread(), "PaintCommands");
+         pct.start();
+   
+   }
+	public void addCommand(String command) {
 		commands.add(command);
 	}
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		try {
       Iterator<String> iter = commands.iterator();
 			while (iter.hasNext()) {
@@ -70,6 +86,6 @@ public class DynamicJPanel extends JPanel {
 			}
 		}
 		catch(NullPointerException | ConcurrentModificationException npe) {}
-
+      commands.clear();
 	}
 }
