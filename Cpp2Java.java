@@ -168,6 +168,10 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
             int vGap;
          
             switch (line[1]) { //Type of Command
+                case "setFrameSize":
+                  setSize(Integer.parseInt(line[2]), Integer.parseInt(line[3]));
+                  setVisible(true);
+                  break;
                 case "addActionListener":
                     {
                        comps.get(ID).setFocusable(false); //Wasnt working so needed this

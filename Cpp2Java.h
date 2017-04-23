@@ -48,7 +48,6 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		);
 
 	if (pipe == NULL || pipe == INVALID_HANDLE_VALUE) {
-		//cout << "Failed to create outbound pipe instance.";
 		// look up error code here using GetLastError()
 		system("pause");
 	}
@@ -58,7 +57,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 	// This call blocks until a client process connects to the pipe
 	BOOL result = ConnectNamedPipe(pipe, NULL);
 	if (!result) {
-		//cout << "Failed to make connection on named pipe." << endl;
+		cout << "Failed to connect to Java. Check to make sure it is open.";
 		// look up error code here using GetLastError()
 		//cout << GetLastError() << endl;
 		CloseHandle(pipe); // close the pipe
@@ -1200,7 +1199,14 @@ JComboBox::JComboBox(string items[])
 
 class Cpp2Java {
 public:
-	Cpp2Java() {
+	Cpp2Java()
+	{
+		removeAll();
+	}
+	Cpp2Java(int width, int height) {
+
+		removeAll();
+		c.gui.push_back("-1,setFrameSize,"+to_string(width)+","+to_string(height));
 	};
 	void removeAll();
 	void update();
@@ -1218,7 +1224,7 @@ public:
 
 void Cpp2Java::removeAll()
 {
-	//c.gui.push_back("-1,removeAll");
+	c.gui.push_back("-1,removeAll");
 
 	//might need to move this to finish()
 }
