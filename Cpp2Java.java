@@ -195,7 +195,6 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                      ((DynamicJRadioButton)temp).addItemListener(new DynamicItemListener());
                 }
                 break;
-               
                 case "removeAll":
                     {
                         comps.clear();

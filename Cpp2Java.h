@@ -12,7 +12,6 @@
 #include <chrono>
 #include <thread>
 #include <utility>
-//#include "FileWatcher.h"
 #include <stdexcept>
 #if defined(_WIN32)|| defined(_WIN64)
 #include <windows.h>
@@ -152,6 +151,34 @@ string KeyEvent::getKeyChar()
 class KeyListener {
 public:
 	virtual void keyReleased(KeyEvent ke) {};
+};
+
+class MouseEvent {
+public:
+	MouseEvent(int clickX, int clickY);
+	int getMouseClickX();
+	int getMouseClickY();
+private:
+	int x;
+	int y;
+};
+MouseEvent::MouseEvent(int clickX, int clickY)
+{
+	x = x;
+	y = y;
+}
+int MouseEvent::getMouseClickX()
+{
+	return x;
+}
+int MouseEvent::getMouseClickY()
+{
+	return y;
+}
+class MouseListener {
+public:
+	virtual void mouseClicked(MouseEvent me) {};
+	virtual void mousePressed(MouseEvent me) {};
 };
 
 /*class Polygon {
@@ -391,6 +418,7 @@ string JComponent::getInstanceName()
 // It must be declared after JComponent is defined.
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
+MouseListener * storedML = new MouseListener();
 
 
 class ItemEvent
@@ -796,7 +824,14 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			}
 			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse Listeners
 			{
-
+				if (JavaCommand.at(2).compare("0") == 0)
+				{
+					storedML->mouseClicked(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4)));
+				}
+				else
+				{
+					storedML->mousePressed(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4)));
+				}
 			}
 			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
 			{
