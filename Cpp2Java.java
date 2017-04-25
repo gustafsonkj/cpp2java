@@ -269,7 +269,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                             break;
                             
                             case "JRadioButton":
-                              comps.add(ID, new JRadioButton(line[4]));
+                              comps.add(ID, new DynamicJRadioButton(line[4]));
                             break;
                             
                             case "JCheckBox":
