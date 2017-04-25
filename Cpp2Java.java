@@ -173,9 +173,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                   setVisible(true);
                   break;
                 case "addActionListener":
-                    {
-                       comps.get(ID).setFocusable(false); //Wasnt working so needed this
-                       
+                    {                       
                        if ( comps.get(ID) instanceof JButton) //If component is a DynamicJButton
                         {
                              ((DynamicJButton)comps.get(ID)).addActionListener();
@@ -211,6 +209,7 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                 break;
                             case "JComboBox":
                                 comps.add(ID, new JComboBox());
+                                comps.get(ID).setFocusable(false);
                                 break;
                             case "JLabel":
                                 {
@@ -229,9 +228,11 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     switch (Integer.parseInt(line[2])) {
                                         case 0:
                                             comps.add(ID, new DynamicJTextField(line[4], Integer.parseInt(line[5]), ID));
+                                            comps.get(ID).setFocusable(false);
                                             break;
                                         case 1:
                                             comps.add(ID, new DynamicJTextField(Integer.parseInt(line[4]), ID));
+                                            comps.get(ID).setFocusable(false);
                                             break;
                                     }
                                 }
@@ -241,25 +242,32 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                                     switch (Integer.parseInt(line[2])) {
                                         case 0:
                                             comps.add(ID, new JTextArea(line[4]));
+                                            comps.get(ID).setFocusable(false);
                                             break;
                                         case 1:
                                             comps.add(ID, new JTextArea(Integer.parseInt(line[4]), Integer.parseInt(line[5])));
+                                            comps.get(ID).setFocusable(false);
                                             break;
                                         case 2:
                                             comps.add(ID, new JTextArea(
                                                 Integer.parseInt(line[4]), Integer.parseInt(line[5], Integer.parseInt(line[6]))));
+                                                comps.get(ID).setFocusable(false);
                                             break;
                                     }
                                 }
                                 break;
                             case "JButton":
                                 {
+
                                     switch (Integer.parseInt(line[2])) {
                                         case 0:
                                             comps.add(ID, new DynamicJButton(ID));
+                                            comps.get(ID).setFocusable(false); 
+
                                             break;
                                         case 1:
                                             comps.add(ID, new DynamicJButton(ID, line[4]));
+                                            comps.get(ID).setFocusable(false); 
                                             break;
                                     }
                                 }
@@ -270,10 +278,12 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                             
                             case "JRadioButton":
                               comps.add(ID, new DynamicJRadioButton(line[4],ID));
+                              comps.get(ID).setFocusable(false);
                             break;
                             
                             case "JCheckBox":
                               comps.add(ID, new DynamicJCheckBox(line[4],ID));
+                              comps.get(ID).setFocusable(false);
                             break;
                             
                             default:
