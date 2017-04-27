@@ -268,6 +268,7 @@ class JComponent {
 	friend class Polygon;
 	friend class ActionListener;
 	friend class ItemListener;
+	friend class MouseListener;
 
 public:
 	JComponent() {};
@@ -971,6 +972,8 @@ public:
 	void setLayout(BorderLayout* bl);
 	void add(JComponent& jc);
 	void add(JComponent& jc, string layout);
+	void addMouseListener(MouseListener * mL);
+	void addMouseListener(MouseListener & mL);
 };
 JPanel::JPanel() //0
 {
@@ -1001,12 +1004,24 @@ void JPanel::add(JComponent& jc, string layout)
 	c.gui.push_back(instanceName + ",add," + jc.getInstanceName() + "," + layout);
 }
 
+void JPanel::addMouseListener(MouseListener * mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	al1 = aL;
+}
+void JPanel::addMouseListener(MouseListener & mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+}
+
 class JLabel : public JComponent {
 public:
 	JLabel(string s);
 	JLabel(string s, int alignment);
 	JLabel(Image image);
 	void setText(string s);
+	void addMouseListener(MouseListener * mL);
+	void addMouseListener(MouseListener & mL);
 };
 JLabel::JLabel(string s) //0
 {
@@ -1042,6 +1057,15 @@ void JLabel::setText(string s)
 		if (i != ',')
 			n += i;
 	c.gui.push_back(instanceName + ",setTextJL," + n);
+}
+void JLabel::addMouseListener(MouseListener * mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	al1 = aL;
+}
+void JLabel::addMouseListener(MouseListener & mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
 }
 
 class JTextField : public JComponent {
@@ -1104,7 +1128,6 @@ void JTextField::addActionListener(ActionListener * aL)
 void JTextField::addActionListener(ActionListener & aL)
 {
 	c.gui.push_back(instanceName + ",addActionListener");
-
 }
 
 class JButton : public JComponent {
