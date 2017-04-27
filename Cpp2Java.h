@@ -155,17 +155,23 @@ public:
 
 class MouseEvent {
 public:
-	MouseEvent(int clickX, int clickY);
+	MouseEvent(int clickX, int clickY, int buttonClicked, int clicksCount);
 	int getMouseClickX();
 	int getMouseClickY();
+	int getButtonClicked();
+	int getClickCount();
 private:
 	int x;
 	int y;
+	int button;
+	int clickCount;
 };
-MouseEvent::MouseEvent(int clickX, int clickY)
+MouseEvent::MouseEvent(int clickX, int clickY, int buttonClicked, int clicksCount)
 {
-	x = x;
-	y = y;
+	x = clickX;
+	y = clickY;
+	button = buttonClicked;
+	clickCount = clicksCount;
 }
 int MouseEvent::getMouseClickX()
 {
@@ -174,6 +180,14 @@ int MouseEvent::getMouseClickX()
 int MouseEvent::getMouseClickY()
 {
 	return y;
+}
+int MouseEvent::getButtonClicked()
+{
+	return button;
+}
+int MouseEvent::getClickCount()
+{
+	return clickCount;
 }
 class MouseListener {
 public:
@@ -827,11 +841,11 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			{
 				if (JavaCommand.at(2).compare("0") == 0)
 				{
-					storedML->mouseClicked(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4)));
+					storedML->mouseClicked(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4), JavaCommand.at(5), JavaCommand.at(6)));
 				}
 				else
 				{
-					storedML->mousePressed(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4)));
+					storedML->mousePressed(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4), JavaCommand.at(5), JavaCommand.at(6)));
 				}
 			}
 			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
