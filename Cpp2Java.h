@@ -347,6 +347,8 @@ public:
 	string instanceName;
 	ActionListener* al1;
 	ItemListener* il1;
+	MouseListener* ml1;
+	MouseMotionListener mml1;
 
 protected:
 	void setInstanceName();
@@ -461,8 +463,6 @@ string JComponent::getInstanceName()
 // It must be declared after JComponent is defined.
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
-MouseListener * storedML = new MouseListener();
-MouseMotionListener * storedMML = new MouseMotionListener();
 
 class ItemEvent
 {
@@ -1058,22 +1058,22 @@ void JPanel::add(JComponent& jc, string layout)
 void JPanel::addMouseListener(MouseListener * mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	storedML = mL;
+	ml1 = mL;
 }
 void JPanel::addMouseListener(MouseListener & mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	storedML = &mL;
+	ml1 = &mL;
 }
 void JPanel::addMouseMotionListener(MouseMotionListener * mmL)
 {
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
-	storedMML = mmL;
+	mml1 = mmL;
 }
 void JPanel::addMouseMotionListener(MouseMotionListener & mmL)
 {
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
-	storedMML = &mmL;
+	mml1 = &mmL;
 }
 
 class JLabel : public JComponent {
@@ -1125,22 +1125,22 @@ void JLabel::setText(string s)
 void JLabel::addMouseListener(MouseListener * mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	storedML = mL;
+	ml1 = mL;
 }
 void JLabel::addMouseListener(MouseListener & mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	storedML = &mL;
+	ml1 = &mL;
 }
 void JLabel::addMouseMotionListener(MouseMotionListener * mmL)
 {
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
-	storedMML = mmL;
+	mml1 = mmL;
 }
 void JLabel::addMouseMotionListener(MouseMotionListener & mmL)
 {
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
-	storedMML = &mmL;
+	mml1 = &mmL;
 }
 
 class JTextField : public JComponent {
