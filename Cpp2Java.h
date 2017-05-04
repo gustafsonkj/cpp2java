@@ -44,7 +44,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 		100, // no inbound buffer
 		0, // use default wait time
 		PIPE_ACCEPT_REMOTE_CLIENTS // use default security attributes
-		);
+	);
 
 	if (pipe == NULL || pipe == INVALID_HANDLE_VALUE) {
 		// look up error code here using GetLastError()
@@ -81,7 +81,7 @@ void sendCommandsThroughPipe(vector<string> cmnds, wstring pipeName)
 			strlen(data) * sizeof(char), // length of data to send (bytes)
 			&numBytesWritten, // will store actual amount of data sent
 			NULL // not using overlapped IO
-			);
+		);
 
 
 		if (result) {
@@ -495,7 +495,7 @@ class ItemListener
 public:
 	//ItemListener() {};
 	//ItemListener(const ActionListener & copy) {};
-	virtual void itemStateChanged(ItemEvent ae) { cout << "calling original!" << endl; }
+	virtual void itemStateChanged(ItemEvent ae) { /*cout << "calling original!" << endl;*/ }
 	virtual void itemStateChanged(ItemEvent * ae) {};
 };
 
@@ -664,7 +664,7 @@ class ActionListener
 public:
 	//ActionListener() {};
 	//ActionListener(const ActionListener & copy) {};
-	virtual void actionPerformed(ActionEvent ae) { cout << "calling original!" << endl; }
+	virtual void actionPerformed(ActionEvent ae) { /*cout << "calling original!" << endl;*/ }
 	virtual void actionPerformed(ActionEvent * ae) {};
 };
 
@@ -847,11 +847,11 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			command.erase(0, pos + delimiter.length());
 		}
 
-		for (string s : JavaCommand)
+		/*for (string s : JavaCommand)
 		{
-			cout << s << " ";
+		cout << s << " ";
 		}
-		cout << endl;
+		cout << endl;*/
 
 		//storedKL->keyReleased(*new KeyEvent(CC.at(12)));
 		//cout << "press2" << endl;
@@ -862,29 +862,29 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			{
 				// Use Java Command vector to call commands here
 				storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
-				std::cout << "press ";
-				std::cout << JavaCommand.at(2) << endl;
+				/*std::cout << "press ";
+				std::cout << JavaCommand.at(2) << endl;*/
 			}
 			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse and MouseMotion Listeners
 			{
 				if (JavaCommand.at(2).compare("0") == 0)
 				{
-					storedML->mouseClicked(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4), JavaCommand.at(5), JavaCommand.at(6)));
+					storedML->mouseClicked(*new MouseEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4)), stoi(JavaCommand.at(5)), stoi(JavaCommand.at(6))));
 				}
 				else
 				{
-					storedML->mousePressed(*new MouseEvent(JavaCommand.at(3), JavaCommand.at(4), JavaCommand.at(5), JavaCommand.at(6)));
+					storedML->mousePressed(*new MouseEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4)), stoi(JavaCommand.at(5)), stoi(JavaCommand.at(6))));
 				}
 			}
 			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
 			{
 				if (JavaCommand.at(2).compare("0") == 0)
 				{
-					storedMML->mouseMoved(*new MouseMotionEvent(JavaCommand.at(3), JavaCommand.at(4)));
+					storedMML->mouseMoved(*new MouseMotionEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4))));
 				}
 				else
 				{
-					storedMML->mouseDragged(*new MouseMotionEvent(JavaCommand.at(3), JavaCommand.at(4)));
+					storedMML->mouseDragged(*new MouseMotionEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4))));
 				}
 			}
 			break;
@@ -1070,7 +1070,7 @@ void JPanel::addMouseMotionListener(MouseMotionListener * mmL)
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
 	storedMML = mmL;
 }
-voidJPanel::addMouseMotionListener(MouseMotionListener & mmL)
+void JPanel::addMouseMotionListener(MouseMotionListener & mmL)
 {
 	c.gui.push_back(instanceName + ",addMouseMotionListener");
 	storedMML = &mmL;
@@ -1314,12 +1314,12 @@ public:
 };
 JComboBox::JComboBox(string items[])
 {
-	cout << "here" << endl;
+	//cout << "here" << endl;
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JComboBox");
 	for (int i = 0; i < sizeof(items); i++)
 	{
-		cout << items[i] << endl;
+		//cout << items[i] << endl;
 		c.gui.push_back(instanceName + ",addItemToComboBox," + items[i]);
 	}
 	jComps.push_back(*this);
@@ -1339,7 +1339,7 @@ public:
 	Cpp2Java(int width, int height) {
 
 		removeAll();
-		c.gui.push_back("-1,setFrameSize,"+to_string(width)+","+to_string(height));
+		c.gui.push_back("-1,setFrameSize," + to_string(width) + "," + to_string(height));
 	};
 	void removeAll();
 	void update();
