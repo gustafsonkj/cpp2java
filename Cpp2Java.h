@@ -195,6 +195,33 @@ public:
 	virtual void mousePressed(MouseEvent me) {};
 };
 
+class MouseMotionEvent {
+public:
+	MouseMotionEvent(int clickX, int clickY);
+	int getMouseClickX();
+	int getMouseClickY();
+private:
+	int x;
+	int y;
+};
+MouseMotionEvent::MouseMotionEvent(int clickX, int clickY)
+{
+	x = clickX;
+	y = clickY;
+}
+int MouseMotionEvent::getMouseClickX()
+{
+	return x;
+}
+int MouseMotionEvent::getMouseClickY()
+{
+	return y;
+}
+class MouseMotionListener {
+public:
+	virtual void mouseMoved(MouseMotionEvent mme) {};
+	virtual void mouseDragged(MouseMotionEvent mme) {};
+};
 /*class Polygon {
 public:
 Polygon() {};
@@ -283,6 +310,7 @@ class JComponent {
 	friend class ActionListener;
 	friend class ItemListener;
 	friend class MouseListener;
+	friend class MouseMotionListener;
 
 public:
 	JComponent() {};
@@ -434,7 +462,7 @@ string JComponent::getInstanceName()
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
 MouseListener * storedML = new MouseListener();
-
+MouseMotionListener * storedMML = new MouseMotionListener();
 
 class ItemEvent
 {
@@ -837,7 +865,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				std::cout << "press ";
 				std::cout << JavaCommand.at(2) << endl;
 			}
-			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse Listeners
+			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse and MouseMotion Listeners
 			{
 				if (JavaCommand.at(2).compare("0") == 0)
 				{
@@ -850,7 +878,14 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 			}
 			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
 			{
-
+				if (JavaCommand.at(2).compare("0") == 0)
+				{
+					storedMML->mouseMoved(*new MouseMotionEvent(JavaCommand.at(3), JavaCommand.at(4)));
+				}
+				else
+				{
+					storedMML->mouseDragged(*new MouseMotionEvent(JavaCommand.at(3), JavaCommand.at(4)));
+				}
 			}
 			break;
 		case 0:
@@ -988,6 +1023,8 @@ public:
 	void add(JComponent& jc, string layout);
 	void addMouseListener(MouseListener * mL);
 	void addMouseListener(MouseListener & mL);
+	void addMouseMotionListener(MouseMotionListener * mmL);
+	void addMouseMotionListener(MouseMotionListener & mmL);
 };
 JPanel::JPanel() //0
 {
@@ -1021,11 +1058,22 @@ void JPanel::add(JComponent& jc, string layout)
 void JPanel::addMouseListener(MouseListener * mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	al1 = aL;
+	storedML = mL;
 }
 void JPanel::addMouseListener(MouseListener & mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = &mL;
+}
+void JPanel::addMouseMotionListener(MouseMotionListener * mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = mmL;
+}
+voidJPanel::addMouseMotionListener(MouseMotionListener & mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = &mmL;
 }
 
 class JLabel : public JComponent {
@@ -1036,6 +1084,8 @@ public:
 	void setText(string s);
 	void addMouseListener(MouseListener * mL);
 	void addMouseListener(MouseListener & mL);
+	void addMouseMotionListener(MouseMotionListener * mmL);
+	void addMouseMotionListener(MouseMotionListener & mmL);
 };
 JLabel::JLabel(string s) //0
 {
@@ -1075,11 +1125,22 @@ void JLabel::setText(string s)
 void JLabel::addMouseListener(MouseListener * mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
-	al1 = aL;
+	storedML = mL;
 }
 void JLabel::addMouseListener(MouseListener & mL)
 {
 	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = &mL;
+}
+void JLabel::addMouseMotionListener(MouseMotionListener * mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = mmL;
+}
+void JLabel::addMouseMotionListener(MouseMotionListener & mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = &mmL;
 }
 
 class JTextField : public JComponent {

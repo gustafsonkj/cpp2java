@@ -500,6 +500,9 @@ public class Cpp2Java extends JFrame { //One-JFrame setup
                 case "addMouseListener":
                     contents.addMouseListener(new DynamicMouseListener());
                     break;
+                case "addMouseMotionListener":
+                     contents.addMouseMotionListener(new DynamicMouseMotionAdapter());
+                     break;    
             }
         }
     }
