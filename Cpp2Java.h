@@ -347,8 +347,11 @@ public:
 	string instanceName;
 	ActionListener* al1;
 	ItemListener* il1;
+<<<<<<< HEAD
 	//MouseListener* ml1;
 	//MouseMotionListener mml1;
+=======
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 
 protected:
 	void setInstanceName();
@@ -463,8 +466,13 @@ string JComponent::getInstanceName()
 // It must be declared after JComponent is defined.
 vector<JComponent> jComps;
 KeyListener * storedKL = new KeyListener();
+<<<<<<< HEAD
 //MouseListener * ml1 = new MouseListener();
 //MouseMotionListener * mml1 = new MouseMotionListener();
+=======
+MouseListener * storedML = new MouseListener();
+MouseMotionListener * storedMML = new MouseMotionListener();
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 
 class ItemEvent
 {
@@ -473,13 +481,15 @@ public:
 	JComponent getSource();
 	int getStateChange();
 	int jC;
-	const int SELECTED = 1;
-	const int DESELECTED = 2;
+	int SELECTED;
+	int DESELECTED;
 	int typeStateChanged;
 };
 
 ItemEvent::ItemEvent(int jc, int newTypeStateChanged)
 {
+	SELECTED = 1;
+	SELECTED = 2;
 	jC = jc;
 	typeStateChanged = newTypeStateChanged;
 }
@@ -866,6 +876,31 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 				storedKL->keyReleased(*new KeyEvent(JavaCommand.at(2).at(0)));
 				/*std::cout << "press ";
 				std::cout << JavaCommand.at(2) << endl;*/
+<<<<<<< HEAD
+=======
+			}
+			else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse and MouseMotion Listeners
+			{
+				if (JavaCommand.at(2).compare("0") == 0)
+				{
+					storedML->mouseClicked(*new MouseEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4)), stoi(JavaCommand.at(5)), stoi(JavaCommand.at(6))));
+				}
+				else
+				{
+					storedML->mousePressed(*new MouseEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4)), stoi(JavaCommand.at(5)), stoi(JavaCommand.at(6))));
+				}
+			}
+			else if (JavaCommand.at(1).compare("MouseMotionEvent") == 0) //Mouse Motion Listeners
+			{
+				if (JavaCommand.at(2).compare("0") == 0)
+				{
+					storedMML->mouseMoved(*new MouseMotionEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4))));
+				}
+				else
+				{
+					storedMML->mouseDragged(*new MouseMotionEvent(stoi(JavaCommand.at(3)), stoi(JavaCommand.at(4))));
+				}
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 			}
 			//else if (JavaCommand.at(1).compare("MouseEvent") == 0) //Mouse and MouseMotion Listeners
 			//{
@@ -1057,6 +1092,7 @@ void JPanel::add(JComponent& jc, string layout)
 	c.gui.push_back(instanceName + ",add," + jc.getInstanceName() + "," + layout);
 }
 
+<<<<<<< HEAD
 //void JPanel::addMouseListener(MouseListener * mL)
 //{
 //	c.gui.push_back(instanceName + ",addMouseListener");
@@ -1077,6 +1113,28 @@ void JPanel::add(JComponent& jc, string layout)
 //	c.gui.push_back(instanceName + ",addMouseMotionListener");
 //	mml1 = &mmL;
 //}
+=======
+void JPanel::addMouseListener(MouseListener * mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = mL;
+}
+void JPanel::addMouseListener(MouseListener & mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = &mL;
+}
+void JPanel::addMouseMotionListener(MouseMotionListener * mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = mmL;
+}
+void JPanel::addMouseMotionListener(MouseMotionListener & mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = &mmL;
+}
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 
 class JLabel : public JComponent {
 public:
@@ -1124,6 +1182,7 @@ void JLabel::setText(string s)
 			n += i;
 	c.gui.push_back(instanceName + ",setTextJL," + n);
 }
+<<<<<<< HEAD
 //void JLabel::addMouseListener(MouseListener * mL)
 //{
 //	c.gui.push_back(instanceName + ",addMouseListener");
@@ -1144,6 +1203,28 @@ void JLabel::setText(string s)
 //	c.gui.push_back(instanceName + ",addMouseMotionListener");
 //	mml1 = &mmL;
 //}
+=======
+void JLabel::addMouseListener(MouseListener * mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = mL;
+}
+void JLabel::addMouseListener(MouseListener & mL)
+{
+	c.gui.push_back(instanceName + ",addMouseListener");
+	storedML = &mL;
+}
+void JLabel::addMouseMotionListener(MouseMotionListener * mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = mmL;
+}
+void JLabel::addMouseMotionListener(MouseMotionListener & mmL)
+{
+	c.gui.push_back(instanceName + ",addMouseMotionListener");
+	storedMML = &mmL;
+}
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 
 class JTextField : public JComponent {
 public:
@@ -1316,7 +1397,11 @@ public:
 };
 JComboBox::JComboBox(string items[])
 {
+<<<<<<< HEAD
 	/*cout << "here" << endl;*/
+=======
+	//cout << "here" << endl;
+>>>>>>> bfed10502adc8a9687c24780720ee3119e8e0de1
 	setInstanceName();
 	c.gui.push_back(instanceName + ",instantiate,0,JComboBox");
 	for (int i = 0; i < sizeof(items); i++)
