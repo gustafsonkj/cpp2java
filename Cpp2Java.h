@@ -483,7 +483,7 @@ public:
 ItemEvent::ItemEvent(int jc, int newTypeStateChanged)
 {
 	SELECTED = 1;
-	SELECTED = 2;
+	DESELECTED = 2;
 	jC = jc;
 	typeStateChanged = newTypeStateChanged;
 }
@@ -1102,7 +1102,7 @@ void JPanel::add(JComponent& jc, string layout)
 //void JPanel::addMouseMotionListener(MouseMotionListener & mmL)
 //{
 //	c.gui.push_back(instanceName + ",addMouseMotionListener");
-//	storedmml = &mmL;
+//	storedMML = &mmL;
 //}
 void JPanel::addMouseListener(MouseListener * mL)
 {
@@ -1414,7 +1414,7 @@ public:
 	void removeAll();
 	void update();
 	void finish();
-	void pause(double ld);
+	//void pause(double ld);
 	void setLayout(GridLayout* gl);
 	void setLayout(BorderLayout* bl);
 	void addKeyListener(KeyListener * kL);
@@ -1447,20 +1447,20 @@ void Cpp2Java::finish()
 			   // Without this inf. loop, program would end.
 }
 
-void Cpp2Java::pause(double ld)
-{
-	typedef std::chrono::duration<double> seconds_type;
-	if (ld > .01)
-	{
-		seconds_type period(ld);
-		this_thread::sleep_for(period);
-	}
-	else
-	{
-		seconds_type period(.01);
-		this_thread::sleep_for(period);
-	}
-}
+//void Cpp2Java::pause(double ld)
+//{
+//	typedef std::chrono::duration<double> seconds_type;
+//	if (ld > .01)
+//	{
+//		seconds_type period(ld);
+//		this_thread::sleep_for(period);
+//	}
+//	else
+//	{
+//		seconds_type period(.01);
+//		this_thread::sleep_for(period);
+//	}
+//}
 void Cpp2Java::setLayout(GridLayout* gl)
 {
 	if (gl->getLayoutType() == "GridLayout,0")
